@@ -1,0 +1,779 @@
+{% extends "layout/w_layout.html" %}
+
+{% block title %}
+    购物车 - 美会说药妆海外购
+{% end %}
+
+
+{% block style %}
+    <link rel="stylesheet" href="{{ handler.build_assets_url("/css/www/cart.css") }}">
+    <style type="text/css">
+        .m-total .gobuy:hover {
+            background-color: rgb(245, 52, 94);
+            text-decoration: none;
+        }
+        .m-total .gobuy {
+            position: absolute;
+            right: -1px;
+            top: -1px;
+            bottom: 0;
+            width: 120px;
+            line-height: 60px;
+            text-align: center;
+            background-color: #D22147;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .cancelOrderStyle .tipText {padding-bottom: 0;}
+        .no-goods {
+            background: #dadada;
+            padding: 2px 3px;
+            -webkit-border-radius: 2px;
+            -moz-border-radius: 2px;
+            border-radius: 2px;;
+        }
+        .m-goods li.no-goods-item {
+            background: #f0f0f0;
+        }
+        .m-goods li.no-goods-item .col2 img{
+            background: #f0f0f0;
+        }
+        .m-goods li.no-goods-item .col4 .u-setcount,
+        .m-goods li.no-goods-item .col4 .u-setcount .z-dis,
+        .m-goods li.no-goods-item .col4 .u-setcount .plus,
+        .m-goods li.no-goods-item .col4 .u-setcount .tempBuyAmount {
+            background: #f0f0f0;
+        }
+        .m-goods li.no-goods-item .col4 .u-setcount .not-avail {
+
+        }
+     </style>
+
+{% end %}
+
+{% block content %}
+<article class="mainWrap orderMain">
+    <div id="cartbox">
+        {% if cart_goods %}
+        <div class="m-cartbox">
+            <div class="head f-cb">
+                <div class="col col1">
+                    <input type="checkbox" class="u-chk selectAll" checked>
+                    <label for="selectAll" class="lab">
+                        全选
+                    </label>
+                </div>
+                <div class="col col2">
+                    商品信息
+                </div>
+                <div class="col col3">
+                    单价(元)
+                </div>
+                <div class="col col4">
+                    数量
+                </div>
+                <div class="col col5">
+                    金额(元)
+                </div>
+                <div class="col col6">
+                    操作
+                </div>
+            </div>
+            <div class="m-cart  ">
+                <form id="submit-order" action="/order/confirm?from=cart" method="get">
+                {% module xsrf_form_html() %}
+                <div class="goods">
+                    <ul class="m-goods">
+                        <li class="actitm onlychild">
+                            <ul class="actgoods">
+                                {% for goods in cart_goods %}
+                                    {% if not goods['is_not_avail'] and not goods['is_sold_out'] %}
+                                    <li class="gooditm  z-selected " id="{{goods['cart_item_id']}}">
+                                        <div class="col col0">
+                                            <input type="checkbox" data-goodsid="{{goods['goods_id']}}" data-newbuyer="{{ "1" if goods["new_buyer"] else "0" }}"
+                                                   data-num="{{ goods['goods_count'] }}" data-id="{{goods['cart_item_id']}}"  class="u-chk" checked>
+                                    {% else %}
+                                    <li class="gooditm  z-selected no-goods-item " id="{{goods['cart_item_id']}}">
+                                        <div class="col col0">
+                                        <span class="no-goods">失效</span>
+                                    {% end %}
+                                    </div>
+                                    <div class="col col2">
+                                        <a href="/goods/{{ goods['goods_id'] }}" target="_blank" class="imgwrap">
+                                            <img src="{{ goods['goods_img_url'] }}" width="80px" height="80px">
+                                        </a>
+                                        <div class="txtwrap">
+                                            <h3 class="goodtlt">
+                                                <a href="/goods/{{ goods['goods_id'] }}" target="_blank" title="{{ goods['goods_title'] }}">
+                                                    {{ goods['goods_title'] }}
+                                                </a>
+                                            </h3>
+                                            <p class="property f-toe" title=""></p>
+                                            {% if handler.current_user and handler.current_user.is_staff and goods['staff_goods'] %}
+                                                <p class="goodtax">
+                                                    <input type="hidden" class="staff_goods">
+                                                    <span class="m-memberLabel">内购商品</span>
+                                                </p>
+                                            {% elif goods["new_buyer"] %}
+                                                <p class="goodtax">
+                                                    <span class="m-memberLabel">新人优惠</span>
+                                                </p>
+                                            {% end %}
+
+                                        </div>
+                                    </div>
+                                    <div class="col col3">
+                                        <del class="oldprice">
+                                            {{ goods['domestic_price'] }}
+                                        </del>
+                                        <span class="newprice">
+                                            {{ goods['price'] }}
+                                        </span>
+                                    </div>
+                                    <div class="col col4">
+                                        <span class="u-setcount">
+                                            <span class="minus z-dis" onclick="disCartCount(this)">
+                                                -
+                                            </span>
+                                            {% if not goods['is_not_avail'] and not goods['is_sold_out'] %}
+                                            <input type="hidden"  class="u-chk" name="goods" value="{{goods['goods_id']}}:{{goods['goods_count']}}">
+                                            {% end %}
+                                            <input type="text" class="ipt tempBuyAmount" min="1" autocomplete="off"
+                                            data-value="{{ goods['goods_id'] }}" max="99" readonly="readonly" value="{{ goods['goods_count'] }}">
+                                            {% if not goods["new_buyer"] %}
+                                            <span class="plus" onclick="addCartCount(this)">
+                                                +
+                                            </span>
+                                            {% else %}
+                                                <span class="plus">+</span>
+                                            {% end %}
+                                            {% if goods['is_not_avail'] %}
+                                                <span class="m-memberLabel"> 已下架</span>
+                                            {% elif goods['is_sold_out'] %}
+                                                <span> 已售完</span>
+                                            {% end %}
+                                        </span>
+                                        <p class="limitmsg">
+                                        </p>
+                                    </div>
+                                    <div class="col col5">
+                                        <span class="sum">
+                                            {{ "%.2f" % (float(goods['price']) * goods['goods_count']) }}
+                                        </span>
+                                    </div>
+                                    <div class="col col6">
+                                        <a class="u-remove" onclick="removeShopCartBox(this, '{{goods["cart_item_id"]}}','{{goods["goods_id"]}}')">
+                                        </a>
+                                    </div>
+                                </li>
+                                {% end %}
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                </form>
+            </div>
+            <div class="totalbox">
+                <div id="point">
+                </div>
+                <div class="m-total f-cb" id="totalbar" style="position: relative;">
+                    <!--Regular if21-->
+                    <div class="ttbar">
+                        <div class="lt">
+                            <input type="checkbox" class="u-chk selectAll" checked>
+                            <label for="selectAll" class="lab">
+                                全选
+                            </label>
+                            <b class="opt batchDel">
+                                删除选中商品
+                            </b>
+                            <!--Regular if22-->
+                        </div>
+                        <div class="rt">
+                            <p class="allgoods">
+                                已选商品
+                                <em class="num goods_count">
+                                    0
+                                </em>
+                                件
+                                <span class="itm">
+                                    总价：
+                                    <em class="num sum_price">
+                                        ￥0.00
+                                    </em>元
+                                </span>
+                            </p>
+                            <!-- <p class="allmoney">
+                                <span class="itm">
+                                    商品应付总计：￥90.00
+                                </span>
+                            </p> -->
+                            <a class="gobuy " id="buyBtn" onclick="toPay()">
+                                去结算
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="m-nocart">
+            <div class="wrap">
+                <p>购物车里空空如也，赶紧去&nbsp;<a href="/">逛逛吧&gt;</a></p>
+                <!-- <p>或者您可以先进行&nbsp;<a href="javascript:;">登录&gt;</a></p> -->
+            </div>
+        </div>
+        {% end %}
+    </div>
+</article>
+
+
+<div id="deleteShopCart" style="display:none;">
+    <div class="iDialog commTipsPop m-window-2 iDialogAniCore" style="z-index: 10001; width: 520px; height: 250px; margin-left: -260px; left: 50%; margin-top: -125px; top: 50%;">
+        <table class="iDialogWrapTable">
+            <tbody>
+                <tr>
+                    <td class="itd-mid-left">
+                    </td>
+                    <td class="itd-mid-center">
+                        <div class="iDialogContent">
+                            <div class="iDialogHead">
+                                <h1>
+                                    提示
+                                </h1>
+                            </div>
+                            <a class="iDialogClose delete-shopcart-close" hidefocus="true" href="javascript:;">
+                            </a>
+                            <div class="iDialogBody">
+                                <div class="iDialogMain" style="height: 50px;">
+                                    <div class="cancelOrderStyle">
+                                        <div class="tipText" style="font-size:18px; text-align:center;">
+                                            确认要删除商品吗?
+                                        </div>
+                                        <input type="hidden" id="delete-shopcart-id" value="">
+                                        <input type="hidden" id="delete-shopcart-goodsid" value="">
+                                        <input type="hidden" id="delete-shopcart-changecount" value="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="iDialogFoot">
+                                <a href="javascript:;" rel="1" onclick="removeCart()" class="iDialogBtn deleteShopCartBtnOk focusBtn">
+                                    <span>确认</span>
+                                </a>
+                                <a href="javascript:;" rel="0" class="iDialogBtn closedeleteShopCartDialog">
+                                    <span>取消</span>
+                                </a>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="itd-mid-right">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="iDialogLayout" style="z-index: 10000;">
+    </div>
+</div>
+
+<div id="message-dialog" style="display:none;">
+    <div class="iDialog commTipsPop m-window-2 iDialogAniCore" style="z-index: 10001; width:400px; height: 200px; margin-left: -200px; left: 50%; margin-top: -100px; top: 50%;">
+        <table class="iDialogWrapTable">
+            <tbody>
+                <tr>
+                    <td class="itd-mid-left">
+                    </td>
+                    <td class="itd-mid-center">
+                        <div class="iDialogContent">
+                            <div class="iDialogHead">
+                                <h1>
+                                    提示
+                                </h1>
+                            </div>
+                            <a class="iDialogClose delete-address-failed-close" hidefocus="true" href="javascript:;">
+                            </a>
+                            <div class="iDialogBody">
+                                <div class="iDialogMain" style="height: 120px;">
+                                    <div class="cancelOrderStyle">
+                                        <div class="tipText message-text">
+                                        </div>
+                                        <div class="closebtn">
+                                            <span class="cancelBtnOk btn-red30">
+                                                关闭
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="itd-mid-right">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="iDialogLayout" style="z-index: 10000;">
+    </div>
+</div>
+
+<div id="deleteManyGoods" style="display:none;">
+    <div class="iDialog commTipsPop m-window-2 iDialogAniCore" style="z-index: 10001; width: 520px; height: 250px; margin-left: -260px; left: 50%; margin-top: -125px; top: 50%;">
+        <table class="iDialogWrapTable">
+            <tbody>
+                <tr>
+                    <td class="itd-mid-left">
+                    </td>
+                    <td class="itd-mid-center">
+                        <div class="iDialogContent">
+                            <div class="iDialogHead">
+                                <h1>
+                                    提示
+                                </h1>
+                            </div>
+                            <a class="iDialogClose delete-shopcart-close" hidefocus="true" href="javascript:;">
+                            </a>
+                            <div class="iDialogBody">
+                                <div class="iDialogMain" style="height: 50px;">
+                                    <div class="cancelOrderStyle">
+                                        <div class="tipText" style="font-size:18px; text-align:center;">
+                                            确认要删除这些商品吗?
+                                        </div>
+                                        <input type="hidden" id="delete-shopcart-id" value="">
+                                        <input type="hidden" id="delete-shopcart-goodsid" value="">
+                                        <input type="hidden" id="delete-shopcart-changecount" value="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="iDialogFoot">
+                                <a href="javascript:;" rel="1" class="iDialogBtn batchDelOK focusBtn">
+                                    <span>确认</span>
+                                </a>
+                                <a href="javascript:;" rel="0" class="iDialogBtn closebatchDelDialog">
+                                    <span>取消</span>
+                                </a>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="itd-mid-right">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="iDialogLayout" style="z-index: 10000;">
+    </div>
+</div>
+
+{% end %}
+
+{% block script %}
+<script type="text/javascript">
+
+    String.prototype.trim = function() {
+      return this.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+    }
+
+    function toPay () {
+         // 结算前判断是否有选择的商品
+         var has_checkbox = false,
+             newbuyer_count = 0,
+             staff_goods = 0,
+             common_goods = 0;
+         $(".actgoods :checkbox").each(function () {
+             if(this.checked){
+                 has_checkbox = true;
+                 if($(this).parents(".gooditm").find(".staff_goods").length == 1) {
+                     staff_goods += 1;
+                 } else {
+                     common_goods += 1;
+                     if ($(this).attr("data-newbuyer") == 1) {
+                         var id = this.parentNode.parentNode.id;
+                         newbuyer_count += parseInt($("#" + id + " .tempBuyAmount").val());
+                     }
+                 }
+             }
+         });
+
+         if (!has_checkbox) {
+            $("#message-dialog").css("display", "block");
+            $(".message-text").text("请选择相应的商品");
+            return false;
+         } else {
+             // 判断是否选择了多件新人优惠商品
+             if (common_goods > 0 && staff_goods > 0) {
+                 $("#message-dialog").css("display", "block");
+                 $(".message-text").text("不能同时购买内购商品和普通商品");
+                 return
+             }
+             if (newbuyer_count > 1) {
+                 $("#message-dialog").css("display", "block");
+                 $(".message-text").text("新人优惠商品每人限购一件");
+             } else {
+                 $('#submit-order').submit();
+             }
+         }
+    };
+
+    $(".dialog-close, .iDialogClose, .closebtn,.cancelBtnOk, .closebatchDelDialog").click(function() {
+        $("#message-dialog").css("display", "none");
+        $("#deleteManyGoods").css("display", "none");
+    });
+
+    // 检测页面是否还存在商品
+    function chckShopcartNull(){
+        var noorderHtml = "<div class='m-nocart'><div class='wrap'><p>购物车里空空如也，" +
+                          "赶紧去&nbsp;<a href='/'>逛逛吧&gt;</a></p></div></div>"
+        var chknum = $(".actgoods :checkbox").size();
+        if (chknum == 0) {
+            $("#cartbox").html(noorderHtml);
+        }
+
+    }
+
+    function addCartCount(element) {
+        var tmpCount = $(element).parent().children(".tempBuyAmount").val();
+        var goods_id = $(element).parent().children(".tempBuyAmount").attr("data-value");
+
+        var loginMhs = new $.LoginMhs();
+        if ( loginMhs.isLogin() ) {
+            $.ajax({
+                type: "POST",
+                async: true,
+                url: "/cart/update",
+                data: {_xsrf: getCookie("_xsrf"), "goods_id": goods_id, "goods_count": parseInt(tmpCount)+1},
+                dataType: "json",
+                success: function(data) {
+                    if (data["status"]  == "error") {
+                      $("#message-dialog").css("display", "block");
+                      $(".message-text").text(data["message"]);
+                    } else {
+                        var cartHelper = new $.CartHelper();
+                        var cart = cartHelper.getCart();
+                        cart.totalCount += 1;
+                        cartHelper.saveCart(cart);
+                        cartHelper.initCartHtml();
+                        // 修改该商品总价格和数量
+                        var count = parseInt(tmpCount)+1;
+                        $(element).parent().children(".tempBuyAmount").attr("value", count);
+                        var newprice = $(element).parent().parent().parent().children(".col3").children(".newprice").text()
+                        var newprice_float = parseFloat(newprice) * 100 * count / 100;
+                        $(element).parent().parent().parent().children(".col5").children(".sum").text(newprice_float.toFixed(2));
+                        allchk();
+
+                        // 修改 hidden 表单数据
+                        $(element).parent().children(".u-chk").attr("value", goods_id+":"+count);
+                    }
+                },
+                error: function() {
+                    $("#message-dialog").css("display", "block");
+                    $(".message-text").text("服务器开小差了，请重试");
+                }
+            })
+        } else {
+            var cartHelper = new $.CartHelper();
+            cartHelper.updateCart(goods_id, 1);
+            cartHelper.initCartHtml();
+
+            // 修改该商品总价格和数量
+            var count = parseInt(tmpCount)+1;
+            $(element).parent().children(".tempBuyAmount").attr("value", count);
+            var newprice = $(element).parent().parent().parent().children(".col3").children(".newprice").text()
+            var newprice_float = parseFloat(newprice) * 100 * count / 100;
+            $(element).parent().parent().parent().children(".col5").children(".sum").text(newprice_float.toFixed(2));
+            allchk();
+        }
+    }
+
+    function disCartCount(element) {
+        var tmpCount = $(element).parent().children(".tempBuyAmount").val();
+        var goods_id = $(element).parent().children(".tempBuyAmount").attr("data-value");
+        if (tmpCount <= 1){
+          return false;
+        }
+        var cartHelper = new $.CartHelper();
+        var cart = cartHelper.getCart();
+        var loginMhs = new $.LoginMhs();
+        if ( loginMhs.isLogin() ) {
+            $.ajax({
+                type: "POST",
+                async: true,
+                url: "/cart/update",
+                data: {_xsrf: getCookie("_xsrf"), "goods_id": goods_id, "goods_count": parseInt(tmpCount)-1},
+                dataType: "json",
+                success: function(data) {
+                    if (data["status"]  == "error") {
+                      $("#message-dialog").css("display", "block");
+                      $(".message-text").text(data["message"]);
+                    } else {
+                        cart.totalCount -= 1;
+                        cartHelper.saveCart(cart);
+                        cartHelper.initCartHtml();
+
+                        // 修改该商品总价格和数量
+                        var count = parseInt(tmpCount)-1;
+                        $(element).parent().children(".tempBuyAmount").attr("value", count);
+                        var newprice = $(element).parent().parent().parent().children(".col3").children(".newprice").text()
+                        var newprice_float = parseFloat(newprice) * 100 * count / 100;
+                        $(element).parent().parent().parent().children(".col5").children(".sum").text(newprice_float.toFixed(2));
+                        allchk();
+
+                        // 修改 hidden 表单数据
+                        $(element).parent().children(".u-chk").attr("value", goods_id+":"+count);
+                    }
+                },
+                error: function() {
+                    $("#message-dialog").css("display", "block");
+                    $(".message-text").text("服务器开小差了，请重试");
+                }
+            })
+        } else {
+            var cartHelper = new $.CartHelper();
+            cartHelper.updateCart(goods_id, -1);
+            cartHelper.initCartHtml();
+
+            // 修改该商品总价格和数量
+            var count = parseInt(tmpCount)-1;
+            $(element).parent().children(".tempBuyAmount").attr("value", count);
+            var newprice = $(element).parent().parent().parent().children(".col3").children(".newprice").text()
+            var newprice_float = parseFloat(newprice) * 100 * count / 100;
+            $(element).parent().parent().parent().children(".col5").children(".sum").text(newprice_float.toFixed(2));
+            allchk();
+        }
+    }
+
+    function removeCart() {
+        var id = $("#delete-shopcart-id").attr("value");
+        var goodsid = $("#delete-shopcart-goodsid").attr("value");
+        var count = $("#delete-shopcart-changecount").attr("value");
+        var cartHelper = new $.CartHelper();
+        var loginMhs = new $.LoginMhs();
+        if ( loginMhs.isLogin() ) {
+            var cart = cartHelper.getCart();
+            cart.totalCount -= count;
+            cartHelper.saveCart(cart);
+            cartHelper.initCartHtml();
+        } else {
+            cartHelper.deleteProduct(goodsid);
+            cartHelper.initCartHtml();
+        }
+
+
+        if ( loginMhs.isLogin() ) {
+            $.ajax({
+                type: "POST",
+                async: true,
+                url: "/cart/delete",
+                data: {_xsrf: getCookie("_xsrf"), "id": id},
+                dataType: "json",
+                success: function(data) {
+                    if (data["status"]  == "error") {
+                      $("#message-dialog").css("display", "block");
+                      $("#deleteShopCart").text(data["message"]);
+                    } else {
+                        $("#"+id).remove()
+                        $("#deleteShopCart").css("display", "none");
+                        allchk();  // 修改价格等信息
+                        chckShopcartNull();  // 检测是否还存在商品
+                    }
+                },
+                error: function() {
+                    $("#message-dialog").css("display", "block");
+                    $(".message-text").text("服务器开小差了，请重试");
+                }
+            });
+        } else {
+            $("#"+id).remove()
+            $("#deleteShopCart").css("display", "none");
+            chckShopcartNull();  // 检测是否还存在商品
+        }
+
+    }
+
+    function removeShopCartBox(element, shopcart_id, goodsid) {
+        $("#delete-shopcart-id").attr("value", shopcart_id);
+        $("#delete-shopcart-goodsid").attr("value", goodsid);
+        var count = $(element).parent().parent().children(".col4").children(".u-setcount").children(".tempBuyAmount").val();
+        $("#delete-shopcart-changecount").attr("value", count);
+        $("#deleteShopCart").css("display", "block");
+    }
+
+    $(".delete-shopcart-close, .closedeleteShopCartDialog").click(function() {
+        $("#deleteShopCart").css("display", "none");
+    });
+
+    // 是否是全选，再确定全选按钮的状态
+    function allchk(){
+        var chknum = $(".actgoods :checkbox").size();  //选项总个数
+        var chk = 0;
+        var sum_price = 0.0
+        $(".actgoods :checkbox").each(function () {
+            var goods_element = $(this).parent().parent().children(".col4").children(".u-setcount").children(".u-chk");
+            if(this.checked){
+                // 统计选择的总价格
+                try {
+                    var sum = this.parentElement.parentElement.children[4].textContent.trim();
+                } catch (e) {
+                    var sum = 0.0
+                } finally {
+                    sum = parseFloat(sum);
+                    sum_price += sum;
+                }
+                chk++;  // 统计选择的个数
+                goods_element.attr("name", "goods");
+            } else {  // 没有选择则将 hidden 表单数据修改
+                goods_element.attr("name", "goods_del");
+            }
+        });
+        var check_all = $(".selectAll");
+        if(chknum==chk){  //全选
+            check_all.attr("checked",true);
+            check_all.prop("checked",true);
+        }else{  //不全选
+            check_all.attr("checked",false);
+            check_all.prop("checked",false);
+        }
+        $(".goods_count").text(chk);
+
+        // 总价格
+        $(".sum_price").text(sum_price.toFixed(2))
+    }
+
+    $(".actgoods :checkbox").click(function() {
+        allchk();
+    })
+
+
+    // 全选或者全不选
+    $(".selectAll").click(function() {
+        var boxes = $(".m-cartbox :checkbox");
+        if(this.checked){
+            boxes.attr("checked", true);
+            boxes.prop("checked", true);
+            allchk()
+        }else{
+            boxes.attr("checked", false);
+            boxes.prop("checked", false);
+            allchk()
+        }
+     });// 计算选中的个数
+
+     allchk();  // 初始化选中的商品数目
+
+     // 批量删除商品
+     $(".batchDel").click(function(){
+         var ids = "";
+         var goods_ids = new Array();
+         $(".actgoods :checkbox").each(function () {
+             if(this.checked){
+                 var cartshop_id = $(this).attr("data-id");
+                 var goods_id = $(this).attr("data-goodsid");
+                 if (cartshop_id) {
+                     if (ids == "") {
+                         ids = cartshop_id;
+                     } else {
+                         ids += "#" + cartshop_id
+                     }
+                 }
+                 if (goods_id){
+                     goods_ids.push(goods_id);
+                 }
+             }
+         });
+
+         if (!ids){
+           $("#message-dialog").css("display", "block");
+           $(".message-text").text("请选择需要删除的商品");
+           return false;
+         }
+         $("#deleteManyGoods").css("display", "block");
+     });
+
+     $(".batchDelOK").click(function() {
+         var ids = "";
+         var totalDelNum = 0;
+         var goods_ids = new Array();
+         $(".actgoods :checkbox").each(function () {
+             if(this.checked){
+                 var cartshop_id = $(this).attr("data-id");
+                 var delete_num = $(this).parent().parent().children(".col4").children(".u-setcount").children(".tempBuyAmount").val();
+                 var goods_id = $(this).attr("data-goodsid");
+                 if (cartshop_id) {
+                     if (ids == "") {
+                         ids = cartshop_id;
+                     } else {
+                         ids += "#" + cartshop_id
+                     }
+                 }
+                 if (delete_num ){
+                     if (parseInt(delete_num) > 0){
+                         totalDelNum += parseInt(delete_num);
+                     }
+                 }
+                 if (goods_id){
+                     goods_ids.push(goods_id);
+                 }
+             }
+         });
+
+         if (!ids){
+           $("#message-dialog").css("display", "block");
+           $(".message-text").text("请选择需要删除的商品");
+           return false;
+         }
+         var cartHelper = new $.CartHelper();
+         var loginMhs = new $.LoginMhs()
+         if ( loginMhs.isLogin() ) {
+             $.ajax({
+                 type: "POST",
+                 async: true,
+                 url: "/cart/delete",
+                 data: {_xsrf: getCookie("_xsrf"), "ids": ids},
+                 dataType: "json",
+                 success: function(data) {
+                    if (data["status"]  == "error") {
+                        $("#message-dialog").css("display", "block");
+                        $("#message-text").text(data["message"]);
+                        return
+                    } else {
+                       var cart = cartHelper.getCart();
+                       cart.totalCount -= totalDelNum;
+                       cartHelper.saveCart(cart);
+                       cartHelper.initCartHtml();
+
+                       var ids_array = ids.split("#");
+                       for (var i = 0; i < ids_array.length; i++) {
+                           $("#"+ids_array[i]).remove()
+                       }
+                       allchk();
+                       chckShopcartNull();  // 检测是否还存在商品
+                   }
+                 },
+                 error: function() {
+                     $("#message-dialog").css("display", "block");
+                     $(".message-text").text("服务器开小差了，请重试");
+                 }
+             });
+         } else {  // 如果没有登录就必须正确处理购物车 cookie
+             for (var i = 0; i < goods_ids.length; i++) {
+                 cartHelper.deleteProduct(goods_ids[i]);
+                 $("#"+goods_ids[i]).remove()
+             }
+             cartHelper.initCartHtml();
+
+             var ids_array = ids.split("#");
+             for (var i = 0; i < ids_array.length; i++) {
+                 $("#"+ids_array[i]).remove()
+             }
+             allchk();
+             chckShopcartNull();  // 检测是否还存在商品
+         }
+
+         $("#deleteManyGoods").css("display", "none");
+         allchk();
+
+     })
+
+</script>
+{% end %}

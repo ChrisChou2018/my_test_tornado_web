@@ -1,0 +1,136 @@
+{% extends "layout/w_layout.html" %}
+
+{% block title %}
+    {{ article.title }}
+{% end %}
+
+{% block style %}
+<style type="text/css">
+    aside {width: 300px;float: right;}
+    .detailed {font-size: 14px;}
+    .detailed article>h1 {font-weight: 400;font-size: 28px;margin-bottom: 20px;word-break: break-all;}
+    .detailed article p {color: #333;line-height: 24px;margin-bottom: 20px;word-break: break-all;}
+    .detailed_banner {padding: 20px 0;text-align: center}
+    .detailed_banner img{width: 100%;}
+    .leftWrap {width: 750px;}
+    aside .listItem img {max-width: 78px;max-height: 78px;}
+    .rightHotExp .listCurrent {padding: 16px 0 0;overflow: hidden;}
+    .listCurrent .listInfo .itemName a:hover {color: #5188a6;}
+    .listCurrent .listInfo .itemName a {display: block;width: 100%;color: #666;overflow: hidden;}
+    a:hover {text-decoration: none;color: #F7661F!important;}
+    .listItem .smallPic {display: none;}
+    .listItem .listInfo {width: 300px;}
+    .listItem .listInfo .itemName a {font-size: 13px;color: #666;height: 16px;display: block;width: 300px;
+        white-space: nowrap;text-overflow: ellipsis;overflow: hidden;}
+    .listCurrent .smallPic {display: block;text-align: center;float: left;width: 80px;}
+    .listCurrent .smallPic img {max-width: 78px;max-height: 78px;}
+    .listCurrent .listInfo, .rightHotShow .listInfo {width: 200px;float: right;font-size: 13px;line-height: 20px;}
+    .rightPanel .itemName {font-weight: normal;font-size: 13px;overflow: hidden;}
+    .listCurrent .listInfo .itemName a {display: block;width: 100%;height: 60px;color: #666;overflow: hidden;}
+    .rightPanel .panelTitle a {display: block;float: right;font-size: 13px;color: #F7661F;font-weight: normal;}
+    .listItem {height: 16px;padding-top: 16px;overflow: hidden;}
+    aside .panelTitle {font-size: 18px;clear: both;overflow: hidden;height: 40px;
+        line-height: 40px;border-bottom: 1px solid #e6e6e6;}
+    .leftWrap article  img{ max-width: 450px;} .grey {color: #999;}
+    .recommend_tab s {font-size: 10px;text-decoration: none;color: #ccc;padding: 0 8px;}
+    .recommend_tab .tags {color: #5188a6;}
+    .recommend_tab {position: relative;border: 0;line-height: 1em;overflow: hidden;margin-bottom: 25px;}
+    .item-name {margin-bottom: 20px;}
+    article p{text-align: left;}
+
+    .goods-item {width: 480px;height: auto;padding: 10px;border: 1px solid #eee;overflow: hidden;
+        vertical-align: middle;display: block;margin: 10px auto;position: relative;}
+    .goods-item:hover {box-shadow:1px 1px 8px #eee}
+    .goods-item .price {padding: 4px 10px;background: #F7661F;font-size: 14px;
+        word-spacing: 8px;letter-spacing: 1px;float: right;}
+    .goods-item .item-content {float:left; text-align: left; width: 350px;}
+    .goods-item img {width: 120px;}
+    .detailed .goods-item p {color: #000;line-height: 24px;margin-bottom: 5px;word-break: break-all;}
+    .detailed .goods-item .price {color: #fff;}
+    .detailed .goods-item a {text-align: left;}
+    .goods-item .describe {color: #444;}
+    .goods-item .title {text-align:left;font-size: 16px;font-weight: 700;line-height: 22px;max-height: 44px;overflow: hidden;color: #333;
+
+</style>
+{% end %}
+
+{% block content %}
+<div class="wrap topBgWrapPos" style="z-index:10;">
+
+    <div class="mainBgWrap clearfix">
+        {% block indexleft %}
+  <!--       <div id="indexleft" data-width="110" data-height="264" style="position: absolute; top: 46px;">
+            <img src="/images/www/app_download_sidebar.png">
+        </div> -->
+        {% end %}
+        <section class="wrap detailed">
+            <div class="wrap">
+                <div class="leftWrap">
+                    <div class="detailed_banner">
+                        <img src="{{ pic_url }}">
+                    </div>
+                    <div class="recommend_tab">
+                        <span class="grey">{{ create_time }}</span>
+                        <s>●</s>
+                        <span class="tags">{{ article.tags }}</span>
+                    </div>
+                    <article>
+                        {% import meihuishuo.libs.common as lib_common%}
+                        {% raw lib_common.str_to_html(article.content, "pc") %}
+                    </article>
+                </div>
+                <aside>
+                    <div class="rightPanel" id="rightPanel" style="position:fixed; top:20px;">
+                        <h2 class="panelTitle">
+                            <a href="/explore">更多 &gt;</a>最新发现
+                        </h2>
+                        <ul class="rightHotExp">
+                            {% for item in recent_articles %}
+                                <li class="listItem">
+                                    <a href="/articles/{{ item["article_id"] }}" class="smallPic">
+                                        <img src="{{ item["pic_url"] }}" alt="{{ item["title"] }}">
+                                    </a>
+                                    <div class="listInfo">
+                                        <div class="itemName">
+                                            <a href="/articles/{{ item["article_id"] }}">
+                                                {{ item["title"] }}
+                                            </a>
+                                        </div>
+                                     </div>
+                                </li>
+                            {% end %}
+                        </ul>
+                    </div>
+                </aside>
+            </div>
+        </section>
+    </div>
+{% block rightbar %}
+{#    {% include "layout/w_rightbar.html" %}#}
+{% end %}
+{% end %}
+
+
+{% block script %}
+<script type="text/javascript">
+    $(".rightHotExp li").mouseenter(function(){
+        var l = $(".rightHotExp li");
+        l.removeClass("listCurrent");
+        l.addClass("listItem");
+        $(this).addClass("listCurrent");
+        $(this).removeClass("listItem");
+      });
+
+    function scrollStart() {
+        var rightPanel = $('#rightPanel');
+        var top = rightPanel[0].offsetTop + document.body.scrollTop + document.documentElement.scrollTop;
+        if (top > 193) {
+            rightPanel.css("position", "fixed");
+        } else {
+            rightPanel.css("position", "absolute");
+        }
+    }
+    scrollStart();
+    $(window).bind("scroll", scrollStart)
+</script>
+{% end %}

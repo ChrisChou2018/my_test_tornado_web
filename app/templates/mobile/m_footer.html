@@ -1,0 +1,35 @@
+<footer class="m-docfoot">
+    <div class="navlist f-cb" id="topbar-box">
+        <div class="f-fr">
+            {% if handler.current_user %}
+            <div id="leftNav1" style="">
+                <span id="currentUsername" class="name">
+                    {{ handler.current_user.member_name }}
+                </span>
+                <span class="sep">
+                    |
+                </span>
+                <a rel="nofollow" class="signout">
+                    退出
+                </a>
+            </div>
+            {% else %}
+            <div id="leftNav2" style="">
+                <a rel="nofollow" class="signin">登录</a>
+                <span class="sep">|</span>
+                <a rel="nofollow" class="regis">注册</a>
+            </div>
+            {% end %}
+        </div>
+        <div class="f-fl">
+            <a id="pcView" rel="nofollow" href="http://www.meihuishuo.com/?from=wrap">
+                去电脑版
+            </a>
+        </div>
+    </div>
+    <p class="aboutnest">
+        美会说药妆海外购
+        <br>
+        美会说版权所有©2011-2016
+    </p>
+</footer>

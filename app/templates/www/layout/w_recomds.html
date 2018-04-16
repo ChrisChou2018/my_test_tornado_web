@@ -1,0 +1,59 @@
+
+        <article class="m-recomds m-recomds-daynew">
+            <h2 class="w-tit1">
+                <span class="big">
+                    每日上新 /
+                </span>
+                新品推荐
+            </h2>
+            <ul class="clearfix">
+                {% for index, goods in enumerate(recommend_list) %}
+                    {% if index in [1, 2, 3, 4]  %}
+                        <li class="itm1-top">
+                    {% elif index%5 == 0 and index == 0 %}
+                        <li class="itm1 itm1-top">
+                    {% elif index%5 == 0  %}
+                        <li class="itm1">
+                    {% else %}
+                        <li>
+                    {% end %}
+                    <a class="pic" href="/goods/{{ goods['id'] }}" target="_blank" title="{{ goods['title'] }}" >
+                        <img class="lazy img-responsive" data-original="{{ goods['img_url'] }}" alt="{{ goods['title'] }}" style="margin:15px 0;width: 70%;">
+                        <span class="w-icon w-icon-19 w-icon-19-1">
+                            新品
+                        </span>
+                        {% if goods["is_sold_out"] %}
+                            <i class="soldout"><span class="txt">已售罄</span></i>
+                        {% end %}
+                    </a>
+                    <div class="txt">
+                        <h3 class="tit">
+                            <a target="_blank" href="/goods/{{ goods['id'] }}" title="{{ goods['title'] }}">
+                                {{ goods['title'] }}
+                            </a>
+                        </h3>
+                        <p class="price m-price">
+                            {% if handler.current_user and handler.current_user.is_vip_valid() %}
+                            <label class="s-fc0 lbl">
+                                美会说售价
+                            </label>
+                            <strong>
+                                <span class="symbol">
+                                    ¥
+                                </span>
+                                {{ goods['price'] }}
+                            </strong>
+                            {% else %}
+                            <span style="font-size:14px; color:#f7661f;">仅限 VIP 查看</span>
+                            {% end %}
+                            <br>
+                            国内参考价
+                            <del>
+                                ¥{{ goods['domestic_price'] }}
+                            </del>
+                        </p>
+                    </div>
+                </li>
+                {% end %}
+            </ul>
+        </article>

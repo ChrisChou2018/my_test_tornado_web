@@ -1,0 +1,300 @@
+{% extends "./layout/w_layout.html" %}
+
+{% block style %}
+<style>
+    .bdNarrowHome .mainBgWrap, .bdNarrowHome .sliderBox .control div {
+        width: 1092px;
+    }
+    .m-recomds-new li {
+        width: 271px;
+        height: 390px;
+        font-size: 12px;
+        float: left;
+        border-right: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+    }
+    .m-recomds-new .flag {
+        position: absolute;
+        left: 10px;
+        top: 10px;
+    }
+    .m-recomds-new .txt {
+        height: 79px;
+    }
+    .m-recomds .txt {
+        position: relative;
+        zoom: 1;
+        margin: 0 15px;
+        height: 104px;
+    }
+    .m-recomds-new .tit {
+        font-size: 12px;
+        line-height: 18px;
+        height: 36px;
+    }
+    .m-recomds .tit {
+        font-size: 14px;
+        line-height: 19px;
+        height: 38px;
+        overflow: hidden;
+    }
+    .m-nav {
+        position: relative;
+        margin: 0 auto 10px;
+        width: 1091px;
+        height: 60px;
+        text-align: center;
+        font-size: 14px;
+        color: #333;
+        overflow: hidden;
+    }
+    .m-nav .tab, .m-nav .tab:hover {
+        display: block;
+        float: left;
+        margin-right: -1px;
+        height: 58px;
+        line-height: 18px;
+        background-color: #fff;
+        text-decoration: none;
+        text-align: center;
+    }
+    .f-tw4 {
+        width: 1090px;
+    }
+    .m-nav .f-select, .m-nav .f-select:hover {
+        position: relative;
+{#        color: #fff;#}
+        border: 1px solid #F3F3F3;
+        background-color: #F3F3F3;
+    }
+    .tab .status {
+        font-size: 18px;
+        line-height: 60px;
+    }
+    .tab .timer {
+        margin-top: 10px;
+    }
+    .itm1 {
+        border-left: 1px solid #ddd;
+        border-right: 0px solid #ddd;
+    }
+    .itm1-top {
+        border-top: 1px solid #ddd;
+    }
+    .m-recomds-daynew .txt {
+        height: 120px;
+    }
+
+    .jquery-slider-wrapper{position:relative;clear:both;zoom:1;}
+    .jquery-slider-slide{display:none;margin:0;padding:0;position:absolute;left:0;top:0;width:100%;}
+    .jquery-slider-slide img{border:0;margin:0;padding:0;}
+    .jquery-slider-slide-current{display:block;z-index:2;}
+    .jquery-slider-slide-next{display:block;z-index:1;}
+    .jquery-slider-selectors{display:block;overflow:hidden;position:absolute;bottom:10px;right:10px;z-index:3;}
+{#    .jquery-slider-selector{background:url(/images/www/jquery-slider-theme.png) no-repeat 0px -70px;display:inline;width:16px;height:16px;margin:0 0 0 5px;}#}
+    .jquery-slider-selector-current{background:url(/images/www/jquery-slider-theme.png) no-repeat -16px -70px;}
+    .jquery-slider-selector span{display:none;}
+    .jquery-slider-control{display:none;right:50%;top:50%;position:absolute;cursor:pointer;width:48px;height:69px;margin-top:-34px;margin-right:-24px;z-index:4;}
+    .jquery-slider-control span{display:none;}
+    .jquery-slider-control-play{background:url(/images/www/jquery-slider-theme.png) no-repeat -144px 0;}
+    .jquery-slider-control-pause{background:url(/images/www/jquery-slider-theme.png) no-repeat -96px 0;}
+    .jquery-slider-hovered .jquery-slider-control{display:none;}
+    .jquery-slider-navigation{display:block;/*width: 1090px;*/}
+    .jquery-slider-navigation-prev{background:url(/images/www/jquery-slider-theme.png) no-repeat 0 0;display:none;left:0;top:50%;position:absolute;cursor:pointer;width:48px;height:69px;margin-top:-34px;z-index:4;}
+    .jquery-slider-navigation-prev span{display:none;}
+    .jquery-slider-navigation-next{background:url(/images/www/jquery-slider-theme.png) no-repeat -48px 0;display:none;right:0;top:50%;position:absolute;cursor:pointer;width:48px;height:69px;margin-top:-34px;z-index:4;}
+    .jquery-slider-navigation-next span{display:none;}
+    .jquery-slider-hovered .jquery-slider-navigation-prev,.jquery-slider-hovered .jquery-slider-navigation-next{display:block;}
+    .jquery-slider-wrapper .caption{padding:6px 10px;background:#333333;font-size:13px;position:absolute;bottom:10px;left:10px;color:#FFFFFF;}
+    .jquery-slider-timer{display:none;color:#000000;height:3px;width:100%;position:absolute;bottom:0;left:0;z-index:4;}
+    .jquery-slider-timer-bar{background:#000000;opacity:0.5;height:3px;width:0;float:left;display:inline;}
+    #picBox .slider {height: 400px;}
+
+    {# 限时抢购 css #}
+    .m-dailylimit .tit {position: relative;font-size: 14px;}
+    .w-tit1-1 {font-size: 14px;color: #999;position: relative;zoom: 1;}
+    .w-tit1 {font-size: 18px;color: #333;line-height: 32px;margin: 37px 0 10px;}
+    .m-dailylimit .tit .big {margin-right: 10px;}
+    .w-tit1-1 .big {font-size: 22px;color: #333;}
+    .m-dailylimit .timebox {margin-left: 8px;font-weight: bold;}
+    .m-dailylimit .tit .more {position: absolute;top: 6px;right: 0px;color: #333;}
+    .m-dailylimit .cnt {border-top:1px solid #eaeaea;}
+    .m-dailylimit .cnt .aside {float: right;width: 223px;height: 378px;}
+    .m-dailylimit .cnt .aside .pic {display: inline-block;}
+    .m-dailylimit .cnt .aside .pic img {width: 221px;height: 378px;}
+    .m-dailylimit .cnt .goodslist {float: left;width: 868px;}
+    .m-dailylimit .cnt .goodslist .goods {position: relative;float: left;width: 433px;height: 188px;
+        border-left: 1px solid #eaeaea;border-bottom: 1px solid #eaeaea;background-color: #fff;}
+    .m-dailylimit .cnt .goods .pic {display: inline-block;position: relative;float: left;margin-right: -188px;
+        width: 188px;height: 188px;}
+    .m-dailylimit .cnt .goods .pic img {width: 70%;height: 70%;margin: 15% 15%}
+    .m-dailylimit .cnt .goods .detail {position: relative;float: right;margin-right: 20px;width: 205px;height: 188px;}
+    .m-dailylimit .cnt .goods .intro {margin: 20px 0 6px;overflow: hidden;white-space: nowrap;-o-text-overflow: ellipsis;
+        text-overflow: ellipsis;}
+    .m-dailylimit .cnt .goods .intro a {color: #333;font-size: 14px;font-weight: bold;}
+    .m-dailylimit .cnt .goods .shortTitle {height:40px;overflow:hidden;word-break:break-all;word-wrap:break-word;margin:20px 0 6px;}
+    .m-dailylimit .cnt .goods .shortTitle a {text-decoration:inherit;line-height:20px;overflow:hidden;font-size:14px;color:#2F2F2F;}
+    .m-dailylimit .cnt .goods .shortTitle a:hover {color:#666;}
+    .m-dailylimit .cnt .goods .price {margin: 24px 0 2px;font-size: 24px;font-weight: bold;color: #f7661f;}
+    .m-dailylimit .cnt .goods .price b {font-size: 20px;font-weight: normal;}
+    .m-dailylimit .cnt .goods .price span {margin-left: 8px;font-size: 14px;font-weight: normal;color: #999;}
+    .m-dailylimit .cnt .goods .price del {font-size: 14px;font-weight: normal;color: #999;}
+    .m-dailylimit .cnt .goods .process {position: relative;width: 100px;height: 18px;line-height: 18px;text-align: left;
+        font-size: 12px;color: #f7661f;border: 1px solid #F3C7C7;overflow: hidden;-webkit-border-radius: 9px;
+        -moz-border-radius: 9px;border-radius: 9px;margin-top: 13px;}
+    .m-dailylimit .cnt .goods .process .text {position: absolute;top: 0;left: 0;width: 100%;height: 100%;text-align: center;}
+    .m-dailylimit .cnt .goods .btn {display: inline-block;position: absolute;bottom: 30px;right: 0;width: 78px;
+        height: 26px;line-height: 26px;border: 1px solid #e05c1b;text-align: center;font-size: 14px;color: #fff;
+        background-color: #e05c1b;text-decoration: none;}
+    .m-dailylimit .cnt .goods .btn:hover {background-color: #f97d41;color: #fff;}
+    .m-dailylimit .timebox strong{display:inline-block;margin:0 1.5px;width:20px;height:20px;line-height:20px;color:#fff;
+        text-align:center;vertical-align:1px;background-color:#333;-webkit-border-radius:50%;
+        -moz-border-radius:50%;border-radius:50%;}
+    .m-dailylimit .cnt .goods .btn-goto {color: #f7661f;background-color: #fff;}
+    .m-dailylimit .soldout .txt {top:50%;}
+
+</style>
+
+<script type="application/javascript">
+    var browser = {
+        versions : function() {
+            var u = navigator.userAgent, app = navigator.appVersion;
+            return {//移动终端浏览器版本信息
+                mobile : (!!u.match(/AppleWebKit.*Mobile/) || !!u.match(/Windows Phone/) || !!u.match(/Android/) || !!u.match(/MQQBrowser/)) && !u.match(/iPad/)//是否为移动终端
+            };
+        }(),
+        pcview : function() {
+            return {
+                selected : $.cookie("selectedpc")
+            };
+        }()
+    };
+    function getUrlParam(param) {
+        var reg = new RegExp("(^|&)" + param + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+        var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+        if (r != null) {
+          return unescape(r[2]); //返回参数值
+        } else {
+          return null;
+        }
+    }
+    if(browser.versions.mobile){
+        var from = getUrlParam("from");
+        if ( browser.pcview.selected == "true") { //　不跳转
+        } else if ( from == "wrap") {  // 不跳转
+            $.cookie("selectedpc", "true", {path:"/"});
+        } else if (from != "wrap") {   // 跳转
+            window.location.href = "http://m.meihuishuo.com";
+        }
+    }
+</script>
+{% end %}
+
+{% block title %}
+    美会说药妆海外购
+{% end %}
+
+{% block content_else %}
+{% module xsrf_form_html() %}
+<div id="message-dialog" style="display:none;">
+    <div class="iDialog commTipsPop m-window-2 iDialogAniCore" style="z-index: 10001; width:400px; height: 200px; margin-left: -200px; left: 50%; margin-top: -100px; top: 50%;">
+        <table class="iDialogWrapTable">
+            <tbody>
+                <tr>
+                    <td class="itd-mid-left">
+                    </td>
+                    <td class="itd-mid-center">
+                        <div class="iDialogContent">
+                            <div class="iDialogHead">
+                                <h1>
+                                    提示
+                                </h1>
+                            </div>
+                            <a class="iDialogClose delete-address-failed-close" hidefocus="true" href="javascript:;">
+                            </a>
+                            <div class="iDialogBody">
+                                <div class="iDialogMain" style="height:120px;">
+                                    <div class="cancelOrderStyle">
+                                        <div class="tipText message-text">
+                                        </div>
+                                        <div class="closebtn">
+                                            <a href="javascript:void(0);" class="cancelBtnOk btn-red30">
+                                                关闭
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="itd-mid-right">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="iDialogLayout" style="z-index: 10000;">
+    </div>
+</div>
+{% end %}
+
+{% block script %}
+<script src="{{ handler.build_assets_url("/js/www/jquery.slider.js") }}"></script>
+<script src="{{ handler.build_assets_url("/js/www/jquery.timer.js") }}"></script>
+<script type="text/javascript">
+  function addToCart(id) {
+      // 不管登录与否都要对 cookie 中的购物车进行更新
+      var cartHelper  = new $.CartHelper();
+      cartHelper.updateCart(id, 1);
+      cartHelper.initCartHtml();
+
+      var loginMhs = new $.LoginMhs();
+      if ( loginMhs.isLogin() ) {
+          $.ajax({
+              type: "POST",
+              async: true,
+              url: "/cart/add",
+              data: {_xsrf: getCookie("_xsrf"), "id": id, "count": 1},
+              dataType: "json",
+              success: function(data) {
+                  if (data["status"]  == "error") {
+                    $("#message-dialog").css("display", "block");
+                    $(".message-text").text(data["message"]);
+                    setTimeout('$("#message-dialog").css("display", "none");', 800);
+                    cartHelper.updateCart(id, -1);
+                    cartHelper.initCartHtml();
+                } else {
+                    $("#message-dialog").css("display", "block");
+                    $(".message-text").text("添加购物成成功");
+                    setTimeout('$("#message-dialog").css("display", "none");', 800);
+                }
+              },
+              error: function() {
+                  $("#message-dialog").css("display", "block");
+                  $(".message-text").text("服务器开小差了，请重试");
+                  setTimeout('$("#message-dialog").css("display", "none");', 800);
+              }
+          });
+      } else {
+          $("#message-dialog").css("display", "block");
+          $(".message-text").text("添加购物成成功");
+          setTimeout('$("#message-dialog").css("display", "none");', 800);
+      }
+  }
+
+    $(document).ready(function ($) {
+        $(".slider").slideshow({
+            width: "100%",
+            height: 400,
+            slide_width: 1920,
+            timer: false,
+            control: false,
+            transition: ['fade']
+        });
+
+        temai_timer()
+    });
+
+
+</script>
+{% end %}

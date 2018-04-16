@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <title>
+            登录-美会说药妆海外购
+        </title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta property="wb:webmaster" content="8bceefcf4e17df0e" />
+        <link rel="shortcut icon" href="/images/favicon.ico" />
+        <link rel="apple-touch-icon" href="/images/apple-touch-icon.png" />
+        <link rel="stylesheet" href="{{ handler.build_assets_url("/css/www/login.css") }}">
+        <link rel="stylesheet" href="{{ handler.build_assets_url("/css/font-awesome.min.css") }}">
+        <!--[if lt IE 9]>
+            <script type="text/javascript">
+                var html5 = "abbr,article,aside,audio,canvas,datalist,details,dialog,eventsource,figure,footer,header,hgroup,mark,menu,meter,nav,output,progress,section,time,video".split(','),
+                i = html5.length;
+                while (i--) document.createElement(html5[i]);
+            </script>
+        <![endif]-->
+        <style type="text/css">
+            .wb-icon {background: url("/images/www/sina.png") no-repeat;}
+            .m-thirdpart li {width: 115px;}
+            .wx-icon {background: url("/images/www/weixin.jpg")}
+            .wx {border-right: 1px solid #eaeaea;}
+            .qq-icon {background: url("/images/www/qq.jpg")}
+        </style>
+    </head>
+
+    <body id="" data-feedly-mini="yes">
+        <header id="docHead">
+            <div id="docHeadWrap">
+                <a href="/" class="logokaola" title="美会说海购"></a>
+                <div id="topimg">
+                    <img src="/images/www/topimg_default.png" height="100%">
+                </div>
+            </div>
+        </header>
+        <div class="login-banner">
+            <div class="m-loginBody">
+                {% module xsrf_form_html() %}
+                <div class="title-sale clearfix">
+                </div>
+                <div class="m-loginWrap clearfix">
+                    <div autocomplete="off">
+                        <div class="loginForm">
+                            <h2 class="clearfix">
+                                <span class="tit">
+                                    登录美会说账号
+                                </span>
+                                <a id="regurl" href="/registe">
+                                    30秒免费注册
+                                </a>
+                            </h2>
+                            <div class="rl-modal-header">
+                                <div class="header">
+                                    <span class="active-title verificate-login">验证码登录</span>
+                                    <span class="account-login">帐号登录</span>
+                                </div>
+                            </div>
+                            <div class="formList" id="account-login" style="display: none">
+                                <!-- {% if not form_errors %} -->
+                                    <div class="loginErr" style="display:none;">
+                                        <a class="err LoginErrInfo"></a>
+                                    </div>
+                               <!--  {% else %}
+                                    <li class="loginErr" style="display:block;">
+                                        <em class="erricon"></em>
+                                        <em id="LoginErrInfo" class="err">
+                                            {{ form_errors["form"] }}
+                                        </em>
+                                    </li>
+                                {% end %} -->
+                                <div>
+                                    <div class="import" id="useremail_box">
+                                        <span class="icon fa fa-user"></span>
+                                        <input placeholder="请输入手机号码" type="text" id="username" name="username" autocomplete="off">
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="import" id="password_box">
+                                        <span class="icon fa fa-lock"></span>
+                                        <input placeholder="请输入密码" type="password" id="password" name="password" autocomplete="off">
+                                    </div>
+                                </div>
+                                <div class="auto clearfix">
+                                    <a class="fleft">
+                                        <!-- <label id="AutoLogin" class="m-checkbox m-checked" title="请不要在网吧或公共场所使用该功能">
+                                            <span class="box">
+                                                <i>
+                                                    
+                                                </i>
+                                                <em>
+                                                    
+                                                </em>
+                                            </span>
+                                            两周内自动登录
+                                        </label> -->
+                                    </a>
+                                    <div class="fright">
+                                        <a class="c_666 forget_pwd" href="/password/forget">
+                                            忘记密码？
+                                        </a>
+                                    </div>
+                                </div>
+                                <div>
+                                    <em>
+                                        <input id="loginin" type="button" onclick="login('password')" class="loginBtn" value="登录">
+                                    </em>
+                                </div>
+                            </div>
+                            <div class="formList" id="verificate-login">
+                                    <div class="loginErr" style="display:none;">
+                                        <a class="err LoginErrInfo"></a>
+                                    </div>
+                                <div>
+                                    <div class="import code-form" id="useremail_box">
+                                        <span class="icon fa fa-user"></span>
+                                        <input placeholder="请输入手机号码" type="text" id="user" name="username" autocomplete="off">
+                                        <input type="button" autocomplete="off" class="yzm-btn btn" id="send_code" value="获取验证码">
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="import" id="password_box">
+                                        <span class="icon fa fa-key"></span>
+                                        <input placeholder="请输入验证码" type="text" id="code" name="code" autocomplete="off">
+                                    </div>
+                                </div>
+                                <div class="auto clearfix">
+                                    <a class="fleft">
+                                        <!-- <label id="AutoLogin" class="m-checkbox m-checked" title="请不要在网吧或公共场所使用该功能">
+                                            <span class="box">
+                                                <i>
+                                                    
+                                                </i>
+                                                <em>
+                                                    
+                                                </em>
+                                            </span>
+                                            两周内自动登录
+                                        </label> -->
+                                    </a>
+                                    <div class="fright">
+                                        <a class="c_666 forget_pwd" href="/password/forget">
+                                            忘记密码？
+                                        </a>
+                                    </div>
+                                </div>
+                                <div>
+                                    <em>
+                                        <input id="codelogin" type="button" onclick="login('code')" class="loginBtn" value="登录">
+                                    </em>
+                                </div>
+                            </div>
+                            <ul class="m-thirdpart clearfix">
+                                <li class="wb">
+                                    <a href="javascript:void(0);" class="w-btn3">
+                                        <i class="w-icon w-icon-18 w-icon-18-1 wb-icon">
+                                        </i>
+                                        <span>
+                                            微博登录
+                                        </span>
+                                    </a>
+                                </li>
+                                <li class="wx">
+                                    <a href="javascript:void(0);" class="w-btn3">
+                                        <i class="w-icon w-icon-18 w-icon-18-1 wx-icon">
+                                        </i>
+                                        <span>
+                                            微信登录
+                                        </span>
+                                    </a>
+                                </li>
+                                <li class="qq">
+                                    <a href="javascript:void(0);" class="w-btn3">
+                                        <i class="w-icon w-icon-18 w-icon-18-1 qq-icon">
+                                        </i>
+                                        <span>
+                                            QQ登录
+                                        </span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <input type="hidden" value="1" name="savelogin">
+                    </div>
+                    <input type="hidden" name="target" value="http://www.meihuishuo.com/goods/">
+                </div>
+            </div>
+        </div>
+        <div class="foot">
+            <div>
+                <a href="#" rel="nofollow" target="_blank">
+                    公司简介
+                </a>
+                <span>|</span>
+                <a href="#" rel="nofollow" target="_blank">
+                    联系方法
+                </a>
+                <span>|</span>
+                <a href="#" rel="nofollow" target="_blank">
+                    招聘信息
+                </a>
+                <span>|</span>
+                <a href="#" rel="nofollow" target="_blank">
+                    客户服务
+                </a>
+                <span>|</span>
+                <a href="#" rel="nofollow" target="_blank">
+                    隐私政策
+                </a>
+                <span>|</span>
+                <a href="#" rel="nofollow" target="_blank">
+                    网络营销
+                </a>
+            </div>
+            <p>
+                增值电信业务经营许可证：京ICP备11033472号-4&nbsp;&nbsp;&nbsp;&nbsp;美会说版权所有&nbsp;&nbsp;©
+                2011-2016
+            </p>
+        </div>
+        <script src="{{ handler.build_assets_url("/js/jquery-1.11.3.min.js") }}"></script>
+        <script type="text/javascript">
+
+                function getCookie(name) {
+                    var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
+                    return r ? r[1] : undefined;
+                }
+
+              function getUrlParam(param) {
+                  var reg = new RegExp("(^|&)" + param + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+                  var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+                  if (r != null) {
+                      return unescape(r[2]); //返回参数值
+                  } else {
+                      return null;
+                  }
+              }
+            $("#user, #username, #password, #code").focus(function(){
+                $(".loginErr").css("display", "none");
+            });
+            function login(flag) {
+                var username, password;
+                if (flag == "password") {
+                    username = $("#username").val();
+                    password = $("#password").val();
+                } else if (flag == "code") {
+                    username = $("#user").val();
+                    password = $("#code").val();
+                }
+                if (username == "" || password == "") {
+                    $(".loginErr").css("display", "block");
+                    if (flag == "password") {
+                        $(".LoginErrInfo").text("用户名密码不能为空");
+                    } else if (flag == "code") {
+                        $(".LoginErrInfo").text("用户名验证码不能为空");
+                    }
+                    return false;
+                }
+                var next_pa = getUrlParam("next");
+                    next = next_pa?next_pa:"/";
+                var data;
+                if (flag == "code") {
+                    data = {_xsrf: getCookie("_xsrf"), username: username, code: password, next: next};
+                } else if (flag == "password") {
+                    data = {_xsrf: getCookie("_xsrf"), username: username, password: password, next: next};
+                }
+                $.ajax({
+                    type: "POST",
+                    async: true,
+                    url: "/signin",
+                    data: data,
+                    dataType: "json",
+                    success: function(data) {
+                        if (data["status"]  == "error") {
+                            $(".loginErr").css("display", "block");
+                            $(".LoginErrInfo").css("display", "block").text(data["message"]);
+                        } else if (data["status"] == "success") {
+                            window.location.href = data["next_url"]
+                        }
+                    },
+                    error: function() {
+                        $(".LoginErrInfo").text("服务器开小差了，请重试");
+                    }
+                })
+
+            }
+            // 绑定监听 Enter
+            $("#loginin, #username, #password").keydown(function(event) {
+                e = event ? event :(window.event ? window.event : null);
+                if (event.keyCode == "13") { //keyCode=13是回车键
+                    $("#loginin").click();
+                }
+            });
+            $("#codelogin, #code, #user").keydown(function(event) {
+                e = event ? event :(window.event ? window.event : null);
+                if (event.keyCode == "13") { //keyCode=13是回车键
+                    $("#codelogin").click();
+                }
+            });
+
+            $(".rl-modal-header .header span").click(function(){
+                if ($.inArray("account-login", this.classList) >= 0) {
+                    $("#account-login").css("display", "block");
+                    $("#verificate-login").css("display", "none");
+                    $("#username").focus().select();
+                } else {
+                    $("#verificate-login").css("display", "block");
+                    $("#account-login").css("display", "none");
+                    $("#user").focus().select();
+                }
+                $(".rl-modal-header .header span").removeClass("active-title");
+                $(this).addClass("active-title");
+            });
+
+            $("#send_code").click(function(){
+                var status = getCheckCode();
+                if (status != "error") {
+                    var el_send_code = document.getElementById("send_code"),
+                        jq_el_send_code = $("#send_code"),
+                        a, seconds;
+                    function b() {
+                        var s = seconds--;
+                        if (s < 1) {
+                            clearInterval(a);
+                            el_send_code.value = '获取验证码';
+                            el_send_code.removeAttribute("disabled");
+                            jq_el_send_code.css("cursor", "pointer");
+                        } else {
+                            jq_el_send_code.val(s+"秒后重发");
+                        }
+                    }
+                    seconds = 119;
+                    $(this).val('120秒后重发');
+                    $(this).attr("disabled", "true").css('cursor', 'not-allowed');
+                    $(this).prop("disabled", "false").css('cursor', 'not-allowed');
+                    a = setInterval(b, 1000);
+                    return false;
+                }
+            });
+
+            function getCheckCode() {
+                var telephone = $("#user").val();
+                if (telephone == "") {
+                    $(".loginErr").css("display", "block");
+                    $(".LoginErrInfo").text("用户名不能为空");
+                    return "error";
+                }
+                var reg = new RegExp("^1[0-9]{10}$");
+                var ret = telephone.match(reg);
+                if (ret == null) {
+                    $(".loginErr").css("display", "block");
+                    $(".LoginErrInfo").text("请填写正确的手机号码");
+                    return "error";
+                }
+
+                $.ajax({
+                    type: "POST",
+                    async: true,
+                    url: "/getcheckcode",
+                    data: {"_xsrf": getCookie("_xsrf"), "telephone": telephone},
+                    dataType: "json",
+                    success: function(data) {
+                        if (data["result"]  == "error") {
+                            $(".loginErr").css("display", "block");
+                            $(".LoginErrInfo").text(data["message"]);
+                            return true;
+                        } else {
+                            return true;
+                        }
+                    },
+                    error: function() {
+                        $(".loginErr").css("display", "block");
+                        $(".LoginErrInfo").text("服务器错误，请稍后再试");
+                        return false;
+                    }
+                })
+            }
+            $("#user").focus().select();
+            $(".wb a").click(function() {
+                auth_from("sina");
+            });
+            $(".wx a").click(function() {
+                auth_from("weixin");
+            });
+            $(".qq a").click(function() {
+                auth_from("qq");
+            });
+            function auth_from(provider) {
+                window.location.href = '/auth/' + provider;
+            }
+        </script>
+    </body>
+    <div>
+    </div>
+    <div>
+    </div>
+
+</html>

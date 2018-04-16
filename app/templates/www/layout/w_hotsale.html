@@ -1,0 +1,75 @@
+<!-- 限时特卖 content -->
+<article class="m-dailylimit">
+    <h2 class="w-tit1 w-tit1-1 tit">
+        <span class="big">
+            今日限时购
+        </span>
+        本场还剩
+        <span class="timebox timerBox1-home" timer="{{ next_start_stamp }}">
+            <strong class="hour">03</strong>:<strong class="min">08</strong>:<strong class="sec">41</strong>
+        </span>
+        <a class="more" href="/flash_sale" target="_blank">
+            进入限时购频道&gt;
+        </a>
+    </h2>
+    <section class="cnt f-cb">
+        <ul class="goodslist">
+            {% for goods in limited_goods_list %}
+                <li class="goods f-cb">
+                    <a href="/goods/{{ goods["goods_id"] }}" class="pic" target="_blank">
+                        <img class="img-lazyload img-lazyloaded lazy img-responsive" data-original="{{ goods["goods_img_url"] }}">
+                        {% if goods["goods_left_count"] < 1 %}
+                            <i class="soldout"><span class="txt">已抢光</span></i>
+                        {% end %}
+                    </a>
+                    <div class="detail">
+{#                        <h3 class="intro">#}
+{#                            <a href="/goods/{{ goods["goods_id"] }}" target="_blank" title="{{ goods["goods_name"] }}">#}
+{#                                亚洲纸尿裤销量很棒#}
+{#                            </a>#}
+{#                        </h3>#}
+                        <h3 class="shortTitle">
+                            <a href="/goods/{{ goods["goods_id"] }}" target="_blank" title="">
+                                {{ goods["goods_name"] }}
+                            </a>
+                        </h3>
+                        <p class="price">
+                            <b>
+                                ¥
+                            </b>
+                            {{ goods["goods_limited_price"] }}
+                            <span>
+                                ¥
+                            </span>
+                            <del>
+                                {{ goods["goods_original_price"] }}
+                            </del>
+                        </p>
+                        {% if goods["goods_left_count"] < 10  and goods["goods_left_count"] > 0 %}
+                        <div class="process">
+                            <p class="text">
+                                剩余{{ goods["goods_left_count"] }}件
+                            </p>
+                        </div>
+                        {% end %}
+                        {% if goods["goods_left_count"] < 1 %}
+                            <a class="btn f-hover btn-goto" href="/goods/{{ goods["goods_id"] }}" target="_blank" >
+                                去看看
+                            </a>
+                        {% else %}
+                            <a class="btn f-hover" href="/goods/{{ goods["goods_id"] }}" target="_blank" >
+                                立即抢购
+                            </a>
+                        {% end %}
+                    </div>
+                </li>
+            {% end %}
+        </ul>
+        <aside class="aside">
+            <a href="/flash_sale" class="pic" target="_blank" >
+                <img class="img-lazyload img-lazyloaded  lazy img-responsive" data-original="/images/www/index-limit.jpg">
+            </a>
+        </aside>
+    </section>
+</article>
+<!-- end 限时特卖 content -->

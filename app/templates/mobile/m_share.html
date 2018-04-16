@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,target-densitydpi=high-dpi,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=Yes"/>
+        <script type="text/javascript" src="{{ handler.build_assets_url("/js/jquery-1.11.3.min.js") }}"></script>
+        <title>
+            {{  goods.goods_title }}
+        </title>
+       <script type="text/javascript">
+            function fBrowserRedirect(){
+                var sUserAgent = navigator.userAgent.toLowerCase();
+                //var bIsIpad = sUserAgent.match(/ipad/i) == "ipad";
+                var bIsIphoneOs = sUserAgent.match(/iphone os/i) == "iphone os";
+                //var bIsMidp = sUserAgent.match(/midp/i) == "midp";
+                //var bIsUc7 = sUserAgent.match(/rv:1.2.3.4/i) == "rv:1.2.3.4";
+                //var bIsUc = sUserAgent.match(/ucweb/i) == "ucweb";
+                var bIsAndroid = sUserAgent.match(/android/i) == "android";
+                //var bIsCE = sUserAgent.match(/windows ce/i) == "windows ce";
+                if(bIsIphoneOs){
+                    var ua = navigator.userAgent.toLowerCase();
+                    if(ua.match(/MicroMessenger/i)=="micromessenger") {
+                        shareContent();
+                    } else {
+                        window.location.href="https://itunes.apple.com/cn/app/mei-hui-shuo/id954962593?mt=8";
+                    }
+                }
+                if(bIsAndroid){
+                   window.location.href="http://a.app.qq.com/o/simple.jsp?pkgname=com.meimarket.activity#opened";
+                }
+            }
+
+            function shareContent(){
+                    $("#shade").css("display","block");
+                    $("#shadeshare").css("display","block");
+                    $("#shade").click(function(){
+                        $(this).css("display","none");
+                        $("#shadeshare").css("display","none");
+                    });
+            }
+        </script>
+        <style type="text/css">
+            #BottomNav {
+                background: #000000;
+                z-index: 900;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                _position: absolute;
+                _top: expression(documentElement.scrollTop + documentElement.clientHeight-this.offsetHeight);
+                overflow: visible;
+                text-align: center;
+                height:8%;
+                background: rgba(0,0,0, 0.5);
+            }
+            #shade {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                opacity: 0.5;
+                filter: alpha(opacity=50);
+                background: black;
+                top: 0;
+                left: 0;
+                z-index: 999;
+                display: none;
+            }
+            .btn-style-01{
+                border-style:none;
+                margin-top:1%;
+                height:85%;
+                width:45%;
+                color:#ffffff;
+                font: "Microsoft YaHei", Verdana, Geneva, sans-serif;
+                font-size: 4vw;
+                font-weight:900;
+                cursor:pointer;
+                border:1px #4e306c solid;
+                -webkit-box-shadow:inset 0px 0px 1px #fff;
+                -moz-box-shadow:inset 0px 0px 1px #fff;
+                box-shadow:inset 0px 0px 1px #fff; /* 内发光效果 */
+                -webkit-border-radius:4px;
+                -moz-border-radius:4px;
+                border-radius:4px;/*边框圆角*/
+                text-shadow:1px 1px 0px #312a38;  /* 字体阴影效果 */
+                background-color:#4e306c;
+                background-image: -webkit-gradient(linear, 0 0%, 0 100%, from(#4e306c), to(#593473));
+                background-image: -webkit-linear-gradient(top, #4e306c 0%, #593473 100%);
+                background-image: -moz-linear-gradient(top, #4e306c 0%, #593473 100%);
+                background-image: -ms-linear-gradient(top, #4e306c 0%, #593473 100%);
+                background-image: -o-linear-gradient(top, #4e306c 0%, #593473 100%);
+                background-image: linear-gradient(top, #4e306c 0%, #593473 100%);/*颜色渐变效果*/
+            }
+            .btn-style-01:hover {
+                background-color:#593473;
+                background-image: -webkit-gradient(linear, 0 0%, 0 100%, from(#593473), to(#4e306c));
+                background-image: -webkit-linear-gradient(top, #593473 0%, #4e306c 100%);
+                background-image: -moz-linear-gradient(top, #593473 0%, #4e306c 100%);
+                background-image: -ms-linear-gradient(top, #593473 0%, #4e306c 100%);
+                background-image: -o-linear-gradient(top, #593473 0%, #4e306c 100%);
+                background-image: linear-gradient(top, #593473 0%, #4e306c 100%);
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="shade">
+        </div>
+            <img id="shadeshare" src="/images/guide.png"
+            alt="" style="position:absolute;z-index:1000;right:0;top:0;width:80%;display:none"
+            />
+            <img src="{{ handler.build_photo_url(goods.img_view, pic_type="goods", cdn=True) }}"
+            style="float:left;width:100%;border: 0px;margin: 0px;padding: 0px;" />
+            <table style="width:100%;margin-bottom: 5px;">
+                <tr>
+                    <td style="font-size: 5vw; color: #81418e">
+                        ￥{{ goods.price }} / {{ goods_detail["overseas_price"]}}
+                    </td>
+                    <td style="text-align: right;font-size: 2vh;">
+                        <span>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;color:#ababab;text-decoration:line-through;font-size: 2vh;">
+                        大陆参考价：￥{{ goods_detail["domestic_price"] }}
+                    </td>
+                    <td style="text-align: right;font-size: 2vh;">
+                        <span>
+                            {{ goods.buy_count }}人已购买
+                        </span>
+                    </td>
+                </tr>
+            </table>
+            <div style="background: #78737d;width:100%;height:1px;margin-bottom: 5px;">
+                &nbsp;
+            </div>
+            <div style="width:96%;padding-left: 2%">
+                <span style="color:#984ba2;font-size: 4vw;font-weight:900;">
+                </span>
+                <span style="color:#333333;font-size: 4vw;">
+                    {{ goods.goods_intro }}
+                </span>
+            </div>
+            <img src="/images/goods_more_detail.png" style="float:left;width:100%;border: 0px;margin-top: 8px;margin-bottom:8px;"/>
+            <table style="width:100%;margin-bottom: 5px;table-layout:fixed">
+                <tr>
+                    <td style="text-align: right; color:#333333; width:25%; font-size: 4vw;">
+                        商品名称：
+                    </td>
+                    <td style="text-align: left; color:#333333; width:75%; font-size: 4vw;overflow:hidden; white-space:nowrap; text-overflow: ellipsis;  ">
+                        {{  goods.goods_title }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: right; color:#333333; width:25%; font-size: 4vw;">
+                        品 牌：
+                    </td>
+                    <td style="text-align: left; color:#333333; width:75%; font-size: 4vw;overflow:hidden; white-space:nowrap; text-overflow: ellipsis;  ">
+                        {{ goods_detail["brand"] }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: right; color:#333333; width:25%; font-size: 4vw;">
+                        产品规格：
+                    </td>
+                    <td style="text-align: left; color:#333333; width:75%; font-size: 4vw;overflow:hidden; white-space:nowrap; text-overflow: ellipsis;  ">
+                        {{ goods_detail["specifications"] }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: right; color:#333333; width:25%; font-size: 4vw;">
+                        功 效：
+                    </td>
+                    <td style="text-align: left; color:#333333; width:75%; font-size: 4vw;overflow:hidden; white-space:nowrap; text-overflow: ellipsis;  ">
+                        {{ goods_detail["effect"] }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: right; color:#333333; width:25%; font-size: 4vw;">
+                        适用人群：
+                    </td>
+                    <td style="text-align: left; color:#333333; width:75%; font-size: 4vw;overflow:hidden; white-space:nowrap; text-overflow: ellipsis;  ">
+                        {{ goods.applicable }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: right; color:#333333; width:25%; font-size: 4vw;">
+                        原产国家：
+                    </td>
+                    <td style="text-align: left; color:#333333; width:75%; font-size: 4vw;overflow:hidden; white-space:nowrap; text-overflow: ellipsis;  ">
+                        {{ goods_detail["country"] }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: right; color:#333333; width:25%; font-size: 4vw;">
+                        保质期限：
+                    </td>
+                    <td style="text-align: left; color:#333333; width:75%; font-size: 4vw;overflow:hidden; white-space:nowrap; text-overflow: ellipsis;  ">
+                        {{ goods.shelf_life }}
+                    </td>
+                </tr>
+            </table>
+
+                {% for img_url in goods_detail["img_urls"] %}
+                <img src="{{ img_url }}" style="float:left;width:100%;border: 0px;margin-top: 8px;margin-bottom:8px;" />
+                {% end %}
+
+            <img src="/images/detaildown.jpg" style="float:left;width:100%;border: 0px;margin: 0px;padding: 0px;" />
+        <div style="float:left;height:8%">
+            &nbsp;
+        </div>
+        <div id="BottomNav">
+            <button class="btn-style-01" onclick="fBrowserRedirect()">
+                下载手机应用
+            </button>
+        </div>
+    </body>
+
+</html>

@@ -1,0 +1,546 @@
+{% extends "./layout/w_layout.html" %}
+
+{% block title %}
+    {{ category_name }} - 美会说药妆海外购
+{% end %}
+
+{% block style %}
+<style type="text/css">
+  .m-empty{position:relative;width:1090px;height:180px;margin:30px 7px 10px;padding-top:70px;background-color: #fff;}
+  .m-empty-1{margin:30px 0 0 0;}
+  .m-empty .content{margin-left: 450px;font-size: 14px;}
+  .m-empty .errorimg{position: absolute;top: 54px;left: 290px;display: block;width: 144px;height: 121px;
+      background: url(/images/www/goods_detail.png) no-repeat -200px -1000px;}
+  .m-empty-2 .content{margin-left: 430px;}
+  .m-empty-2 .errorimg{left: 270px;}.m-pagination li{cursor: pointer;background-color: #fff;}
+  .m-pagination li:hover{background-color: #f3f3f3;}
+
+  .splitPages .nextPage {
+    margin-right: 0;
+  }
+  .bodybox{
+      background-color: #FFF;
+  }
+  .soldout {width: 40%;height: 50%;}
+  .soldout .txt{color:#FFF;top:50%;}
+  .cancelOrderStyle .tipText{padding-bottom:0;}
+</style>
+{% end %}
+
+{% block content %}
+{% module xsrf_form_html() %}
+<div class="bodybox" id="auto-id-1449740071785">
+  <div class="m-search" id="searchbox">
+    {% if goods_list %}
+    <div class="resultwrap">
+      <div class="options">
+        <div class="resultinfo clearfix">
+          <p class="total">
+            美会说药妆海外购
+            {% if parent %}
+            <span style="color:#999">&gt;
+              <a href="/category?id={{parent}}">{{ parent_name }}</a>
+            </span>
+            {% end %}
+            <span style="color:#999">
+              &gt; <span style="color: #51B8F1">{{ category_name }}</span>商品共
+              <i style="color: #51B8F1">
+                {{ count }}
+              </i>
+              个
+            </span>
+          </p>
+        </div>
+        <div class="opertaion">
+          <div class="m-filter clearfix">
+            <div class="name">
+              排序：
+            </div>
+            <div class="hdorder clearfix" id="order">
+              <dl class="order">
+                {% if sort_name == "hot" %}
+                <dd class="jtag active" id="hot">
+                {% else %}
+                <dd class="jtag" id="hot">
+                {% end %}
+                  <span>
+                    热卖
+                    {% if sort == "1" %}
+                    <span class="arrow-up">
+                    </span>
+                    {% else %}
+                    <span class="arrow-down">
+                    </span>
+                    {% end %}
+                  </span>
+                </dd>
+                {% if sort_name == "price" %}
+                <dd class="jtag active" id="price">
+                {% else %}
+                <dd class="jtag" id="price">
+                {% end %}
+                  <span>
+                    价格
+                    {% if sort == "1" %}
+                    <span class="arrow-up">
+                    </span>
+                    {% else %}
+                    <span class="arrow-down">
+                    </span>
+                    {% end %}
+                  </span>
+                </dd>
+                {% if sort_name == "new" %}
+                <dd class="jtag active" id="new">
+                {% else %}
+                <dd class="jtag" id="new">
+                {% end %}
+                  <span>
+                    新品
+                    {% if sort == "1" %}
+                    <span class="arrow-up">
+                    </span>
+                    {% else %}
+                    <span class="arrow-down">
+                    </span>
+                    {% end %}
+                  </span>
+                </dd>
+                {% if sort_name == "score" %}
+                <dd class="jtag active" id="score">
+                {% else %}
+                <dd class="jtag" id="score">
+                {% end %}
+                  <span>
+                    好评
+                    {% if sort == "1" %}
+                    <span class="arrow-up">
+                    </span>
+                    {% else %}
+                    <span class="arrow-down">
+                    </span>
+                    {% end %}
+                  </span>
+                </dd>
+              </dl>
+              <!-- <span class="space">
+              </span> -->
+             <!--  <label class="m-checkbox jtag" id="auto-id-1449740071751">
+                <span class="box">
+                  <i>
+                    
+                  </i>
+                  <em>
+                    
+                  </em>
+                </span>
+                <span>
+                  只选有货商品
+                </span>
+              </label>
+              <label class="m-checkbox jtag" id="auto-id-1449740071752">
+                <span class="box">
+                  <i>
+                    
+                  </i>
+                  <em>
+                    
+                  </em>
+                </span>
+                <span>
+                  仅显示促销
+                </span>
+              </label> -->
+              <div class="simplePage">
+                <span class="num">
+                  <i>
+                    {{ page_args["current_page"] }}
+                  </i>
+                  /{{ page_args["page_num"] }}
+                </span>
+                {% if page_args["current_page"] > 1 %}
+                <a href="javascript:void(0);" onclick="toPage(this)" data-page="{{ page_args['current_page']-1 }}" class="arrow-left"></a>
+                {% else %}
+                <span class="arrow-left def-left"></span>
+                {% end %}
+
+                {% if page_args["current_page"] < page_args["page_num"] %}
+                <a href="javascript:void(0);" onclick="toPage(this)" data-page="{{ page_args['current_page']+1 }}" class="arrow-right"></a>
+                {% else %}
+                <span class="arrow-right def-right"></span>
+                {% end %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="m-result">
+        <ul class="clearfix" id="result">
+          {% for goods in goods_list %}
+          <li class="goods">
+            <div class="goodswrap promotion">
+              <div class="img">
+                <a target="_blank" href="/goods/{{ goods['id'] }}">
+                  <img alt="{{ goods['title'] }}" class="lazy img-responsive img-lazyload" data-original="{{ goods['img_url'] }}">
+                  {% if goods["is_sold_out"] %}
+                      <i class="soldout"><span class="txt">已售罄</span></i>
+                  {% end %}
+                  <div class="activityflag">
+                  </div>
+                </a>
+                {% if goods['is_favorite'] == '0' %}
+                    <span class="favbtn add-fav" tsid="{{ goods['id'] }}">
+                      收藏
+                    </span>
+                {% else %}
+                    <span class="favbtn remove-fav"  tsid="{{ goods['id'] }}" >
+                      已收藏
+                    </span>
+                {% end %}
+              </div>
+              <div class="desc clearfix">
+                <p class="price">
+                  {% if handler.current_user and handler.current_user.is_vip_valid() %}
+                  <span class="cur">
+                    <i>
+                      ¥
+                    </i>
+                    {{ goods['price'] }}
+                  </span>
+                  <b class="combinedLabel">
+                    包邮
+                  </b>
+                  {% else %}
+                  <span style="font-size:14px; color:#f7661f;">仅限 VIP 查看</span>
+                  {% end %}
+                  <!-- <b class="combinedLabel">
+                    单件¥
+                    <i>
+                      100
+                    </i>
+                  </b> -->
+                  <span class="marketprice">
+                    ¥
+                    <del>
+                      {{ goods["domestic_price"] }}
+                    </del>
+                  </span>
+                </p>
+                <p class="titlewrap">
+                  <a class="title" href="/goods/{{ goods['id'] }}" target="_blank">
+                    <!-- <i>
+                      3件装
+                    </i> -->
+                    {{ goods["title"] }}
+                  </a>
+                </p>
+                <p class="saelsinfo">
+                  <span class="activity danpin">
+                    直降
+                  </span>
+                  <!-- &nbsp;立省78元 -->
+                </p>
+                <p class="goodsinfo clearfix">
+                  <a target="_blank" href="/goods/{{ goods['id'] }}" class="comments">
+                    <span class="icon">
+                    </span>
+                    {{ goods["buy_count"] }}
+                  </a>
+                  <span class="proPlace ellipsis">
+                    {{ goods["country"] }}
+                  </span>
+                </p>
+              </div>
+            </div>
+          </li>
+          {% end %}
+        </ul>
+      </div>
+      <div class="splitPages">
+        {% if page_args['page'].prev_page_number and not page_args['less_than_certain_size'] %}
+            <a href="javascript:void(0);" class="prevPage" onclick="toPage(this)" data-page="1">首页</a>
+            <a href="javascript:void(0);" class="prevPage" onclick="toPage(this)" data-page="{{ page_args['current_page'] - 1 }}">上一页<i></i></a>
+        {% end %}
+        {% if page_args['page_num'] > 1 %}
+          {% for key,value in page_args['pages'] %}
+              {% if page_args['page'].page_number == key %}
+                  <span>{{ value.page_number }}</span>
+              {% else %}
+                  <a href="javascript:void(0);" onclick="toPage(this)" data-page="{{ value.page_number }}">{{ value.page_number }}</a>
+              {% end %}
+          {% end %}
+        {% end %}
+        {% if page_args['page'].has_next()  and not page_args['less_than_certain_size'] %}
+            <a class="nextPage" href="javascript:void(0);" onclick="toPage(this)" data-page="{{ page_args['current_page'] + 1 }}">下一页<i></i></a>
+            <a class="nextPage" href="javascript:void(0);" onclick="toPage(this)" data-page="{{ page_args['page_num'] }}">尾页<i></i></a>
+        {% end %}
+       <!--  <span class="prevPage">
+            上一页
+        </span>
+        <span>
+            1
+        </span>
+        <a class="nextPage" href="">
+            下一页
+        </a> -->
+    </div>
+    </div>
+    {% else %}
+    <div class="m-empty m-empty-2">
+      <div class="content">
+        <p style="font-size:18px;">抱歉，没有找到{% if search_key %}"<span style="color:#d22147">{{ search_key }}</span>"{% end %}相关的商品</p>
+        <br>
+        <p>建议您：</p>
+        <p>1、看看输入的文字是否有误</p>
+        <p>2、拆分要搜索的关键词，分成几个词语再次搜索</p>
+      </div>
+      <span class="errorimg"></span>
+    </div>
+    {% end %}
+  </div>
+</div>
+
+<div id="message-dialog" style="display:none;">
+    <div class="iDialog commTipsPop m-window-2 iDialogAniCore" style="z-index: 10001; width:400px; height: 200px; margin-left: -200px; left: 50%; margin-top: -100px; top: 50%;">
+        <table class="iDialogWrapTable">
+            <tbody>
+                <tr>
+                    <td class="itd-mid-left">
+                    </td>
+                    <td class="itd-mid-center">
+                        <div class="iDialogContent">
+                            <div class="iDialogHead">
+                                <h1>
+                                    提示
+                                </h1>
+                            </div>
+                            <a class="iDialogClose dialog-close" hidefocus="true" href="javascript:;">
+                            </a>
+                            <div class="iDialogBody">
+                                <div class="iDialogMain" style="height: 120px;">
+                                    <div class="cancelOrderStyle">
+                                        <div class="tipText message-text">
+                                        </div>
+                                        <div class="closebtn">
+                                            <span class="cancelBtnOk btn-red30">
+                                                关闭
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="itd-mid-right">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="iDialogLayout" style="z-index: 10000;">
+    </div>
+</div>
+{% end %}
+
+{% block script %}
+<script type="text/javascript">
+  function getUrlParam(param) {
+      var reg = new RegExp("(^|&)" + param + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+      var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+      if (r != null) {
+          return unescape(r[2]); //返回参数值
+      } else {
+          return null;
+      }
+  }
+
+  $("#hot").click(function() {
+    var pathname = window.location.pathname
+    if (pathname == "/search") {
+      var  key = getUrlParam("key");
+      window.location.href = "/search?key=" + escape(key) + "&order_name=hot";
+    } else if (pathname == "/category") {
+      var id = getUrlParam("id");
+      var parent = getUrlParam("parent");
+      var param = "?id=" + id + "&parent=" + parent + "&order_name=hot";
+      window.location.href = "/category" + param;
+    }
+  });
+
+  $("#price").click(function() {
+    var pathname = window.location.pathname
+    if (pathname == "/search") {
+      var key = getUrlParam("key");
+      var sort = getUrlParam("sort");
+      var order_name = getUrlParam("order_name");
+      if (order_name == "price") {
+          if (sort == "1"){
+              sort = "0";
+          } else {
+              sort = "1";
+          }
+      }
+      window.location.href = "/search?key=" + escape(key) + "&order_name=price" + "&sort=" + sort;
+    } else if (pathname == "/category") {
+      var id = getUrlParam("id");
+      var parent = getUrlParam("parent");
+      var sort = getUrlParam("sort");
+      var order_name = getUrlParam("order_name");
+      if (order_name == "price") {
+          if (sort == "1"){
+              sort = "0";
+          } else {
+              sort = "1";
+          }
+      }
+      var param = "?id=" + id + "&parent=" + escape(parent) + "&order_name=price" + "&sort=" + sort;
+      window.location.href = "/category" + param;
+    }
+  });
+
+  $("#new").click(function() {
+    var pathname = window.location.pathname
+    if (pathname == "/search") {
+      var  key = getUrlParam("key");
+      window.location.href = "/search?key=" + escape(key) + "&order_name=new";
+    } else if (pathname == "/category") {
+      var id = getUrlParam("id");
+      var parent = getUrlParam("parent");
+      var sort = getUrlParam("sort");
+      var param = "?id=" + id + "&parent=" + parent + "&order_name=new" + "&sort=" + sort;
+      window.location.href = "/category" + param;
+    }
+  });
+
+  $("#score").click(function() {
+    var pathname = window.location.pathname
+    if (pathname == "/search") {
+      var  key = getUrlParam("key");
+      window.location.href = "/search?key=" + escape(key) + "&order_name=score";
+    } else if (pathname == "/category") {
+      var id = getUrlParam("id");
+      var parent = getUrlParam("parent");
+      var sort = getUrlParam("sort");
+      var param = "?id=" + id + "&parent=" + parent + "&order_name=score" + "&sort=" + sort;
+      window.location.href = "/category" + param;
+    }
+  });
+
+  function toPage(element){
+    var page = $(element).attr("data-page");
+    var pathname = window.location.pathname;
+    if (pathname == "/search") {
+      var key = getUrlParam("key");
+      var order_name = getUrlParam("order_name");
+
+      var param_key = (key && key != "null") ? ("&key="+escape(key)):""
+      var param_order_name = (order_name && order_name != "null") ? ("&order_name="+order_name):"";
+      var param_sort = (sort && sort != null) ? ("&sort="+sort): "";
+
+      var param = param_key + param_order_name + param_sort + "&page_num=" + page;
+      window.location.href = "/search?" + param;
+    } else if (pathname == "/category") {
+      var id = getUrlParam("id");
+      var parent = getUrlParam("parent");
+      var order_name = getUrlParam("order_name");
+      var sort = getUrlParam("sort");
+
+      var param_id = (id && id != "null") ? ("&id="+id): "";
+      var param_parent = (parent && parent != "null") ? ("&parent="+parent):"";
+      var param_order_name = (order_name && order_name != "null") ? ("&order_name="+order_name):"";
+      var param_sort = (sort && sort != null) ? ("&sort="+sort): "";
+      var param = param_id + param_parent + param_order_name + param_sort + "&page_num=" + page;
+      window.location.href = "/category?" + param;
+    }
+  }
+
+  function addFav(){
+    // 判断是否登录
+    var loginMhs = new $.LoginMhs(),
+        element  = this;
+    var goods_id = $(this).attr("tsid");
+    if ( loginMhs.isLogin() ) {
+        $.ajax({
+            type: "POST",
+            async: true,
+            url: "/collection/add",
+            data: {_xsrf: getCookie("_xsrf"), "goods_id": goods_id, "related_type": 1},
+            dataType: "json",
+            success: function(data) {
+                if (data["status"]  == "error") {
+                  $("#message-dialog").css("display", "block");
+                  $(".message-text").text(data["message"]);
+                } else {
+                    $("#message-dialog").css("display", "block");
+                    $(".message-text").text("收藏成功");
+{#                    $(".add-fav").unbind("mouseover");#}
+{#                    $(".add-fav").unbind("mouseout");#}
+                    $(element).unbind("click");
+                    $(element).removeClass("add-fav");
+                    $(element).addClass("remove-fav");
+                    $(".remove-fav").click(removeFav);
+{#                    $(".add-fav").click(addFav);#}
+                    $(".remove-fav").mouseover(function(){$(element).text("取消收藏");});
+                    $(".remove-fav").mouseout(function(){$(element).text("已收藏");});
+                    setTimeout('$("#message-dialog").css("display", "none");', 800);
+{#                    $(element).removeAttr("onclick");#}
+                    $(element).text("已收藏");
+                }
+            },
+            error: function() {
+                $("#message-dialog").css("display", "block");
+                $(".message-text").text("服务器开小差了，请重试");
+            }
+        });
+    } else {
+        window.location.href = "/signin";
+    }
+  }
+    function removeFav(){
+        // 判断是否登录
+        var element = this;
+        var goods_id = $(element).attr("tsid");
+        var loginMhs = new $.LoginMhs();
+        if ( loginMhs.isLogin() ) {
+            $.ajax({
+                type: "POST",
+                async: true,
+                url: "/collection/delete",
+                data: {_xsrf: getCookie("_xsrf"), "goods_id": goods_id, "related_type": 1},
+                dataType: "json",
+                success: function(data) {
+                    if (data["status"]  == "error") {
+                      $("#message-dialog").css("display", "block");
+                      $(".message-text").text(data["message"]);
+                    } else {
+                        $("#message-dialog").css("display", "block");
+                        $(".message-text").text("取消成功");
+                        setTimeout('$("#message-dialog").css("display", "none");', 800);
+                        $(element).unbind("mouseover");
+                        $(element).unbind("mouseout");
+                        $(element).unbind("click");
+                        $(element).removeClass("remove-fav");
+                        $(element).addClass("add-fav");
+                        $(".add-fav").click(addFav);
+                        $(element).text("收藏");
+                    }
+                },
+                error: function() {
+                    $("#message-dialog").css("display", "block");
+                    $(".message-text").text("服务器开小差了，请重试");
+                }
+            });
+        } else {
+            window.location.href = "/signin?next=/goods/"+goods_id;
+        }
+    }
+    $(".remove-fav").click(removeFav);
+    $(".add-fav").click(addFav);
+    $(".remove-fav").mouseover(function(){$(this).text("取消收藏");});
+    $(".remove-fav").mouseout(function(){$(this).text("已收藏");});
+
+  $(".dialog-close, .cancelBtnOk").click(function() {
+      $("#message-dialog").css("display", "none");
+  });
+</script>
+{% end %}

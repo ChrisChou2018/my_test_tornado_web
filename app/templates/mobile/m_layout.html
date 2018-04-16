@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui"/>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+        <meta name="format-detection" content="telephone=no, email=no" />
+        <title>
+            {% block title %}{% end %}
+        </title>
+
+        <script type="text/javascript" src="{{ handler.build_assets_url("/js/jquery-1.11.3.min.js") }}"></script>
+        {% block head %}{% end %}
+    </head>
+
+    <body class="p-obtain">
+		{% block header %}{% end %}
+		{% block content %}{% end %}
+		{% block footer %}{% end %}
+        {% block tail_script %}{% end %}
+        <script type="text/javascript">
+            {% if not handler.settings["running_status"] %}
+                var _hmt = _hmt || [];
+                (function() {
+                  var hm = document.createElement("script");
+                  hm.src = "//hm.baidu.com/hm.js?05f667041c9d1dd93ee9e6edf01444f9";
+                  var s = document.getElementsByTagName("script")[0];
+                  s.parentNode.insertBefore(hm, s);
+                })();
+            {% end %}
+        </script>
+    </body>
+
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no, email=no">
+        <link rel="shortcut icon" href="/images/mobile/favicon.ico">
+        <title>
+            美会说药妆海外购-登录
+        </title>
+        <link href="{{ handler.build_assets_url("/css/mobile/core.css") }}" type="text/css" rel="stylesheet">
+        <style type="text/css">
+            .m-form-login .fitm{zoom:1;}.m-form-login .fitm:after{display:block;clear:both;visibility:hidden;height:0;overflow:hidden;content:".";}.m-form-login
+            .fitm-1{margin:20px 15px 10px;}.m-form-login .fitm-2{padding:0 20px;font-size:13px;line-height:24px;}.m-form-login
+            .fitm-2 a,.m-form-login .fitm-2 a:hover{color:#878787;}.m-thirdpart{padding:150px
+            20px 50px;}.m-thirdpart .tit{position:relative;border-bottom:1px dotted
+            #aaa;}.m-thirdpart .tit .txt{position:absolute;left:50%;top:-13px;margin:0
+            0 0 -70px;width:140px;background:#fff;text-align:center;color:#666;font-size:16px;line-height:26px;}.m-thirdpart
+            .lnk{position:relative;padding:15px 0 0;width:230px;margin:0 auto;text-align:center;}.m-thirdpart
+            .lnk a{margin:0 15px;}.m-thirdpart .lnk .m-notice1{position:absolute;left:0;top:70px;}#submit{background-color:#c4282b;}
+        </style>
+    </head>
+
+    <body>
+        {% module xsrf_form_html() %}
+        <header class="g-hd " id="g-hd">
+            <div class="m-topnav-wrap">
+                <div class=" m-topnav" id="topbar-box">
+                    <div class="m-topnavbar">
+                        <span id="backbtn" class="u-icn18 backbtn">
+                        </span>
+                        <span class="tit" id="toptitle">
+                            登录
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class="g-bd">
+            <div class="m-form m-form-login">
+                <div id="loginform" autocomplete="off" >
+                    <div class="fitm">
+                        <div class="u-suggest">
+                            <input id="username" class="u-ipt" type="text" name="username" autocomplete="off"
+                            data-required="true" placeholder="手机号码">
+                            <i id="namedel" class="u-icn6" style="display:none;">
+                                &nbsp;
+                            </i>
+                            <ul id="suglist" class="suglist" style="visibility:hidden;">
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="fitm">
+                        <input id="password" class="u-ipt" type="password" name="password" autocomplete="off"
+                        data-required="true" placeholder="密码">
+                    </div>
+                    <div class="fitm fitm-1">
+                        <a id="submit" class="u-btn u-btn-1 s-fc5" href="javascript: void(0);" onclick="login()">
+                            登录
+                        </a>
+                    </div>
+                </div>
+                <div class="fitm fitm-2">
+{#                    <a class="forgot f-fl" href="http://reg.163.com/getpasswd/RetakePassword.jsp">#}
+{#                        忘记密码#}
+{#                    </a>#}
+                    <a class="regis f-fr">
+                        我要注册
+                    </a>
+                </div>
+            </div>
+            <div class="m-thirdpart">
+{#                <p class="tit">#}
+{#                    <span class="txt">#}
+{#                        或从以下方式登录#}
+{#                    </span>#}
+{#                </p>#}
+            </div>
+        </div>
+        <footer class="m-docfoot">
+            <p class="aboutnest">
+                美会说
+                <br>
+                美会说版权所有©2011-2016
+            </p>
+        </footer>
+        <div class="progress progress-fix animated" style="display: none;">
+            <div class="progress-bar progress-bar-striped active" role="progressbar"
+            style="width: 0%; background-color: rgb(91, 192, 222);">
+            </div>
+        </div>
+        <div class="m-toast" style="display: none;">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
+                <tr>
+                    <td width="100%" align="center" valign="center">
+                        <div class="toast box animated info  show toastFadeIn errText"></div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="m-notify m-notify-right">
+        </div>
+    </body>
+    <script type="text/javascript" src="{{ handler.build_assets_url("/js/jquery-1.11.3.min.js") }}"></script>
+    <script src="{{ handler.build_assets_url("/js/mobile/unity.js") }}" type="text/javascript"></script>
+    <script type="text/javascript">
+        function getCookie(name) {
+            var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
+            return r ? r[1] : undefined;
+        }
+        function getUrlParam(param) {
+          var reg = new RegExp("(^|&)" + param + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+          var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+          if (r != null) {
+              return unescape(r[2]); //返回参数值
+          } else {
+              return null;
+          }
+        }
+        function login() {
+            var username = $("#username").val(),
+                password = $("#password").val();
+            if (username == "" || password == "") {
+                errorMsg("用户名密码不不能为空", 800);
+            }
+            var reg = new RegExp("^1[0-9]{10}$");
+            var ret = username.match(reg);
+            if (ret == null) {
+                 errorMsg("请输入正确的手机号码", 800);
+                return ;
+            }
+            var next_pa = getUrlParam("next"),
+                next = next_pa?next_pa:"/";
+            $.ajax({
+                type: "POST",
+                async: true,
+                url: "/signin",
+                data: {_xsrf: getCookie("_xsrf"), "username": username, "password": password, "next": next},
+                dataType: "json",
+                success: function(data) {
+                    if (data["status"]  == "error") {
+                        errorMsg(data["message"], 800);
+                    } else if (data["status"] == "success") {
+                        if (data["next_url"].indexOf("/order/confirm") > -1){
+{#                            history.back(-2);#}
+                            window.location.href = "cart";
+                        } else {
+                            window.location.href = data["next_url"];
+                        }
+                    }
+                },
+                error: function() {
+                    errorMsg("服务器错误,请重试", 800);
+                }
+            })
+        }
+
+        $(".regis").on("click", function(){
+            var next = getUrlParam("next"),
+                last_url = window.location.pathname;
+            if (!next){
+                next = (last_url == "signin")?"/":last_url;
+            }
+            window.location.href = "/registe?next=" + escape(next);
+        });
+
+        document.getElementById("backbtn").onclick = function(){
+            window.history.back()
+        };
+    </script>
+</html>

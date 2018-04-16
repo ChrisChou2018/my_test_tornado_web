@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <title>
+            {% block title %}{% end %}
+        </title>
+        <meta content="telephone=no" name="format-detection">
+        <meta content="email=no" name="format-detection">
+        <meta name="renderer" content="webkit">
+        <meta property="wb:webmaster" content="8bceefcf4e17df0e" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <link rel="stylesheet" href="{{ handler.build_assets_url("/css/www/combo_af10dd7.css") }}">
+        <link rel="stylesheet" href="{{ handler.build_assets_url("/css/font-awesome.min.css") }}">
+        <link rel="shortcut icon" href="/images/favicon.ico" />
+        <link rel="apple-touch-icon" href="/images/apple-touch-icon.png" />
+        <script src="{{ handler.build_assets_url("/js/jquery-1.11.3.min.js") }}"></script>
+        <script src="{{ handler.build_assets_url("/js/www/jquery.cookie.js") }}"></script>
+        <script src="{{ handler.build_assets_url("/js/www/jquery.lazyload.js") }}"></script>
+        <script src="{{ handler.build_assets_url("/js/www/cart.js") }}"></script>
+        <script src="{{ handler.build_assets_url("/js/www/cookie.js") }}"></script>
+        {% block style %}
+        {% end %}
+        <!--[if lt IE 9]>
+            <script type="text/javascript">
+                var html5 = "abbr,article,aside,audio,canvas,datalist,details,dialog,eventsource,figure,footer,header,hgroup,mark,menu,meter,nav,output,progress,section,time,video".split(','),
+                i = html5.length;
+                while (i--) document.createElement(html5[i]);</script>
+        <![endif]-->
+        <style type="text/css">
+            #indexleft{margin-left: -685px;}
+            #searchInput {
+                width: 282px;
+                height: 24px;
+                line-height: 24px;
+                border: 0;
+            }
+            #searchBtn {
+                display: inline-block;
+                height: 32px;
+                width: 63px;
+                font-size: 14px;
+                line-height: 32px;
+                color: #fff;
+                text-align: center;
+                cursor: pointer;
+            }
+        </style>
+    </head>
+
+    <body class="indexPage  bdNarrowHome" id="" data-feedly-mini="yes">
+
+        {% block topnative %}
+            <nav id="topNav">
+                <div id="topNavWrap" class="clearfix">
+                    {% if not handler.current_user %}
+                    <div id="topNavLeft">
+                        美会说欢迎你！
+                        <a class="login" href="/signin">
+                            登录
+                        </a>
+                        <span class="sep">
+                            |
+                        </span>
+                        <a href="/registe">
+                            免费注册
+                        </a>
+                    </div>
+                    {% else %}
+                    <div id="topNavLeft">
+                        您好，<span>{{ handler.current_user.member_name }}</span>
+                        <span class="sep">|</span>
+                        <a href="/signout">退出</a>
+                    </div>
+                    {% end %}
+                    <div id="topNavLeft2">
+                        <a class="app" href="" rel="nofollow">
+                            <i class="w-icon w-icon-app">
+                                &nbsp;
+                            </i>
+                            手机美会说
+                            <span class="m-notice">
+                                <img src="/images/www/app_download.png" width="116px"
+                                height="116px">
+                                <strong class="txt">
+                                    新用户好礼送不停
+                                </strong>
+                                <span class="arrow">
+                                    <span class="arr">
+                                    </span>
+                                    <span class="arr1">
+                                    </span>
+                                </span>
+                            </span>
+                        </a>
+                    </div>
+                    <ul id="topNavRight">
+                        {% if handler.current_user %}
+                            {% if handler.current_user.is_staff %}
+                            <li>
+                                <a class="toplevel" href="/staff_goods"
+                                user="true" rel="nofollow">
+                                    内购入口
+                                </a>
+                                <span class="sep">
+                                    |
+                                </span>
+                            </li>
+                            {% end %}
+                        {% end %}
+                        <li>
+                            <a class="toplevel" href="/my_order"
+                            user="true" rel="nofollow">
+                                我的订单
+                            </a>
+                            <span class="sep">
+                                |
+                            </span>
+                        </li>
+                        <li class="dropmenu personal">
+                            <div class="mcDropMenuBox">
+                                <a class="toplevel topNavHolder" href="/my_order"
+                                user="true" rel="nofollow">
+                                    个人中心
+                                    <i class="arr">
+                                    </i>
+                                    <em class="w-icon w-icon-14" style="display:none;" id="personalTips">
+                                    </em>
+                                </a>
+                                <span class="sep">
+                                    |
+                                </span>
+                                <div class="mcDropMenu">
+                                    <a href="/account_security" user="true" rel="nofollow">
+                                        <span class="cnt">
+                                             账户安全
+                                            <i class="w-icon w-icon-15" style="display:none;" id="couponTip">
+                                            </i>
+                                        </span>
+                                    </a>
+                                    <span class="spliter"></span>
+                                    <a href="/my_coupon" user="true" rel="nofollow">
+                                        <span class="cnt">
+                                            我的优惠券
+                                            <i class="w-icon w-icon-15" style="display:none;" id="couponTip">
+                                            </i>
+                                        </span>
+                                    </a>
+                                    <span class="spliter"></span>
+                                    <a href="/my_favorite" user="true"
+                                    rel="nofollow">
+                                        <span class="cnt">
+                                            我收藏的商品
+                                        </span>
+                                    </a>
+                                    <span class="spliter"></span>
+                                    <a href="/my_address" user="true"
+                                    rel="nofollow">
+                                        <span class="cnt">
+                                            管理收货地址
+                                        </span>
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="dropmenu more">
+                            <div class="mcDropMenuBox focuson">
+                                <a class="toplevel topNavHolder nolink" href="javascipt:void(0);" rel="nofollow">
+                                    更多
+                                    <i class="arr">
+                                    </i>
+                                </a>
+                                <div class="mcDropMenu">
+                                    <a id="addFavBtn" href="javascript:;" rel="nofollow">
+                                        收藏本站
+                                    </a>
+                                    <a class="nolink clearfix" href="javascript:void(0);" rel="nofollow">
+                                        <span class="txt">
+                                            微信公众号
+                                        </span>
+                                        <span class="m-notice">
+                                            <img src="/images/www/2dcode-wx.png" width="100px"
+                                            height="100px">
+                                            <span class="arrow">
+                                                <span class="arr">
+                                                </span>
+                                                <span class="arr1">
+                                                </span>
+                                            </span>
+                                        </span>
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            {% block docHead %}
+            <header id="docHead">
+                <div id="docHeadWrap">
+                    <a href="/" class="logokaola" title="美会说海购"></a>
+                    <div id="topimg-new"></div>
+                    <div class="m-searchiptbox m-searchiptbox-1">
+                        <div id="topsearchbox">
+                            <div id="topsearch">
+                                <div class="wrap">
+                                    <input id="searchInput" type="text" placeholder="请输入关键词">
+                                </div>
+                                <span id="searchBtn">
+                                    搜索
+                                </span>
+                                <span class="w-icon w-icon-26 fa fa-search">
+                                </span>
+                            </div>
+                            <div class="m-searchhint">
+                                <ul id="searchhintlist" style="display:none;">
+                                </ul>
+                            </div>
+                        </div>
+                        <ul id="suggestlist" class="m-suggestlist clearfix">
+                        </ul>
+                    </div>
+                </div>
+            </header>
+            {% end %}
+        {% end %}
+
+        {% block menu %}
+        <nav id="topTabBox">
+            <div id="topTab" class="clearfix">
+                <div class="logo f-dn">
+                    <a href="#">
+                    </a>
+                </div>
+                <ul id="funcTab" class="clearfix">
+                    <li class="navitm indexPage">
+                        <a class="toplevel" href="/" data-param="">
+                            首页
+                        </a>
+                    </li>
+                    {% for category in category_list %}
+                    <li class="navitm category" id="{{ category['id'] }}">
+                        <a href="/category?id={{ category['id'] }}">
+                        <!-- <a class="toplevel" href="#" parent="{{ category['id'] }}"> -->
+                            {{ category['name'] }}专区
+                        </a>
+                        {% if category["children"] %}
+                        <div class="m-ctgcard f-cb">
+                            <div class="f-fl m-ctglist">
+                                <table class="m-ctgtbl">
+                                    <tbody>
+                                    {% for idx in xrange(0, len(category["children"]), 3) %}
+                                        <tr>
+                                        {% for sub in category["children"][idx:idx+3] %}
+                                            <td>
+                                                <div class="item">
+                                                    <p class="title">
+                                                        <a href="/category?id={{ sub['id'] }}&amp;parent={{category['id']}}">
+                                                        <!-- <a class="category" href="" id="{{ sub['id'] }}" parent="{{ category['id'] }}"> -->
+                                                        {{ sub["name"] }}
+                                                        </a>
+                                                    </p>
+                                                    <div class="ctgnamebox">
+                                                    {% for ca in sub["children"] %}
+                                                        <a target="_blank" data-param="" class="f-fcred3" href="/category?id={{ ca['id'] }}">
+                                                            {{ ca["name"] }}
+                                                            <!-- {{ ca["children"] }} -->
+                                                        </a>
+                                                    {% end %}
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        {% end %}
+                                        </tr>
+                                    {% end %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        {% end %}
+                    </li>
+                    {% end %}
+                    <li class="navitm indexPage">
+                        <a class="toplevel" href="/explore" data-param="">
+                            发现
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- cart -->
+                <a target="_blank" href="/cart" rel="nofollow" class="m-shopcartnew">
+                    <span class="wrap">
+                        购物车
+                        <b class="num" id="newcartnum">
+                            0
+                        </b>
+                    </span>
+                </a>
+                <!-- end cart -->
+            </div>
+        </nav>
+        {% end %}
+
+        {% block content %}
+
+            <div class="wrap topBgWrapPos" style="z-index:10;">
+                <!-- 轮番图 Figure turns -->
+                {% block figure_tures %}
+                    {% include "w_figure_turns.html" %}
+                {% end %}
+
+                <!-- 美会说自营 低价保障 闪电发货 全场免邮  slogan -->
+                {% block slogan %}
+                    {% include "w_slogan.html" %}
+                {% end %}
+
+                <div class="mainBgWrap clearfix">
+                    {% block indexleft %}
+                    <div id="indexleft" style="position: absolute; top: 46px;">
+                        <img src="/images/www/app_download_sidebar.png">
+                    </div>
+                    {% end %}
+                    <!-- rightBar -->
+                    {% block rightbar %}
+                        <!-- bar: 购物车 and 返回顶部  -->
+                        <div id="rightBar" class="m-rightbar m-rightbarnew" style="display:block;position: absolute; top: 46px;">
+                            <ul class="clearfix">
+                                <li>
+                                    <a class="shopcart" title="购物车" href="/cart"
+                                    target="_blank" rel="nofollow">
+                                        <span class="txt">
+                                            购物车
+                                        </span>
+                                        <span class="num">
+                                            0
+                                        </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="srcolltop" id="scrollTop" title="返回顶部" href="/#"
+                                    rel="nofollow">
+                                        &nbsp;
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- end bar: 购物车 and 返回顶部  -->
+                    {% end %}
+
+
+                    <!-- 限时特卖 -->
+                    {% block hotsale %}
+                        {% include "w_hotsale.html" %}
+                    {% end %}
+                    <!-- end 限时特卖 -->
+
+                    <!-- 新品推荐 -->
+                    {% block recommand %}
+                        {% include "w_recomds.html" %}
+                    {% end %}
+                    <!-- end 新品推荐 -->
+
+                    <!-- 抢购 -->
+                    <!-- {% block panic_buy %}
+                        {% include "w_panic_buy.html" %}
+                    {% end %} -->
+                    <!-- end 抢购 -->
+
+                    {% block selected %}
+                        <!-- 全球精选 -->
+                        {% include "w_selected.html" %}
+                    {% end %}
+
+                </div>
+            </div>
+        {% end %}
+
+        {% block content_else %}
+        {% end %}
+
+        <input type="hidden" id="yiGouSchemeId" value="1228">
+        {% include "w_footer.html" %}
+        {% block script_source %}
+        <script type="text/javascript">
+
+            String.prototype.trim = function() {
+              return this.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+            }
+
+            $("#searchBtn").click(function() {
+                key = $("#searchInput").val().trim()
+                if (key) {
+                    window.location.href = "/search?key=" + encodeURIComponent(key);
+                }
+            })
+
+            $(".category").click(function() {
+                var parent = $(this).attr("parent");
+                var id     = $(this).attr("id");
+            });
+            // 绑定监听 Enter
+            $("#searchInput, #searchBtn").keydown(function(event) {
+                e = event ? event :(window.event ? window.event : null);
+                if (event.keyCode == "13") { //keyCode=13是回车键
+                    $("#searchBtn").click();
+                }
+            });
+            // 如果登录后每次刷新都会更新购物车的数量
+            var loginMhs = new $.LoginMhs();
+            if ( loginMhs.isLogin() ) {
+                var cartHelper = new $.CartHelper();
+                var cart = cartHelper.getCart();
+                $.ajax({
+                  type: "POST",
+                  async: true,
+                  data: {_xsrf: getCookie("_xsrf")},
+                  url: "/cart/count",
+                  dataType: "json",
+                  success: function(data) {
+                      if (data["status"]  == "success") {
+                          cart.totalCount = data["count"];
+                          cartHelper.saveCart(cart);
+                          cartHelper.initCartHtml();
+                      }
+                  }
+                });
+
+            }
+            // 更新购物车到后台
+
+            // 限时快抢刷新
+            $(".timerBox1-home").bind('DOMNodeInserted', function(e) {
+                if ($(".timerBox1-home .hour").text() == "00" && $(".timerBox1-home .min").text() == "00" &&
+                    $(".timerBox1-home .sec").text() == "00") {
+                    temai_timer_stop();
+                    $(".timerBox1-home .sec").text(12);
+                    window.location.reload();
+                }
+            });
+            $("img.lazy").lazyload({
+                effect : "fadeIn"
+            });
+
+            function scrollStart() {
+                var leftPanel = $('#indexleft');
+                var rightPanel = $('#rightBar');
+                try {
+                    var right_top = rightPanel[0].offsetTop + document.body.scrollTop + document.documentElement.scrollTop;
+                    var left_top = leftPanel[0].offsetTop + document.body.scrollTop + document.documentElement.scrollTop;
+                }catch(e){return}
+
+                if (right_top > 719) {
+                    rightPanel.css("position", "fixed");
+                } else {
+                    rightPanel.css("position", "absolute");
+                }
+
+                if (left_top > 719) {
+                    leftPanel.css("position", "fixed");
+                } else {
+                    leftPanel.css("position", "absolute");
+                }
+
+            }
+            try {
+                scrollStart();
+            } catch(e){}
+            $(window).bind("scroll", scrollStart)
+
+            function getCookie(name) {
+                var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
+                return r ? r[1] : undefined;
+            }
+        </script>
+        {% end %}
+
+        {% block script %}{% end %}
+    </body>
+</html>

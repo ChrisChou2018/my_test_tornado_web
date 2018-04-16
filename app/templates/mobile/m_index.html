@@ -1,0 +1,168 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    美会说药妆海外购-首页
+{% end %}
+
+{% block style %}
+    <style type="text/css">
+        .m-topnavidx .tit{background:url(/images/mobile/icon1.png) no-repeat;background-size:500px;}.m-idx-dld-ban{display:none;position:relative;font-size:0;}.m-idx-dld-ban
+        img{width:100%;}.m-idx-dld-ban .closeWrap{position:absolute;display:inline-block;left:0;top:0;height:50px;width:50px;}.m-idx-dld-ban
+        .closeWrap .close{position:absolute;left:5px;top:5px;display:inline-block;width:16px;height:16px;background-image:url(/images/mobile/close.png);background-size:16px
+        16px;}.g-bd{background:#efefef;min-height:100%;}.p-box{background:#fff;margin-bottom:10px;}.g-hd{height:auto;}.m-topnavidx{width:100%;height:50px;background:#d22147;position:relative;}.m-topnavidx
+        .tit{display:block;width:116px;height:34px;margin:0 auto;overflow:hidden;color: white;/*text-indent:-2000px;*/background-position:-252px -335px;position:absolute;left:50%;margin-left:-50px;/*top:13px;*/}.m-topnavidx
+        .m-topnavbar{border-bottom:none;}.m-globalpick .u-tit{border-bottom:1px
+        solid #ddd;background-color:#fff;}.m-globalpick .list{background-color:#fff;}.m-globalpick
+        .nomore-data{padding:15px 0;font-size:1.3rem;color:#999;text-align:center;background-color:#fff;border-top:1px
+        solid #ddd;}.m-sliderbox img{width:100%;}.m-onsalebox{margin-bottom:0;}.m-emtpy,.m-loading{padding:20px
+        0;}.m-loading{display:none;}.m-loading img{width:23px;height:23px;}.m-goweb,.m-goweb:active,.m-goweb:visited{color:#fff;font-size:12px;position:absolute;top:0;left:15px;}.m-fixedtoweb{width:40px;height:40px;background:url(/images/mobile/goweb.png)
+        no-repeat 0 0;background-size:40px;position:fixed;right:20px;bottom:50px;cursor:pointer;opacity:0.9;}.m-fixedtoweb.iconup{bottom:100px;}.m-imgslider-wrap-idx{z-index:0;}.m-imgslider-wrap-idx
+        .imgwrap{display:inline-block;width:100%;/*padding-top:70.3125%;*/}commLayout,.m-single-img,.m-2avg-ban{margin-bottom:10px;background-color:#fff;}.m-single-img{display:block;padding-top:70.3125%;}.m-2avg-ban{zoom:1;}.m-2avg-ban:after{display:block;clear:both;visibility:hidden;height:0;overflow:hidden;content:".";}.m-2avg-ban
+        .half{float:left;vertical-align:top;width:50%;padding-top:25%;}
+        .u-img-wrapper img {position: inherit;}
+        .swipe-wrap{overflow:hidden;position:relative;}
+        .swipe-wrap > li {float: left;width: 100%;position:relative;}
+
+    </style>
+{% end %}
+
+
+{% block header %}
+    <header class="g-hd " id="g-hd">
+        <div class="m-topnav-wrap">
+            <div class="m-topnavidx m-topnav" id="topbar-box">
+                <div class="m-topnavbar">
+                    <a href="http://www.meihuishuo.com/?from=wrap" class="m-goweb">
+                        去电脑版
+                    </a>
+                    <span class="tit" id="toptitle">
+                        美会说药妆海外购
+                    </span>
+                    <span class="u-menu" id="menu">
+                        &nbsp;
+                    </span>
+                </div>
+                <div class="f-cb m-nav">
+                    <div class="f-fl f-tac nav">
+                        <a class="u-index icon" href="/">
+                            &nbsp;
+                        </a>
+                    </div>
+                    <div class="f-fl f-tac nav">
+                        <a class="u-cart icon" href="/cart">
+                            &nbsp;
+                        </a>
+                    </div>
+                    <div class="f-fl f-tac nav">
+                        <a class="u-orders icon" href="/orders">
+                            &nbsp;
+                        </a>
+                    </div>
+                    <div class="f-fl f-tac nav">
+                        <a class="u-coupon icon" href="/coupon">
+                            &nbsp;
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+{% end %}
+
+{% block content %}
+        <div class="g-bd" id="g-bd">
+            <article class="m-imgslider-wrap m-imgslider-wrap-idx" id="mySwipe">
+                <ul class="swipe-wrap">
+                    {% for pic in figure_pics %}
+                    <li>
+                        <a href="{{ pic['url'] }}" class="imgwrap u-img-wrapper">
+                            <img src="{{ pic['adv_img_url'] }}">
+                        </a>
+                    </li>
+                    {% end %}
+                </ul>
+                <ul class="imgpagebox align-center" id="position">
+                    {% if figure_pics %}
+                    <li class="dot active"></li>
+                    {% for _ in range(len(figure_pics)-1) %}
+                    <li class="dot">
+                    </li>
+                    {% end %}
+                    {% end %}
+                </ul>
+            </article>
+            <div class="m-globalpick" data-hasmore="1">
+                <div class="list">
+                    <h2 class="u-tit">
+                        全球精选
+                    </h2>
+                    <div class="onsale-wrap">
+                        {% for goods in essence_list %}
+                        <div class="m-onsale f-cb">
+                            <a href="/goods/{{ goods['id'] }}" title="{{ goods['title'] }}" class="first">
+                                <div class="pic">
+                                    <img data-src="{{ goods['img_url'] }}" src="{{ goods['img_url'] }}" alt="{{ goods['title'] }}"
+                                    title="{{ goods['title'] }}" class=" u-lazyimg-loaded ">
+                                </div>
+                                <div class="proinfo">
+                                    <div class="u-brand">
+                                        <img src="{{ goods['country_img_url'] }}" width="15px">
+                                        <span>
+                                            {{ goods['country'] }}品牌
+                                        </span>
+                                    </div>
+                                    <h3 class="tit">
+                                        <strong>
+                                            {{ goods['title'] }}
+                                        </strong>
+                                    </h3>
+                                    <p class="curprice">
+                                        <strong>
+                                            <span class="symbol">
+                                                ¥
+                                            </span>
+                                            <span>
+                                                <span class="int">
+                                                    {{ goods['price'] }}
+                                                </span>
+                                            </span>
+                                        </strong>
+                                    </p>
+                                    <p class="marprice">
+                                        国内参考价：
+                                        <span class="symbol">
+                                            ¥
+                                        </span>
+                                        <del>
+                                            {{ goods['domestic_price'] }}
+                                        </del>
+                                    </p>
+                                </div>
+                            </a>
+                        </div>
+                        {% end %}
+                    </div>
+                </div>
+            </div>
+        </div>
+{% end %}
+
+{% block script %}
+<script style="text/javascript" src="{{ handler.build_assets_url("/js/mobile/slider.js") }}"></script>
+<script style="text/javascript">
+    var bullets = document.getElementById('position').getElementsByTagName('li');
+    var banner = Swipe(document.getElementById('mySwipe'), {
+        auto: 5000,  // 自动时间间隔
+        continuous: true,
+        disableScroll:false,
+        callback: function(pos) {
+            var i = bullets.length;
+            while (i--) {
+              bullets[i].className = '';
+            }
+            bullets[pos].className = 'active';
+        }
+    });
+
+</script>
+{% end %}

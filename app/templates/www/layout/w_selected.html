@@ -1,0 +1,68 @@
+
+<!-- 全球精选 title -->
+<h2 class="w-tit1">
+    <span class="big">
+        全球精选 /
+    </span>
+    美会说为你精挑细选
+</h2>
+<!-- end 全球精选 title -->
+<!-- 全球精选 content -->
+<div class="m-hslist clearfix">
+    {% for goods in essence_goods_list %}
+    <div class="m-hotsale m-hotsale-2 clearfix">
+        <a class="pic" href="/goods/{{ goods['id'] }}" target="_blank" title="{{ goods['title'] }}">
+            <img class="lazy img-responsive img-lazyload" data-original="{{ goods['img_url'] }}" alt="{{ goods['title'] }}" title="{{ goods['title'] }}" style="margin: 30px;">
+            {% if goods["is_sold_out"] %}
+                <i class="soldout"><span class="txt">已售罄</span></i>
+            {% end %}
+        </a>
+        <div class="foreshowBox foreshowBox-2">
+            <div class="proinfo">
+                <div class="w-brand w-brand-1 clearfix">
+                    <img src="{{ goods['country_img_url']}}" width="28px">
+                    <span>
+                        {{ goods['country'] }}品牌
+                    </span>
+                </div>
+                <h3 class="tit">
+                    <a target="_blank" href="/goods/{{ goods['id'] }}" title="{{ goods['title'] }}">
+                        <strong>
+                            {{ goods['title'] }}
+                        </strong>
+                    </a>
+                    <!-- <p class="intro" title="绵柔弹性环保腰围 坐着也轻松自如">
+                        绵柔弹性环保腰围 坐着也轻松自如
+                    </p> -->
+                </h3>
+                <p>
+                    {% if handler.current_user and handler.current_user.is_vip_valid() %}
+                    <label class="s-fc0 fs14 lbl">
+                        售价
+                    </label>
+                    <strong class="combprice">
+                        <span class="symbol">
+                            ¥
+                        </span>
+                        {{ goods["price"] }}
+                    </strong>
+                    {% else %}
+                    <span style="font-size:14px; color:#f7661f;">仅限 VIP 查看</span>
+                    {% end %}
+                    <!-- <span class="w-comblabel">
+                        <span class="b">
+                            折合单件¥138
+                        </span>
+                    </span> -->
+                    <br>
+                    国内参考价 ¥<del>{{ goods["domestic_price"] }}</del>
+                </p>
+{#                <a class="w-btn w-btn-1 " href="javascript:void(0);" onclick="addToCart('{{ goods['id'] }}')" target="_blank" title="立即购买" rel="nofollow">#}
+{#                    立即购买#}
+{#                </a>#}
+            </div>
+        </div>
+    </div>
+    {% end %}
+</div>
+<!-- end 全球精选 content -->

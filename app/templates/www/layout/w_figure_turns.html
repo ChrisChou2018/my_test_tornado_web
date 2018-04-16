@@ -1,0 +1,18 @@
+<!-- 轮番图 -->
+{% if figure_pics %}
+    <article class="topBgWrap clearfix">
+        <div class="imgBox">
+            <section id="picBox" class="sliderBox">
+	            <div class="slider">
+                    {% for pic in figure_pics %}
+                        <div>
+                            <a target="_blank" href="{{ pic['url'] }}">
+                                <img class="showImg" title="" alt="" src="{{ pic['adv_img_url'] }}">
+                            </a>
+                        </div>
+                    {% end %}
+                </div>
+            </section>
+        </div>
+    </article>
+{% end %}

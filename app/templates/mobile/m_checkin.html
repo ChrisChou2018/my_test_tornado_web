@@ -1,0 +1,334 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    签到
+{% end %}
+
+{% block style %}
+    <style type="text/css">
+        body {background-color: rgba(8, 6, 6, 0.05);font-size: 12px;}
+        .g-bd {font-size: 1.2rem;background-color: rgba(8, 6, 6, 0.05);}
+        .check-in-header {background-color: #fff;padding: 20px 0;margin-bottom: 10px;background: url("/images/mobile/checkin_header.png") no-repeat;}
+        .check-in-header .check-in-label {margin: 0 auto;border-radius: 10px;border: 1px solid #888888;
+            -webkit-box-shadow: 5px 0 2px #888888;-moz-box-shadow: 5px 0 2px #888888;
+            box-shadow: 0 0 2px #888888;text-align: center;width: 110px;}
+        .label-header {height: 30px; line-height: 30px;background: #ED6162;color: #FFFFFF;
+            border-top-left-radius:9px;border-top-right-radius:9px;}
+        .check-in-header .day-num {font-size: 3rem;padding-right: 10px;}
+        .check-in-header .check-in-info {text-align: center;margin-top: 20px;}
+        .check-in-header .check-in-info .info-coin-log {border-bottom: 1px solid #7c3a0e;color: #7c3a0e;}
+        .exchange-header {height:50px;display: flex;text-align: center;border-bottom: 2px solid rgba(5, 12, 16, 0.29);}
+        .exchange-header .tab{line-height:50px;display:block;float: left;width: 50%;text-align: center;}
+        .tab-cur span {
+            border-bottom: 2px solid #f21854;
+            line-height: 50px;
+            color: #f21854;
+        }
+        .tab span {
+            padding: 0 5px;
+            display: inline-block;
+            height: 49px;
+            font-size: 1.5rem;
+            position: relative;
+            bottom: -1px;
+        }
+        .info-note, .info-coin {padding: 3px;}
+        .info-note {color: #c16908;}
+        .info-coin {color: #7c3a0e;font-size: 1.5rem;}
+        .info-coin .coin-num {color: #f21854;}
+        .coin-exchange {background-color: #fff;}
+        .br {height: 1px;border-bottom: 1px dashed #C0DEE9;}
+        .pre-cash-info .face-value {font-size: 3rem;}
+        .pre-cash-info {padding: 5px 5px;width: 100%;}
+        .pre-cash-btn {padding: 5px 5px;margin: 20px;line-height: 26px;background-color: #FED132;text-align: center;
+            border-radius: 5px;color: #7c3a0e;}
+        .jag {width: 1%;height: 100%;background: url(/images/mobile/couponTriangle2.png) repeat-y;}
+        .clearfix::before, .clearfix::after{content: '';display: block;}
+        .clearfix::after{clear: both;}
+        .coin-log-item {margin: 10px 10px;border: 2px solid #E3EBEE;height: 80px;
+            -webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;}
+
+        .exchange-mall {padding: 10px 0;}
+        .coupon-face-value div{display: inline;}
+        .coupon-face-value .use-condition {line-height: 3rem;}
+        .exchange-coin-num {width: 40%;background-color: #E3EBEE;}
+        .exchange-type {width: 59%;}
+        .cash-list {padding: 10px 20px 0 20px;}
+        .cash-list .cash-item:last-child {border-bottom: 0;}
+        .cash-list .cash-item {height: 60px;border-bottom: 1px solid #f5f5f5;padding: 10px 0;}
+        .cash-item .log .face-value, .cash-item .log .coin-num {float: left;}
+        .cash-item .log .face-value .note-main{color:#505050;font-size:1.5rem;}
+        .cash-item .log .face-value .note-info{color:#969696;font-size:1.3rem;}
+        .cash-item .log .face-value .date{color:#969696;font-size:1.3rem;}
+        .cash-item .log .coin-num {line-height: 40px;float: right;padding-right: 5px;font-size: 1.7rem;color:#567c7c;}
+        #animationTipBox {font-size: 15px;width: 250px;height: auto;background-color: #fff;border-radius: 8px;
+            position: fixed;left: 50%;top: 50%;margin-left: -125px;margin-top: -85px;z-index: 1001;
+            text-align: center;-webkit-animation: alertAnimation .3s ease-in-out 0 1;
+            -moz-animation: alertAnimation .3s ease-in-out 0 1;
+            animation: alertAnimation .3s ease-in-out 0 1;}
+
+        #animationTipBox .close {top: -50px;right: 0;position: absolute;background: #ffffff;color: #BDB7B7;
+            border-radius: 16px;line-height: 25px;text-align: center;height: 25px;width: 25px;
+            font-size: 18px;}
+        #animationTipBox .close::after {content: "\00D7";font-size: 30px;}
+
+        #animationTipBox .close-line {background: #ffffff;height: 40px;width: 2px;
+            padding: 1px;top: -30px;right: 12px;position: absolute;}
+
+        #animationTipBox .registration {-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;}
+        .registration .note {font-size: 1.4rem;color: #646464;line-height: 22px;}
+        .mask {width: 100%;height: 100%;background-color: #000;opacity: .8;position: fixed;
+            left: 0;top: 0;z-index: 1000;}
+        .coupon-info {height:18px;width: 5px;background-color: red;}
+        .coupon-use-note .use-title {text-align: left;margin: 10px 0;}
+        .head-two div {height: 40px;line-height: 36px;border: 2px solid;margin: 0px auto;width: 70%;
+            border-radius: 5px;border-color: #f1982a;background-color: #fed132;color: #7c3a0a;}
+        .head-one .gold-coin-count {text-align: left;color: #7c3a0e;}
+        .coupon-use-note {text-align: left;}
+        .head-one {padding: 10% 5% 5% 5%;border-radius: 5px;
+            background: url("/images/mobile/checkin_header.png") no-repeat;border-image-width: 100%;}
+        .head-two {margin: 3% auto;}
+        .exchange-coin-num .face-value {line-height: 80px;font-size: 4rem;}
+        .face-value-lab {height: 100%;width: 28%;color: #fff;background-color: #66c6e9;}
+        .face-value-info {width: 70%;}
+        .face-value-info .coupon-face-value {text-align: left;}
+        .coupon-lab {border: 2px solid #66c6e9;}
+        .blue {color: #05b5f1;}
+        .coupon-duration {color: #969696;text-align: left;font-size: 1.3rem;margin-top: 3px;}
+        .split {width: 2%;height: 100%;background: url(/images/mobile/split.png) repeat-y;}
+
+        .visible {visibility: visible; opacity:1;}
+        .m-visible {visibility: visible; opacity:0.5;}
+        .no-visible {visibility: hidden; opacity:0;}
+    </style>
+{% end %}
+
+{% block header %}
+{% end %}
+
+{% block content %}
+    {% module xsrf_form_html() %}
+    <div class="g-bd">
+        <div class="check-in-header">
+            <div class="check-in-label">
+                <div class="label-header">已经连续签到</div>
+                <div class="label-content">
+                    <span class="day-num">{{ check_in_count }}</span>天
+                </div>
+            </div>
+            <div class="check-in-info">
+                <div class="info-note">今天{% if has_checkin %}已{% else %}可{% end %}领{{ today_gold }}个金币，明日可领{{ tomorrow_coin }}个</div>
+                <div class="info-coin">我的金币余额：<span class="coin-num">{{ member.gold_coin }}</span>
+                    <a href="/coin_log?member_id={{ member.member_id }}" class="info-coin-log">金币明细 ></a>
+                </div>
+            </div>
+        </div>
+        <div class="coin-exchange">
+            <div class="exchange-header">
+                <div class="m-table m-couponstab">
+                    <ul class="tr">
+                        <li class="td f-tac tab tab-cur">
+                            <a href="javascript:void(0);">
+                                <span class="coupontype mall-menu">美会说兑换商城</span>
+                            </a>
+                        </li>
+                        <li class="td f-tac tab">
+                            <a href="javascript:void(0);">
+                                <span class="coupontype exchange-menu">我的兑换记录</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="exchange-mall">
+                <div class="coin-log-list">
+                    <div class="coin-log-item clearfix">
+                        <div class="exchange-type f-fl">
+                            <div class="pre-cash-info f-fl">
+                                <div class="coupon-face-value">
+                                    <div>
+                                        ￥<span class="face-value">10</span>
+                                    </div>
+                                    <div class="use-condition">
+                                        <span>满99减10</span>
+                                    </div>
+                                </div>
+                                <div class="br"></div>
+                                <div class="coupon-period">有效期:{{ start_time }}-{{ end_time }}</div>
+                            </div>
+                        </div>
+                        <div class="jag f-fl"> </div>
+                        <div class="exchange-coin-num f-fl">
+                            <div class="pre-cash-btn"><span class="exchange-action">100金币兑换</span></div>
+                        </div>
+                    </div>
+                    <div class="coin-log-item clearfix">
+                        <div class="exchange-type f-fl">
+                            <div class="pre-cash-info f-fl">
+                                <div class="coupon-face-value">
+                                    <div>
+                                        ￥<span class="face-value">10</span>
+                                    </div>
+                                    <div class="use-condition">
+                                        <span>满99减10</span>
+                                    </div>
+                                </div>
+                                <div class="br"></div>
+                                <div class="coupon-period">有效期:{{ start_time }}-{{ end_time }}</div>
+                            </div>
+                        </div>
+                        <div class="jag f-fl"> </div>
+                        <div class="exchange-coin-num f-fl">
+                            <div class="pre-cash-btn"><span class="exchange-action">100金币兑换</span></div>
+                        </div>
+                    </div>
+                    <div class="coin-log-item clearfix">
+                        <div class="exchange-type f-fl">
+                            <div class="pre-cash-info f-fl">
+                                <div class="coupon-face-value">
+                                    <div>
+                                        ￥<span class="face-value">10</span>
+                                    </div>
+                                    <div class="use-condition">
+                                        <span>满99减10</span>
+                                    </div>
+                                </div>
+                                <div class="br"></div>
+                                <div class="coupon-period">有效期:{{ start_time }}-{{ end_time }}</div>
+                            </div>
+                        </div>
+                        <div class="jag f-fl"> </div>
+                        <div class="exchange-coin-num f-fl">
+                            <div class="pre-cash-btn"><span class="exchange-action">100金币兑换</span></div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="exchange-log clearfix">
+                    <div class="cash-list">
+                        {% for item in exchange_log_list %}
+                        <div class="cash-item clearfix">
+                            <div class="log">
+                                <div class="face-value f-fl">
+                                    <div>
+                                        <span class="note-main">兑换面值 {{ item["coupon_face_value"] }} 元优惠券</span>
+                                        <span class="note-info">（满{{ item["coupon_use_condition"] }}减{{ item["coupon_face_value"] }}）</span>
+                                    </div>
+                                    <div class="date">{{ item["create_time"] }}</div>
+                                </div>
+                                <div class="coin-num f-fl">
+                                    {{ item["coin_change"] }}
+                                </div>
+                            </div>
+                        </div>
+                        {% end %}
+                    </div>
+                </div>
+        </div>
+    </div>
+
+    <div class="mask" id="mask" style="display: none;"></div>
+    <div id="animationTipBox" style="display: none;width: 300px; height: 370px; margin-left: -150px;
+        margin-top: -170px;">
+        <span class="close"></span>
+        <div class="close-line"></div>
+        <div class="registration">
+            <div class="head-one">
+                <div class="head-one-first">
+                    <div class="gold-coin-count">100金币兑换</div>
+                    <div>
+                        <div class="coin-log-item coupon-lab clearfix">
+                            <div class="exchange-coin-num face-value-lab f-fl">
+                                ￥<span class="face-value">10</span>
+                            </div>
+                            <div class="split f-fl"> </div>
+                            <div class="exchange-type face-value-info f-fl">
+                                <div class="pre-cash-info f-fl">
+                                    <div class="coupon-face-value">
+                                        <div>
+                                            <span class="">积分兑换</span>
+                                        </div>
+                                        <br />
+                                        <div>
+                                            <span class="blue">满99减10</span>
+                                        </div>
+                                    </div>
+                                    <div class="br"></div>
+                                    <div class="coupon-duration">请在 {{ end_time }} 前使用</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="coupon-use-note">
+                        <div class="use-title"><span class="coupon-info"></span>优惠券使用说明</div>
+                        <div class="note">
+                            <div>
+                                <span>* </span>[使用范围]全场通用
+                            </div>
+                            <div>
+                                <span>* </span>[使用说明]兑换成功后，优惠券会放到“我的优惠券”中。优惠券一经兑换后，一律不退还金币（如优惠券过期/兑换流程操作失误）。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="head-two">
+                <div id="exchange-btn" onclick="get_coupon('{{ member.member_id }}')">立即兑换优惠券</div>
+            </div>
+        </div>
+    </div>
+{% end %}
+
+{% block footer %}
+{% end %}
+
+
+{% block script %}
+    <script src="{{ handler.build_assets_url("/js/mobile/unity.js") }}" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(".exchange-log").hide();
+        $(".mall-menu").click(function(){
+            $(".m-couponstab .tr li:first").addClass("tab-cur");
+            $(".m-couponstab .tr li:last").removeClass("tab-cur");
+            $(".exchange-log").hide();
+            $(".coin-log-list").show();
+        });
+        $(".exchange-menu").click(function(){
+            $(".m-couponstab .tr li:first").removeClass("tab-cur");
+            $(".m-couponstab .tr li:last").addClass("tab-cur");
+            $(".exchange-log").show();
+            $(".coin-log-list").hide();
+        });
+
+        $(".exchange-action").click(function() {
+            $("#mask").show();
+            $("#animationTipBox").show();
+        });
+
+        $("#animationTipBox .close").click(function() {
+            $("#mask").hide();
+            $("#animationTipBox").hide();
+        });
+
+        function get_coupon(member_id) {
+            $.ajax({
+                type: "POST",
+                async: true,
+                url: "/goldexchange",
+                data: {_xsrf: getCookie("_xsrf"), "member_id": member_id},
+                dataType: "json",
+                success: function (data) {
+                    if (data["result"] == "success") {
+                        $("#animationTipBox .close").click();
+                        errorMsg("兑换成功", 2000);
+                        setTimeout("window.location.reload()", 2000);
+                    } else {
+                        $("#animationTipBox .close").click();
+                        errorMsg(data["message"], 1000);
+                    }
+                }
+            });
+        }
+    </script>
+{% end %}

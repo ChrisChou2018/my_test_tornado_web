@@ -1,0 +1,90 @@
+<aside class="main-sidebar">
+
+  <!-- sidebar: style can be found in sidebar.less -->
+  <section class="sidebar">
+
+    <!-- Sidebar user panel (optional) -->
+    <div class="user-panel">
+      <div class="pull-left image">
+        <img src="/images/user-default.jpg" class="img-circle" alt="User Image">
+      </div>
+      <div class="pull-left info">
+        <p>{{ current_user.user_name }}</p>
+        <!-- Status -->
+        <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+      </div>
+    </div>
+
+    <!-- Sidebar Menu -->
+    <ul class="sidebar-menu">
+      <li{% if module_name == "home" %} class="active"{% end %}><a href="/"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
+      <li class="header">商品相关</li>
+      {% if "orders" in permissions %}
+        <li{% if module_name == "orders" %} class="active"{% end %}><a href="/orders/"><i class="fa fa-files-o"></i> <span>订单管理</span></a></li>
+      {% end %}
+      {% if "goods" in permissions %}
+        <li{% if module_name == "goods" %} class="active"{% end %}><a href="/goods/"><i class="fa fa-cubes"></i> <span>商品管理</span></a></li>
+      {% end %}
+      {% if "brand" in permissions %}
+        <li{% if module_name == "brands" %} class="active"{% end %}><a href="/brands/"><i class="fa fa-diamond"></i> <span>品牌管理</span></a></li>
+      {% end %}
+      {% if "warehouse" in permissions %}
+        <li{% if module_name == "warehouses" %} class="active"{% end %}><a href="/warehouses/"><i class="fa fa-truck"></i> <span>仓储管理</span></a></li>
+      {% end %}
+      {% if "staff_goods" in permissions %}
+        <li {% if module_name == "staff_goods" %} class="active"{% end %}><a href="/staff_buy/"><i class="fa fa-gift"></i> <span>内购管理</span></a></li>
+      {% end %}
+      <li class="header">推广相关</li>
+      {% if "limited" in permissions %}
+        <li{% if module_name == "home_limited" %} class="active"{% end %}><a href="/home_limited/"><i class="fa fa-bullhorn"></i> <span>限时抢购管理</span></a></li>
+      {% end %}
+      {% if "home" in permissions %}
+        <li{% if module_name == "home_new" %} class="active"{% end %}><a href="/home_new/"><i class="fa  fa-reorder"></i> <span>APP首页管理</span></a></li>
+      {% end %}
+      {% if "category" in permissions %}
+        <li{% if module_name == "category" %} class="active"{% end %}><a href="/category_effect/"><i class="fa fa-qrcode"></i> <span>APP分类管理</span></a></li>
+      {% end %}
+      {% if "coupon" in permissions %}
+        <li{% if module_name == "coupons" %} class="active"{% end %}><a href="/coupon_sets/"><i class="fa fa-envelope"></i> <span>优惠券管理</span></a></li>
+      {% end %}
+      {% if "activity" in permissions %}
+        <li{% if module_name == "activity" %} class="active"{% end %}><a href="/activities/"><i class="fa fa-bullseye"></i> <span>APP活动管理</span></a></li>
+      {% end %}
+      <li class="header">其他</li>
+      {% if "metadata" in permissions %}
+        <li{% if module_name == "metadata" %} class="active"{% end %}><a href="/metadatas/"><i class="fa fa-file-word-o"></i> <span>元数据管理</span></a></li>
+      {% end %}
+      <!--
+      {% if "articles" in permissions %}
+        <li{% if module_name == "articles" %} class="active"{% end %}><a href="/articles/"><i class="fa fa-file-word-o"></i> <span>知识库管理</span></a></li>
+      {% end %}
+      -->
+      <!-- {% if "version" in permissions %}
+        <li{% if module_name == "version" %} class="active"{% end %}><a href="/version/"><i class="fa fa-cloud-upload"></i> <span>APP版本管理</span></a></li>
+      {% end %} -->
+      {% if "member" in permissions %}
+        <li{% if module_name == "members" %} class="active"{% end %}><a href="/members/"><i class="fa fa-user"></i> <span>会员管理</span></a></li>
+      {% end %}
+      {% if "member" in permissions %}
+        <li{% if module_name == "invites" %} class="active"{% end %}><a href="/invites/"><i class="fa fa-envelope-o"></i> <span>邀请管理</span></a></li>
+      {% end %}
+      <!-- {% if "questionnaire" in permissions %}
+        <li{% if module_name == "questionnaires" %} class="active"{% end %}><a href="/questionnaires/"><i class="fa fa-question"></i> <span>肤质测试题库</span></a></li>
+      {% end %} -->
+      {% if "other" in permissions %}
+        <li{% if module_name == "push" %} class="active"{% end %}><a href="/push/"><i class="fa fa-send-o"></i> <span>推送管理</span></a></li>
+      {% end %}
+      {% if "user_manager" in permissions %}
+        <li{% if module_name == "user_manager" %} class="active"{% end %}><a href="/user_manager/"><i class="fa fa-user"></i> <span>管理账号</span></a></li>
+      {% end %}
+      {% if "feedback" in permissions %}
+        <li{% if module_name == "feedback" %} class="active"{% end %}><a href="/feedbacks/"><i class="fa fa-smile-o"></i> <span>意见反馈</span></a></li>
+      {% end %}
+      {% if "other" in permissions %}
+        <li{% if module_name == "settings" %} class="active"{% end %}><a href="/settings/"><i class="fa fa-gear"></i> <span>系统设置</span></a></li>
+      {% end %}
+    </ul><!-- /.sidebar-menu -->
+  </section>
+  <!-- /.sidebar -->
+
+</aside>

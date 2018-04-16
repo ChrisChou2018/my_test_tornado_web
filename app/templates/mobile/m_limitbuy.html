@@ -1,0 +1,342 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    限时购
+{% end %}
+
+{% block style %}
+    <style type="text/css">
+        .tap-list { width: 100%; overflow: hidden; }
+        .tap-list li { float: left; width: 20%; height: 45px; color: rgb(255, 255, 255); font-size: 13px;
+            text-align: center; position: relative; }
+        .tap-list li:nth-child(1) { background-color: rgb(37, 37, 37); }
+        .tap-list li:nth-child(2) { background-color: rgb(44, 44, 44); }
+        .tap-list li:nth-child(3) { background-color: rgb(51, 51, 51); }
+        .tap-list li:nth-child(4) { background-color: rgb(58, 58, 58); }
+        .tap-list li:nth-child(5) { background-color: rgb(65, 65, 65); }
+        .tap-list li p:nth-child(1) { margin-top: 7px; font-size: 15px; line-height: 15px; }
+        .tap-list li.cur p:nth-child(1) { font-size: 19px; }
+        .tap-list li p:nth-child(2) { margin-top: 5px; font-size: 10px; margin-bottom: 8px; line-height: 10px; }
+        .tap-list li.cur { background-color: rgb(241, 83, 83); }
+        .tap-list li span { position:absolute;height:100%;width:1px;right:0px;top:0px;background-color:rgb(0, 0, 0); }
+        .topfixed {position:static;top:0px;z-index:100000;width:100%;max-width:640px;min-width:320px;
+            background-color: rgb(255, 255, 255); }
+        .list-head > span { display: inline-block; }
+        .list-head { border-top-width: 1px; border-top-style: solid; border-top-color: rgb(225, 225, 225);
+            padding: 0px 10px; vertical-align: middle; color: rgb(37, 37, 37); height: 26px; font-size: 0px;
+            background-color: rgb(240, 242, 245); }
+        .list-head .time { float: right; line-height: 25px; height: 25px; }
+        .timeText { height: 16px; display: inline-block; }
+        .seckill-time { display: inline-block; width: 16px; height: 16px; color: rgb(255, 255, 255);
+            font-size: 10px; line-height: 16px; text-align: center; border-radius: 3px;
+            background-color: rgb(0, 0, 0); }
+        .time-separator { display: inline-block; width: 6px; height: 16px; vertical-align: top;}
+        .bdr-b { border-width: 1px 0px; }
+        .bdr-bom { border-width: 0px 0px 1px; }
+        .good-list { padding: 0px 10px; }
+        .good-list li { height: 120px; padding: 10px 0px; position: relative; }
+        .good-list li:last-child { border: 0px; }
+        .good-list a {display:block;text-decoration:none;overflow:hidden;color: rgb(37, 37, 37); font-size: 14px; }
+        .good-list .img { width: 100px; height: 100px;float:left;margin-right:10px;border-radius:3px;
+            vertical-align: middle; text-align: center; }
+        .good-list .img img { max-width: 100%; max-height: 100%; }
+        .skill-pic { position: relative; }
+        .g-title { height: 32px; overflow: hidden; font-size: 14px; color: rgb(37, 37, 37); line-height: 16px;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        .doller { font-size: 11px; }
+        .g-price { color: rgb(228, 57, 60); font-size: 19px; margin-bottom: 5px; margin-top: 35px; }
+        .g-price-odd { font-size: 11px; color: rgb(132, 134, 137); }
+        .skill-count { width: 74px; height: 30px; position: absolute; bottom: 15px; right: 0;
+            color: rgb(255, 255, 255); text-align: center; vertical-align: middle; line-height: 30px;
+            font-size: 15px; border-radius: 3px; background-color: rgb(255, 120, 120); }
+        .good-list li .wait-kill { color: rgb(191, 191, 191);background-color: rgb(240, 240, 240); }
+        .good-list li .kill-btn-side {width:74px;height:30px;overflow:hidden;position:absolute;bottom:22px;right: 0px; }
+        .new-skill-wrap .g-title { color: rgb(35, 35, 38); }
+        .new-skill-wrap .list-head, .new-skill-wrap .good-list { background: rgb(255, 255, 255); }
+        .new-skill-wrap .tap-list li { color: rgb(35, 35, 38); height: 51px; background: rgb(255, 255, 255); }
+        .new-skill-wrap .tap-list li p:nth-child(1) { font-size: 17px; line-height: 23px; font-weight: bold; }
+        .new-skill-wrap .tap-list li p:nth-child(2) { font-size: 11px; line-height: 11px; margin-top: 3px; }
+        .new-skill-wrap .tap-list li.cur { color: rgb(242, 48, 48); }
+        .new-skill-wrap .tap-list li.cur p:nth-child(1) { font-size: 23px; }
+        .new-skill-wrap .list-head { height: 28px; line-height: 28px; border-top-style: none; }
+        .new-skill-wrap .buy-txt { color: rgb(242, 48, 48); font-size: 13px; }
+        .new-skill-wrap .time-separator { margin-top: 1px; }
+        .new-skill-wrap.list-head .time { height: 28px; line-height: 28px; }
+        .new-skill-wrap .static-txt-end { color:rgb(35,35,38);display:inline-block;font-size:12px;margin-right: 5px;}
+        .new-skill-wrap .good-list > li { padding: 15px 0px; min-height: 132px;border-bottom:1px solid rgb(227, 229, 233);}
+        .new-skill-wrap .good-list > li:first-child{border-top:1px solid rgb(227, 229, 233);}
+        .new-skill-wrap .good-list > li:last-child{border-bottom:0;}
+        .new-skill-wrap .good-list .img { margin-right: 4px; border-radius: 0px; }
+        .new-skill-wrap .mask p { border-radius: 0px; opacity: 1; }
+        .new-skill-wrap .good-list .img, .new-skill-wrap .good-list .img img { width: 102px; height: 102px; }
+        .new-skill-wrap .skill-count { width: 62px; height: 27px; line-height: 27px; font-size: 14px;
+            border-radius: 10px; background-color: rgb(242, 48, 48); }
+        .new-skill-wrap .g-price { margin: 0 0px 7px; color: rgb(242, 48, 48); font-size: 20px; }
+        .new-skill-wrap .g-price .f-s-12, .new-skill-wrap .g-price-odd { font-size: 12px; }
+        .skill-ftw-li.active a { color: rgb(242, 48, 48); }
+        .skill-floor-ban .timeText { display: inline-block; float: left; height: 19px; position: relative; top: 3px; }
+        .skill-floor-ban .static-txt-end { font-size: 12px; line-height: 26px; color: rgb(255, 255, 255); }
+        .skill-floor-ban .seckill-time { color: rgb(0, 0, 0); width: 19px; border-radius: 2px;
+            background-color: rgb(255, 255, 255); }
+        .skill-floor-ban .timeText span { line-height: 19px; }
+        .new-skill-wrap .good-list { position: relative; }
+        .bdr-b, .bdr-bom { -webkit-border-image: none; background-image: none; }
+        .brand-iteam .skill-pic { white-space: normal; position: absolute; left: 3px; top: 0px; }
+        .brandSkill-container .good-list { margin: 0px 10px; background: rgb(255, 255, 255); }
+        .bskill-arrow i {font-style:normal;width:12px;line-height:12px;margin: 0px auto; display: block;
+            padding-top: 5px; font-size: 12px; }
+        .arrow-three i { font-style:normal;width:10px;line-height:10px; margin: 0px auto;
+            display: block; padding-top: 2.5px; font-size: 10px; }
+        .seckill-top-img img {width: 100%;}
+        .good-list .bdr-bom .go-buy {color: #FFF;}
+        del {text-decoration: line-through;}
+
+        {# download app #}
+        .m-pdt-banner {display: block;background-color: #f0f0f0;padding: 11px 15px;}
+        .m-pdt-banner .ic {float: left;width: 43px;height: 43px;}
+        .m-pdt-banner .desc {overflow: hidden;}
+        .m-pdt-banner .desc .dldbtn {float: right;width: 85px;height: 35px;line-height: 35px;border-radius: 4px;
+            background-color: #d53558;color: #fff;font-size: 1.5rem;text-align: center;margin-top: 3px;}
+        .m-pdt-banner .desc .txt {overflow: hidden;padding-left: 3px;}
+        .m-pdt-banner .desc .txt .name {font-size: 1.7rem;line-height: 35px;color: #d53558;overflow: hidden;
+            -o-text-overflow: ellipsis;text-overflow: ellipsis;white-space: nowrap;word-break: keep-all;
+            word-wrap: normal;margin-top: 2px;}
+        .errPic {width: 100px;height: 100px;margin: 20px auto;}
+        .errPic .errPic-content {display: block;font-size: 16px;text-align: center;color: #bfbfbf;margin-top: 20px;}
+        .errPic img {display: block;margin-left: auto;margin-right: auto;margin-top: 0;}
+        .limit-price {font-size: 11px;}
+        .left-count {color:#fff;background: #FFA64D;    padding: 2px 10px;-webkit-border-radius: 10px;
+            -moz-border-radius: 10px;border-radius: 10px;}
+        .scroll-top {height:51px;}
+    </style>
+{% end %}
+
+{% block header %}
+    {% if not is_app %}
+        {% include "m_header.html" %}
+    {% end %}
+{% end %}
+
+{% block headertitle %}
+    限时购
+{% end %}
+
+{% block content %}
+{% if not is_app %}
+    {% include "m_download.html" %}
+{% end %}
+<div class="new-skill-wrap">
+    {% module xsrf_form_html() %}
+    <div id="seckill-body">
+
+        <!--秒杀场次切换部分-->
+        <!--
+        <div class="scroll-top">
+            <header class="topfixed" id="topfixed" style="position: {% if is_app %}fixed{% else %}static{% end %};">
+            <ul class="tap-list">
+                {% for duration in duration_list %}
+                    {% if duration["started"]  %}
+                        {% if now_start_tabid !=  duration["tabid"] %}
+                            <li style="width: 25%" tabid="{{ duration['tabid'] }}">
+                                <p>{{ duration['startTime'] }}</p><p>已开抢</p>
+                            </li>
+                        {% else %}
+                            <li class="cur" style="width: 25%" tabid="{{ duration['tabid'] }}">
+                                <p>{{ duration['startTime'] }}</p><p>抢购中</p>
+                            </li>
+                        {% end %}
+                    {% elif not duration["started"] %}
+                        <li style="width: 25%" tabid="{{ duration['tabid'] }}">
+                            <p>{{ duration['startTime'] }}</p><p>即将开始</p>
+                        </li>
+                    {% end %}
+                {% end %}
+            </ul>
+        </header>
+        </div>
+        -->
+        <!--秒杀场次切换部分结束-->
+
+        <div class="seckill-top-img">
+            <img src="{{ handler.build_assets_url('/images/mobile/limit_header.png', image=True) }}">
+        </div>
+        <header class="list-head">
+            <span class="buy-txt" id="seckillBuyTxt">
+                抢购中 先下单先得哦
+            </span>
+            <!--
+            <span class="time">
+                <span class="static-txt-end">
+                    距结束
+                </span>
+                <span class="timeText timeBox timerBox1-home" timer="{{ timer }}">
+                    <strong class="seckill-time hour">00</strong>
+                    <span class="time-separator">:</span>
+                    <strong class="seckill-time min">00</strong>
+                    <span class="time-separator">:</span>
+                    <strong class="seckill-time sec">01</strong>
+                </span>
+            </span>
+            -->
+        </header>
+        <div class="skill-hot">
+            <ul class="good-list bdr-b seckilling">
+                {% for goods in goods_list %}
+                    <li class="bdr-bom">
+                        <a href={% if is_app %}"mhs://goods/{{goods['goods_id']}}"{% else %} "/goods/{{goods['goods_id']}}/"{% end %}>
+                            <div class="skill-pic">
+                                <div class="img">
+                                    <img  class="lazy img-responsive" data-original="{{ goods["goods_img_url"] }}" style="animation: fade 400ms 0s;">
+                                </div>
+                            </div>
+                            <p class="g-title">{{ goods['goods_name'] }}</p>
+                            <p class="g-price">
+                                <i class="doller">抢购价：￥</i>{{ goods["goods_limited_price"] }}
+                                <span class="f-s-12"></span>
+                                <i class="g-price-odd"><del>￥{{ goods["goods_original_price"] }}</del>
+                                </i>
+                            </p>
+                            <div class="skill-price">
+                                <div class="skill-lod">
+                                    {% if goods["goods_left_count"] < 10 and goods["goods_left_count"] > 0 %}
+                                        <span class="sale-count left-count">
+                                            仅剩{{ goods["goods_left_count"] }}件
+                                        </span>
+                                    {% end %}
+                                </div>
+                            </div>
+                        </a>
+                        {% if goods['goods_left_count'] < 1 %}
+                            <a class="skill-count wait-kill" href={% if is_app %}"mhs://goods/{{goods['goods_id']}}"{% else %} "/goods/{{goods['goods_id']}}/"{% end %}>已抢光</a>
+                        {% else %}
+                            <a class="skill-count go-buy" href={% if is_app %}"mhs://goods/{{goods['goods_id']}}"{% else %} "/goods/{{goods['goods_id']}}/"{% end %}>马上抢</a>
+                        {% end %}
+                    </li>
+                {% end %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% end %}
+
+{% block footer %}
+    {% if not is_app %}
+        {% include "m_footer.html" %}
+    {% end %}
+{% end %}
+
+
+{% block script %}
+    <script src="{{ handler.build_assets_url("/js/www/jquery.timer.js") }}"></script>
+    <script src="{{ handler.build_assets_url("/js/www/jquery.lazyload.js") }}"></script>
+    <script type="text/javascript">
+        $("img.lazy").lazyload({
+            effect : "fadeIn"
+        });
+        var itemHtmlTpl = '<li class="bdr-bom"><a href="{goods_url}"><div class="skill-pic"><div class="img">' +
+                          '<img src="{imageUrl}" style="animation: fade 400ms 0s;"></div></div><p class="g-title">' +
+                          '{goodsTitle}</p><p class="g-price"><i class="doller">抢购价：￥</i>{price}<span class="f-s-12">' +
+                          '</span><i class="g-price-odd"><del>￥{orginPrice}</del></i></p>{leftCountHtml}</a>' +
+                          '{gotoBuy}</li>';
+        var itemHtmlSoonTpl = '<li class="bdr-bom"><a href="{goods_url}"><div class="skill-pic"><div class="img">' +
+                          '<img src="{imageUrl}" style="animation: fade 400ms 0s;"></div></div><p class="g-title">' +
+                          '{goodsTitle}</p><p class="g-price"><i class="doller">抢购价：￥</i>{price}<span class="f-s-12">' +
+                          '</span><i class="g-price-odd"><del>￥{orginPrice}</del></i></p>{leftCountHtml}</a></li>';
+        $(document).ready(function ($) {
+            temai_timer();
+            var isApp = {% if is_app %}true{% else %}false{% end %};
+            var el_tab = $("#topfixed li");
+            el_tab.click(function() {
+                el_tab.removeClass("cur");
+                $(this).addClass("cur");
+                var limitSaleId = $(this).attr("tabid"),
+                    el_goodslist = $(".good-list"),
+                    loadHtml = '<div class="errPic"><img src="/images/www/loading.png"></div>';
+                el_goodslist.html(loadHtml);
+                $.ajax({
+                    type: "POST",
+                    async: true,
+                    url: "/flash_sale",
+                    dataType: "json",
+                    data: {_xsrf: getCookie("_xsrf"), "limitSaleId": limitSaleId},
+                    success: function (data) {
+                        if (data["status"] == "success") {
+                            var goodsList = data["goodsList"];
+                            el_goodslist.html("");
+                            for (var i = 0; i < goodsList.length; i++) {
+                                var itemHtml = itemHtmlTpl;
+                                if (data["saleStarted"]) {
+                                    var goBuyHtml = '<a class="skill-count go-buy" href="{goods_url}">马上抢</a>',
+                                        noGoodsHtml = '<a class="skill-count wait-kill" href="{goods_url}">已抢光</a>',
+                                        leftCountHtml = '<div class="skill-price"><div class="skill-lod">' +
+                                                        '<span class="sale-count left-count">仅剩{leftCount}件</span>' +
+                                                        '</div></div>';
+                                    if (goodsList[i]['goods_left_count'] < 1) {
+                                        itemHtml = itemHtml.replace(/\{gotoBuy\}/g, noGoodsHtml);
+                                    } else if (goodsList[i]['goods_left_count'] < 10) {
+                                        itemHtml = itemHtml.replace(/\{gotoBuy\}/g, goBuyHtml);
+                                        leftCountHtml = leftCountHtml.replace(/\{leftCount\}/g,
+                                                                              goodsList[i]['goods_left_count']);
+                                        itemHtml = itemHtml.replace(/\{leftCountHtml\}/g, leftCountHtml);
+                                    } else {
+                                        itemHtml = itemHtml.replace(/\{gotoBuy\}/g, goBuyHtml);
+                                    }
+                                } else {
+                                   var goBuyHtml = '<a class="skill-count wait-kill" href="{goods_url}">即将开始</a>';
+                                    itemHtml = itemHtml.replace(/\{gotoBuy\}/g, goBuyHtml);
+                                }
+                                if ( isApp ) {
+                                    var goods_url = "mhs://goods/" + goodsList[i]['goods_id'];
+                                    itemHtml = itemHtml.replace(/\{goods_url\}/g, goods_url);
+                                } else {
+                                    var goods_url = "/goods/" + goodsList[i]['goods_id'];
+                                    itemHtml = itemHtml.replace(/\{goods_url\}/g, goods_url);
+                                }
+                                itemHtml = itemHtml.replace(/\{leftCountHtml\}/g, "");
+                                itemHtml = itemHtml.replace(/\{goodsTitle\}/g, goodsList[i]['goods_name']);
+                                itemHtml = itemHtml.replace(/\{imageUrl\}/g, goodsList[i]['goods_img_url']);
+                                itemHtml = itemHtml.replace(/\{price\}/g, goodsList[i]['goods_limited_price']);
+                                itemHtml = itemHtml.replace(/\{orginPrice\}/g, goodsList[i]['goods_original_price']);
+                                el_goodslist.append(itemHtml);
+                            }
+                        }
+                    },
+                    error: function () {
+                        return "error"
+                    }
+                });
+            });
+
+            // 限时快抢刷新
+            $(".timerBox1-home").bind('DOMNodeInserted', function(e) {
+                if ($(".timerBox1-home .hour").text() == "00" && $(".timerBox1-home .min").text() == "00" &&
+                    $(".timerBox1-home .sec").text() == "00") {
+                    window.location.reload();
+                }
+            });
+
+            {% if not is_app %}
+            if ( !isApp ) {
+                var m_common_header1 = $('#g-hd')[0],
+                        m_common_header2 = $('#download')[0];
+                var m_common_header_height = m_common_header1.offsetHeight + m_common_header2.offsetHeight;
+            } else {
+                var m_common_header_height = $('.seckill-top-img')[0].offsetHeight;
+            }
+            var oHeader = $("#topfixed");
+            window.addEventListener('scroll',function(e){
+                var _this = this;
+                var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+
+                if(scrollTop >= m_common_header_height){
+                    oHeader.css("position", "fixed");
+                }else{
+                    oHeader.css("position", "static");
+                }
+
+                return false;
+            },false);
+            {% end %}
+        });
+    </script>
+{% end %}

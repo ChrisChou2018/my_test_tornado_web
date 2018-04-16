@@ -1,0 +1,1910 @@
+{% extends "layout/w_layout.html" %}
+
+{% block title %}
+    {% if title == None%}
+        美会说药妆海外购
+    {% else %}
+        {{ content_title }} - {{ title }}
+    {% end %}
+{% end %}
+
+{% block style %}
+    <style type="text/css">
+        .bdNarrowHome .mainBgWrap, .bdNarrowHome .sliderBox .control div　{padding: 40px 0 0;margin: 0 auto;}
+        .personLeftNav .tit:after{visibility:hidden;display:block;font-size:0;content:"\20 ";clear:both;height:0}
+        .w-icon-arr{position:absolute;right:15px;top:18px;width:10px;height:10px;background-position:-7px -84px}
+        .expanded .w-icon-arr{background-position:-150px -50px;}.collapsed .w-icon-arr{background-position:-150px -200px;}
+        .w-icon-disc i{position:absolute;left:0;top:0;width:28px;*width:34px;text-align:center;line-height:28px;
+            *line-height:26px;_line-height:28px;color:#fff;font-size:20px;font-style:italic;font-family:verdana,arial}
+        .personLeftNav{float:left;width:178px;border:1px solid #eaeaea}
+        .persRight{float:right;width:888px;border:1px solid #eaeaea;min-height:500px;_height:500px}
+        .personLeftNav .tit{position:relative;zoom:1;padding:0 10px 0 16px;height:46px;font-size:16px;line-height:46px;
+            font-weight:700;border-top:1px solid #eaeaea;cursor:pointer}
+        .personLeftNav .first .tit{border-top:0}.personLeftNav .leaf{font-size:14px;line-height:28px}
+        .personLeftNav .leaf a,.personLeftNav .leaf a:hover{color:#333;text-decoration:none}
+        .personLeftNav .leaf a:hover{color:#F7661F}.personLeftNav .leaf .active{color:#F7661F;font-weight:700}
+        .personLeftNav .subnav{padding:12px 0 12px 16px;border-top:1px solid #eaeaea}
+        .personLeftNav .collapsed .subnav{display:none}
+        .helpRH2{font-size:18px;font-weight:700;letter-spacing:1px;line-height:56px;padding:0 25px;border-bottom:1px solid #eee}
+        .helpRightBox{font-size:14px;line-height:28px}.helpRightBox a{text-decoration:underline}
+        .helpRightBox dl,.helpRightBox table,.helpRightBox ul{margin:39px 25px}
+        .helpRightBox ol {margin:0 39px;}
+        .helpRightBox ol li{list-style:decimal}.helpRightBox ul li{list-style:none}
+        .w-table td,.w-table th{border:1px solid #eaeaea;padding:10px 20px;text-align:left}
+        .w-table th{white-space:nowrap;background:#f7f7f7;color:#666;font-weight:700}
+        .w-table-1 td,.w-table-1 th{text-align:center}
+        .helpRightBox hr{width:100%;height:1px;background:#eaeaea;border:0;color:#eaeaea;margin:30px 0}
+        #p-buy dt,#p-deliverymode dt,#p-freight dt,#p-returnprocess dt{position:relative;zoom:1;padding-left:40px;line-height:32px}
+        #p-buy dt,#p-deliverymode dt{font-size:24px;color:#F7661F}#p-freight dd{padding-left:40px}
+        #p-buy .helpRightBox img,#p-coupon dd img,#p-deliverymode dd img,#p-returnprocess dd img,#p-verification .helpRightBox img{display:block;margin:30px auto 60px}
+        #p-returnpolicy .helpRightBox h4{margin:0 39px;font-weight:700}#p-faq dl ul{margin-left:0;margin-right:0}
+        #p-freight dl table{margin:0 0 30px}#p-freight dl p{margin-left:0;margin-right:0}#p-buy dd,#p-buy dt{margin:0 39px}
+        #p-buy dl{margin:0}#p-buy dl ol,#p-buy dl p,#p-buy dl ul{margin-left:0;margin-right:0}
+        #p-buy dt{margin-bottom:10px}#p-tariff dt{margin-bottom:10px}
+        #p-coupon dl p,#p-coupon dl ul#p-tariff dl p{margin-left:0;margin-right:0}
+        #p-verification dl p,#p-verification dl ul{margin-left:0;margin-right:0}
+        #p-question ol li{list-style:square}#p-question ol li a{color:#333;text-decoration:none}
+        #p-question ol li a:hover{color:#F7661F}.n-example h3{font-weight:700;font-size:15px}
+        .n-example h4{font-weight:700}.n-example p{margin:0}.n-example .lst li{margin-top:25px}
+
+        #docContent {margin-top: 40px;height: 200px;}
+        .m-failbox-5 {text-align: center;margin-top: 200px;}
+        .m-failbox {font-size: 14px;color: #333;}.clearfix {zoom: 1;}
+        .m-failbox-5 .tit {padding-top: 55px;}
+        .m-failbox .tit {padding: 0 0 15px;font-size: 18px;font-weight: 700;color: #191e1f;line-height: 24px;}
+
+        .w-icon2 {background: url(/images/www/goods_detail2.png) no-repeat;}
+        .persRight dt .title, .persRight dt .title {font-size: 20px;color: #F7661F;}
+        .title_icon {height:32px; line-height:32px; display:block; color:#FFF;position: absolute;
+            text-align:center;background-color:#F7661F; border-radius:25px;width:32px;}
+        .title {margin-left: 40px;margin-top: 5px;line-height: 32px;}
+        .persRight img {display: block;margin: 30px auto 60px;}
+        .w-tit2 {margin:20px 0 0;font-weight: 700; font-size: 16px;}
+        .title2 {margin-left: 40px;line-height: 32px;}
+        .helpRightBox {margin-bottom: 20px;}
+        .w-tit {font-size: 24px;line-height: 40px;padding: 0 0 5px;}
+{#        .helpRightBox .w-tit {margin: 0 39px;}#}
+        dd .para {margin-left:39px;}
+        .helpRightBox .paragraph {margin-bottom: 20px;}
+        .coupon li {
+            margin: 0px 0 0;
+        }
+        .coupon li .w-tit2{
+            margin: 0 0;
+        }
+        .helpRightBox .coupon {
+            margin: 0 39px 39px 39px;
+        }
+
+
+    </style>
+{% end %}
+
+{% block content %}
+    {% if title == None %}
+        <article id="docContent">
+            <div class="m-failbox m-failbox-5 clearfix">
+                <h2 class="tit">你很神，找到了不存在的页面</h2>
+                <p class="tip">返回 <a href="/" title="首页">首页</a></p>
+            </div>
+        </article>
+    {% else %}
+        <div class="wrap topBgWrapPos" style="z-index:10;">
+        <div class="mainBgWrap clearfix">
+            <div class="personLeftNav">
+                <ul class="nav">
+                    {% if title == "美会说保障" %}
+                    <li class="top first expanded">
+                    {% else %}
+                    <li class="top collapsed">
+                    {% end %}
+                        <h3 class="tit">
+                            美会说保障
+                            <i class="w-icon2 w-icon-arr"></i>
+                        </h3>
+                        <ul class="subnav">
+                            <li class="leaf">
+                                {% if el == "support" %}
+                                    <a class="active" href="/footer/support">
+                                {% else %}
+                                    <a href="/footer/support">
+                                {% end %}
+                                    自营正品
+                                </a>
+                            </li>
+                            <li class="leaf">
+                                {% if el == "directmail" %}
+                                    <a class="active" href="/footer/directmail">
+                                {% else %}
+                                    <a href="/footer/directmail">
+                                {% end %}
+                                    海外直邮
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    {% if title == "新手指南" %}
+                    <li class="top expanded">
+                    {% else %}
+                    <li class="top collapsed">
+                    {% end %}
+                        <h3 class="tit">
+                            新手指南
+                            <i class="w-icon2 w-icon-arr"></i>
+                        </h3>
+                        <ul class="subnav">
+                            <li class="leaf">
+                                {% if el == "buy" %}
+                                    <a class="active" href="/footer/buy">
+                                {% else %}
+                                    <a href="/footer/buy">
+                                {% end %}
+                                    购物流程
+                                </a>
+                            </li>
+                            <li class="leaf">
+                                {% if el == "epay" %}
+                                    <a class="active" href="/footer/epay">
+                                {% else %}
+                                    <a href="/footer/epay">
+                                {% end %}
+                                    支付方式
+                                </a>
+                            </li>
+                            <li class="leaf">
+                                {% if el == "coupon" %}
+                                    <a class="active" href="/footer/coupon">
+                                {% else %}
+                                    <a href="/footer/coupon">
+                                {% end %}
+                                    优惠券说明
+                                </a>
+                            </li>
+                            <li class="leaf">
+                                {% if el == "faq" %}
+                                    <a class="active" href="/footer/faq">
+                                {% else %}
+                                    <a href="/footer/faq">
+                                {% end %}
+                                    常见问题
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    {% if title == "售后服务" %}
+                    <li class="top expanded">
+                    {% else %}
+                    <li class="top collapsed">
+                    {% end %}
+                        <h3 class="tit">
+                            售后服务
+                            <i class="w-icon2 w-icon-arr">
+                            </i>
+                        </h3>
+                        <ul class="subnav">
+                            <!--
+                            <li class="leaf">
+                                <a {% if el == "returnpolicy" %}class="active" {% end %}href="/footer/returnpolicy">
+                                    退货政策
+                                </a>
+                            </li>
+                            -->
+                            <li class="leaf">
+                                <a {% if el == "cancelorder" %}class="active" {% end %}href="/footer/cancelorder">取消订单</a>
+                            </li>
+                            <!--
+                            <li class="leaf">
+                                <a {% if el == "returnprocess" %}class="active" {% end %}href="/footer/returnprocess">退款流程</a>
+                            </li>
+                            <li class="leaf">
+                                {% if el == "refund" %}
+                                    <a class="active" href="/footer/refund">
+                                {% else %}
+                                    <a href="/footer/refund">
+                                {% end %}
+                                    退款说明
+                                </a>
+                            </li>
+                            -->
+                        </ul>
+                    </li>
+                    {% if title == "物流配送" %}
+                    <li class="top expanded">
+                    {% else %}
+                    <li class="top collapsed">
+                    {% end %}
+                        <h3 class="tit">
+                            物流配送
+                            <i class="w-icon2 w-icon-arr">
+                            </i>
+                        </h3>
+                        <ul class="subnav">
+                            <li class="leaf">
+                                {% if el == "deliverymode" %}
+                                    <a class="active" href="/footer/deliverymode">
+                                {% else %}
+                                    <a href="/footer/deliverymode">
+                                {% end %}
+                                    配送方式
+                                </a>
+                            </li>
+                            <li class="leaf">
+                                {% if el == "freight" %}
+                                    <a class="active" href="/footer/freight">
+                                {% else %}
+                                    <a href="/footer/freight">
+                                {% end %}
+                                    运费标准
+                                </a>
+                            </li>
+                            <li class="leaf">
+                                {% if el == "logistracking" %}
+                                    <a class="active" href="/footer/logistracking">
+                                {% else %}
+                                    <a href="/footer/logistracking">
+                                {% end %}
+                                    物流跟踪
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    {% if title == "关于我们" %}
+                    <li class="top expanded">
+                    {% else %}
+                    <li class="top collapsed">
+                    {% end %}
+                        <h3 class="tit">
+                            关于我们
+                            <i class="w-icon2 w-icon-arr">
+                            </i>
+                        </h3>
+                        <ul class="subnav">
+                            <li class="leaf">
+                                {% if el == "siteintro" %}
+                                    <a class="active" href="/footer/siteintro">
+                                {% else %}
+                                    <a href="/footer/siteintro">
+                                {% end %}
+                                    网站简介
+                                </a>
+                            </li>
+                            <li class="leaf">
+                                {% if el == "contactus" %}
+                                    <a class="active" href="/footer/contactus">
+                                {% else %}
+                                    <a href="/footer/contactus">
+                                {% end %}
+                                    联系我们
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="persRight">
+                <h2 class="helpRH2">
+                    {{ content_title }}
+                </h2>
+                <div class="helpRightBox">
+                    {% if el == "support" %}
+                    {# 自营正品 #}
+                    {% elif el == "directmail" %}
+                    {# 海外直邮 #}
+                    {% elif el == "buy" %}
+                    {# 购物流程 #}
+                        <p>
+                            <img src="/images/www/buy-1.png" alt="购物流程说明" title="购物流程说明" width="715px" height="70px">
+                        </p>
+                        <dl>
+                            <dt>
+                                <span class="title_icon">
+                                    <i>
+                                        1
+                                    </i>
+                                </span>
+                                <span class="title">
+                                    注册并登录网站
+                                </span>
+                            </dt>
+                            <dd>
+                                <ol>
+                                    <li>
+                                        新用户注册：点击首页顶部“注册”进入注册页面后输入手机号、用户名、密码及验证码，按照提示完成注册。
+                                    </li>
+                                    <li>
+                                        老用户登录：请在“登录美会说账号”页面输入手机号、密码进行登录。
+                                    </li>
+                                    <li>
+                                        三方账户登录：APP 上我们还可以通过三方账户（QQ、微信和新浪微博）登录。
+                                    </li>
+                                </ol>
+                            </dd>
+                            <dd>
+                                <img src="/images/www/buy-2-2.jpg" alt="注册并登录网站"
+                                title="注册并登录网站" width="352px" height="303px">
+                            </dd>
+                            <dd class="nomrg">
+                                <hr>
+                            </dd>
+                            <dt>
+                                <span class="title_icon">
+                                    <i>
+                                        2
+                                    </i>
+                                </span>
+                                <span class="title">
+                                    加入购物车
+                                </span>
+                            </dt>
+                            <dd>
+                                <ol>
+                                    <li>
+                                        挑选商品后，您可以“立即购买”或者“加入购物车”；
+                                    </li>
+                                    <li>
+                                        在购物车中，系统默认每件商品的订购数量为1件，如果您想购买多件商品，可修改购买数量；
+                                    </li>
+                                    <li>
+                                        在购物车中，您可以将商品单个或批量删除
+                                    </li>
+                                </ol>
+                            </dd>
+                            <dd class="nomrg">
+                                <hr>
+                            </dd>
+                            <dt>
+                                <span class="title_icon">
+                                    <i>
+                                        3
+                                    </i>
+                                </span>
+                                <span class="title">
+                                    提交订单
+                                </span>
+                            </dt>
+                            <dd>
+                                <ul>
+                                    <li class="w-tit2">
+                                        1. 浏览要购买的商品，选择购买数量点击“立即购买”，直接结算。
+                                        <img src="/images/www/buy-3.jpg" alt="立即购买"
+                                        title="立即购买" width="682px" height="460px">
+                                    </li>
+                                    <li class="w-tit2">
+                                        2. 或者在购物车中，选择好商品及数量后“去结算”。
+                                        <img src="/images/www/buy-4.jpg" alt="去结算"
+                                        title="去结算" width="682px" height="445px">
+                                    </li>
+                                    <li class="w-tit2">
+                                        3. 填写购物人信息，收货信息，使用优惠券等。
+                                        <img src="/images/www/buy-5.jpg" alt="填写购物人信息，收货信息，使用优惠券等"
+                                        title="填写购物人信息，收货信息，使用优惠券等" width="682px" height="391px">
+                                    </li>
+                                </ul>
+                            </dd>
+                            <dd class="nomrg">
+                                <hr>
+                            </dd>
+                            <dt>
+                                <span class="title_icon">
+                                    <i>
+                                        4
+                                    </i>
+                                </span>
+                                <span class="title">
+                                    支付货款
+                                </span>
+                            </dt>
+                            <dd>
+                                确认无误后点击“提交订单”，生成新订单并显示订单编号。跳转至支付选择页面选择支付方式。美会说提供多种支付方式，订购过程中您可以选择：
+                                <strong class="f-fw">
+                                    支付宝支付，微信支付
+                                </strong>
+                                <img src="/images/www/buy-6.jpg" alt="支付货款-支付宝支付，微信支付"
+                                title="支付货款-支付宝支付，微信支付" width="682px" height="391px">
+                            </dd>
+                            <dd class="nomrg">
+                                <hr>
+                            </dd>
+                            <dt>
+                                <span class="title_icon">
+                                    <i>
+                                        5
+                                    </i>
+                                </span>
+                                <span class="title">
+                                    查看订单状态
+                                </span>
+                            </dt>
+                            <dd>
+                                <p class="para">
+                                    您可进入“个人中心”→“我的订单”查看订单详细信息。
+                                </p>
+                                <img src="/images/www/buy-7.jpg" alt="查看订单状态" title="查看订单状态" width="682px" height="391px">
+                            </dd>
+                            <dd class="nomrg">
+                                <hr>
+                            </dd>
+                            <dt>
+                                <span class="title_icon">
+                                    <i>
+                                        6
+                                    </i>
+                                </span>
+                                <span class="title">
+                                    订单状态
+                                </span>
+                            </dt>
+                            <dd>
+                                <p class="para">
+                                    在“个人中心”→“我的订单”中您可以查看到您订单的状态。
+                                </p>
+                                <ul>
+                                    <li>
+                                        <h4 class="w-tit2">
+                                            1. 等待付款
+                                        </h4>
+                                        <p>
+                                            当您提交订单但未支付货款时，订单状态将显示为等待付款。
+                                        </p>
+                                    </li>
+                                    <li>
+                                        <h4 class="w-tit2">
+                                            2. 等待发货
+                                        </h4>
+                                        <p>
+                                            当您的订单已经完成配货，正在等待发货时，订单状态将显示“等待发货”。
+                                        </p>
+                                    </li>
+                                    <li>
+                                        <h4 class="w-tit2">
+                                            3. 已发货
+                                        </h4>
+                                        <p>
+                                            当您的订单已由库房发出，正由快递公司送货，“订单状态”将显示已发货。
+                                        </p>
+                                    </li>
+                                    <li>
+                                        <h4 class="w-tit2">
+                                            4. 交易成功
+                                        </h4>
+                                        <p>
+                                            当您签收商品之后，也就是物流得到签收完成后，“订单状态”即显示交易成功。
+                                        </p>
+                                    </li>
+                                    <li>
+                                        <h4 class="w-tit2">
+                                            5. 订单关闭
+                                        </h4>
+                                        <p>
+                                            当您的订单已被关闭（24小时内未进行支付，系统自动关闭订单），订单状态将显示“订单关闭”。
+                                        </p>
+                                    </li>
+                                    <li>
+                                        <h4 class="w-tit2">
+                                            6. 交易失败
+                                        </h4>
+                                        <p>
+                                            当您支付后，商品未发货之前，如果您想取消订单，则后台客服可以将订单设为交易失败。
+                                        </p>
+                                    </li>
+                                </ul>
+                            </dd>
+                        </dl>
+                    {% elif el == "epay" %}
+                    {# 支付方式 #}
+                        <dl>
+                            <h4 class="w-tit">
+                                支付宝支付
+                            </h4>
+                            <p class="para">
+                                如果您已经拥有支付宝账户，可选择支付宝进行付款。
+                                <br>
+                                如果您还不知道如何使用支付宝，请看看这里：
+                                <a href="http://abc.alipay.com/cool/fastPayment.html" target="_blank" title="支付宝使用帮助">
+                                    支付宝使用帮助
+                                </a>
+                            </p>
+                            <h4 class="w-tit">
+                                微信支付
+                            </h4>
+                            <p style="margin-bottom:16px;">
+                                微信支付是腾讯公司的支付业务品牌，微信支付提供公众号支付、APP支付、扫码支付、刷卡支付等支付方式。微信支付结合微信公众账号，全面打通O2O生活消费领域，提供专业的互联网+行业解决方案，微信支付支持微信红包和微信理财通，是移动支付的首选。
+                            </p>
+                            <p class="para">
+                                只要您手机上安装了微信客户端,并且绑定了银行卡,即可使用微信进行支付。
+                            </p>
+                        </dl>
+                    {% elif el == "coupon" %}
+                    {# 优惠券说明 #}
+                        <dl>
+                            <dt class="w-tit">
+                                1.什么是美会说海外购的优惠券？
+                            </dt>
+                            <dd>
+                                <ul class="para">
+                                    <li>
+                                        (1) 美会说海外购的优惠券是由美会说海外购派发的，具有使用有效期和对应优惠券金额的电子优惠券，可用且仅用于您在美会说海外购提交订单时抵减应支付商品金额，不能进行兑现或其他用途。
+                                    </li>
+                                    <li>
+                                        (2) 所有规则由美会说海外购依据国家相关法律法规及规章制度予以解释。
+                                    </li>
+                                </ul>
+                            </dd>
+                            <dt class="w-tit">
+                                2.如何使用优惠券？
+                            </dt>
+                            <dd>
+                                <p>
+                                    您可以在订单确认页和“个人中心”→“我的优惠券”兑换优惠券。符合满额减免或者全额抵扣等条件时，优惠券即可在订单确认页面的订单结算模块选择使用。如果您有优惠券码，可兑换使用；如果您账户中有可使用优惠券可直接选择使用。
+                                </p>
+                                <p class="w-tit2">
+                                    兑换优惠券：
+                                </p>
+                                <ul class="coupon">
+                                    <!--
+                                    <li>
+                                        <p class="w-tit2">
+                                            (1) 在订单确认页填写优惠券编码，点击兑换按钮：
+                                        </p>
+                                        <img src="http://mm.bst.126.net/images/footer/coupon-1.png?v=20120714"
+                                        alt="在订单确认页填写优惠券编码，点击兑换按钮" title="在订单确认页填写优惠券编码，点击兑换按钮" width="686px" height="391px">
+                                    </li>
+                                    <li>
+                                        <p class="w-tit2">
+                                            (2) 兑换成功后，显示优惠券
+                                        </p>
+                                        <img src="http://mm.bst.126.net/images/footer/coupon-2.png?v=20120714"
+                                        alt="兑换成功后，显示优惠券" title="兑换成功后，显示优惠券" width="686px" height="391px">
+                                    </li>
+                                    -->
+                                    <li>
+                                        <p class="w-tit2">
+                                            直接选择可用优惠券使用：
+                                        </p>
+                                        <img src="/images/www/coupon-3.jpg"
+                                        alt="直接选择可用优惠券使用" title="直接选择可用优惠券使用" width="682px" height="391px">
+                                    </li>
+                                </ul>
+                            </dd>
+                            <dt class="w-tit">
+                                3.优惠券类型和使用规则？
+                            </dt>
+                            <dd>
+                                <p class="paragraph">
+                                    优惠券按照使用条件可以分为满减优惠券和直接抵扣类现金券。满减优惠券必须满足一定的订单金额才能使用，直接抵扣类现金券无需满足金额条件即可使用。
+                                </p>
+                                <p>
+                                    具体的使用方法以每张优惠券实际使用说明为准。
+                                </p>
+                                <ul class="para">
+                                    <li>
+                                        (1) 优惠券不能兑换现金；
+                                    </li>
+                                    <li>
+                                        (2) 每个优惠券码仅能使用一次，不找零，不退换；
+                                    </li>
+                                    <li>
+                                        (3) 每笔订单每次仅能使用一张优惠券；
+                                    </li>
+                                    <li>
+                                        (4) 优惠券应在载明的有效期内使用，过期作废；
+                                    </li>
+                                    <li>
+                                        (5) 用户同意按照以下规则使用各类优惠券：
+                                        <br>
+                                        <span style="display:block;margin-left:25px;">
+                                            例如：
+                                            <br>
+                                            全场通用：全场购买的商品达到要求满额就可使用；
+                                            <br>
+                                            部分品牌可用：购买指定的某些品牌，达到一定限额才可使用；
+                                            <br>
+                                            部分品类可用：只能购买指定品类的商品，达到一定限额才可使用；
+                                            <br>
+                                            部分仓库可用：购买指定仓库的商品，达到一定限额才可使用；
+                                            <br>
+                                            部分商品可用：只能购买指定的商品，达到一定限额才可使用；
+                                            <br>
+                                            若一张优惠券存在多个使用规则，则必须满足全部规则才可使用该优惠券；
+                                            <br>
+                                            存在部分特殊商品不支持使用优惠券，请以下单时为准；
+                                        </span>
+                                    </li>
+                                    <li>
+                                        (6) 按满足优惠券使用条件的商品统计，优惠券会按比例抵扣在每个符合条件的商品上
+                                    </li>
+                                    <li>
+                                        (7) 如果订单产生退货，订单使用了满额减优惠券，则优惠券不予退还，如果使用了直接抵扣类现金券，现金券按照退货商品的金额比例退还
+                                    </li>
+                                </ul>
+                            </dd>
+                            <dt class="w-tit">
+                                4.如何获取优惠券？
+                            </dt>
+                            <dd>
+                                <ul class="para">
+                                    <li>
+                                        方法1：
+                                        <br>
+                                        购买商品获得赠券：部分商品进行促销，促销信息中有该信息提示，下单并完成订单后，优惠券将自动发放到您的优惠券账户中
+                                    </li>
+                                    <li>
+                                        方法2：
+                                        <br>
+                                        参加商城各类活动：参加整单满返优惠券活动、各类用户调研、评论有奖活动、免费领取优惠券活动等时，按一定的活动规则既有机会获得优惠券
+                                    </li>
+                                </ul>
+                            </dd>
+                            <dt class="w-tit">
+                                5.关于退货的处理办法
+                            </dt>
+                            <dd>
+                                <ul class="para">
+                                    <li>
+                                        (1) 如果退货订单使用了满额减优惠券，则商品退货时，优惠券不予退还
+                                    </li>
+                                    <li>
+                                        (2) 如果退货订单使用了直接抵扣类现金券，则商品退货时，现金券按照下单时该商品使用现金券的金额进行退还。
+                                    </li>
+                                </ul>
+                            </dd>
+                        </dl>
+                    {% elif el == "faq" %}
+                    {# 常见问题 #}
+                        <dl>
+                            <h3 class="w-tit para">
+                                售后问题
+                            </h3>
+                        </dl>
+                        <dl>
+                            <dt class="w-tit2">
+                                1.我什么时候才能申请退货？
+                            </dt>
+                            <dd class="para">
+                                当您签收商品7天内，您可以在
+                                <a target="_blank" href="/my_order" title="我的订单">
+                                    我的订单
+                                </a>
+                                页面申请售后服务提交退货申请
+                            </dd>
+                            <dt class="w-tit2">
+                                2.如果收到商品不满意，我能申请换货吗？
+                            </dt>
+                            <dd class="para">
+                                由于海关监管政策严格，美会说海外购售出的商品暂不支持换货服务
+                            </dd>
+                            <dt class="w-tit2">
+                                3.购买的商品出现质量问题如何处理？
+                            </dt>
+                            <dd class="para">
+                                美会说海外购承诺符合售后
+                                <a target="_blank" href="/footer/returnpolicy" title="退货政策">
+                                    退货政策
+                                </a>
+                                的商品，在售后处理周期内，您可以申请退货服务
+                            </dd>
+                            <dt class="w-tit2">
+                                4.办理退货周期多久？
+                            </dt>
+                            <dd class="para">
+                                一般情况下，自您收到问题商品之日起7天内为您处理完成，各付款方式退款时间请查阅
+                                <a target="_blank" href="/footer/refund" title="退款说明">
+                                    退款说明
+                                </a>
+                            </dd>
+                            <dt class="w-tit2">
+                                5.为什么售后申请没有审核通过？
+                            </dt>
+                            <dd class="para">
+                                您可在售后申请页面查看审核未通过原因。
+                            </dd>
+                            <dt class="w-tit2">
+                                6.退货的运费该谁来承担？
+                            </dt>
+                            <dd class="para">
+                                退货运费说明请参见
+                                <a target="_blank" href="/footer/refund" title="退款说明">
+                                    退款说明
+                                </a>
+                            </dd>
+                            <dt class="w-tit2">
+                                7.什么时候可以收到退款？
+                            </dt>
+                            <dd class="para">
+                                我们会第一时间为您办理退款，具体退款时间参见
+                                <a target="_blank" href="/footer/refund" title="退款说明">
+                                    退款说明
+                                </a>
+                            </dd>
+                            <dt class="w-tit2">
+                                8.如果我拒收了，该如何处理？
+                            </dt>
+                            <dd class="para">
+                                如果您拒收了，商品将退回国内指定仓库，经售后人员与您联系确认后，您可以联系客服人员办理退款
+                            </dd>
+                            <dt class="w-tit2">
+                                9.商品的最大退款金额是怎么算出来的。
+                            </dt>
+                            <dd class="para">
+                                商品最大退款金额=商品价格*数量-活动优惠分摊的金额-优惠券优惠分摊的金额+商品关税+邮费分摊的金额。
+                                <br>
+                                具体请参见
+                                <a target="_blank" href="/footer/refund" title="退款说明">
+                                    退款说明
+                                </a>
+                            </dd>
+                            <dt class="w-tit2">
+                                10.当我发起退货申请时，只要我把包裹退还回来就可以获得退款吗？
+                            </dt>
+                            <dd class="para">
+                                当美会说海外购签收快件后，确认物品保存良好且不影响二次销售，后续将由客服为您办理退款。美会说海外购签收快件不作为是否退款的凭证。
+                            </dd>
+                            <dt class="w-tit2">
+                                11.在美会说购买的商品，是否提供发票？
+                            </dt>
+                            <dd class="para">
+                                美会说海外购所售跨境海外商品，无法开据国内发票，请您谅解。
+                            </dd>
+                            <dt class="w-tit2">
+                                12.在美会说购买的海外商品，是否有成分和使用方法的中文标签？
+                            </dt>
+                            <dd class="para">
+                                美会说海外购是跨境电商，国家相关部门并未要求跨境进口商品贴示中文标签，美会说保证您所购买商品为百分百海外正品，请您放心！
+                            </dd>
+                            <dt class="w-tit2">
+                                13.为什么有的国外包装很简单，连外盒、封口都没有？
+                            </dt>
+                            <dd class="para">
+                                商品的包装，国外更注重环保和便携性，而不是包装如何奢华，大部分国际一线品牌、奢侈品的包装也很简单，比如产自欧美、日韩的化妆品，大部分无外盒，不塑封，开口处也没有封口贴。
+                            </dd>
+                            <dt class="w-tit2">
+                                14.国外商品包装上的保质期、生产日期怎么看？
+                            </dt>
+                            <dd class="para">
+                                <div>
+                                    国外的商品包装上一般不会单独列出保质期是多长，一般只会在产品包装上标注生产日期或有效日期，也有只标注出厂批号没有标日期的情况，比如日本和欧洲的洗护品、化妆品，只有批号没有标日期（有些品牌可以根据批号读取日期，在此不做一一列举）。但请放心，美会说海外购销售的国外商品都是符合规定的合格产品。有些喷印的日期，在运输过程中因为摩擦碰撞很容易糊掉或被碰掉，是正常现象。
+                                </div>
+                                <br>
+                                <div class="n-example">
+                                    <h3>
+                                        下面列举几个国家一般情况下的日期读取方法：
+                                    </h3>
+                                    <p>
+                                        *非一般情况下的日期读取，可咨询在线客服。
+                                    </p>
+                                    <ul class="lst">
+                                        <li>
+                                            <h4>
+                                                韩国：
+                                            </h4>
+                                            <p>
+                                                默认没有韩文或字母提示的日期一般为生产日期（生产日期和有效日期同时标注时，日期较大的为有效日期），日期格式是“年/月/日”，或“年/月”。也有的是沿用英语系国家的标注方式。
+                                            </p>
+                                            <p>
+                                                韩文：제조（制造/生产）
+                                            </p>
+                                            <p>
+                                                韩文：까지（截至）；기한（期限）
+                                            </p>
+                                            <p>
+                                                英语：MFG（制造/生产）
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <h4>
+                                                日本：
+                                            </h4>
+                                            <p>
+                                                日本食品标注的是有效日期，日期格式是“年/月/日”，或“年/月”。
+                                            </p>
+                                            <p>
+                                                “赏味期限”是指可以美味地享用食品的期限，即便过了该期限，食品仍可以食用。
+                                            </p>
+                                            <p>
+                                                “消费期限”是指一旦过了该期限，就可能发生腐烂变质，最好不要食用。
+                                            </p>
+                                            <br>
+                                            <p>
+                                                日本洗护、护肤品和彩妆，没有标注日期。
+                                            </p>
+                                            <p>
+                                                根据日本《药事法》的规定，对于那些"在通常的保管条件下3年以內会发生质变"的化妆品，才要求在商品上标明有效日期。日本一般未开封的基础护肤品保质期为3年，彩妆是5年，所以没有标日期。开封后请尽量在12个月内用完。
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <h4>
+                                                越南：
+                                            </h4>
+                                            <p>
+                                                日期格式是“日/月/年”，或“月/年”。
+                                            </p>
+                                            <p>
+                                                NSX、MFG，代表英文production/date （生产日期）。
+                                            </p>
+                                            <p>
+                                                HSD、BBE，代表英文best before（有效日期）。
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <h4>
+                                                英语系（包括欧美、澳洲、新西兰等）国家：
+                                            </h4>
+                                            <p>
+                                                默认没有字母提示的日期为有效日期（生产日期和有效日期同时标注时，日期较大的为有效日期）。欧洲食品标注的是有效日期。日期格式是“日/月/年”，或“月/年”，或“第几天/年”。
+                                            </p>
+                                            <br>
+                                            <p>
+                                                欧洲的洗护品、化妆品，一般不标注日期。
+                                            </p>
+                                            <p>
+                                                根据欧洲护肤品统一条例规定：凡可使用30个月以上的商品，可不写保质期。所以欧洲很多包装上只有出厂批号没有标注日期。生产自欧洲的护肤品，开口处均没有封口贴。保质期默认为开盖后12个月内使用，包装上一般有此类图标。
+                                            </p>
+                                            <br>
+                                            <p>
+                                                MFD、MFG、MAN（Manufacturing Date的简写），意思都是制造/生产日期。
+                                            </p>
+                                            <p>
+                                                例如，MFG 300515 08：02，表示生产日期是2015年05月30日，08：02。
+                                            </p>
+                                            <p class="f-mgl">
+                                                MFG 229-2014，表示生产日期是2014年第229天。
+                                            </p>
+                                            <br>
+                                            <p>
+                                                EXP（Expiry date的简写)，是指有效日期。
+                                            </p>
+                                            <p>
+                                                例如，EXP 03/17，表示有效日期是2017年3月。
+                                            </p>
+                                            <p class="f-mgl">
+                                                Exp Nov 16，表示有效日期是2016年11月。
+                                            </p>
+                                            <br>
+                                            <p>
+                                                best before（此日期前最佳），是指有效日期。
+                                            </p>
+                                            <p>
+                                                例如，best before 16DEC166，表示有效日期是2016年12月16日。
+                                            </p>
+                                            <p class="f-mgl">
+                                                BEST BEFORE：08 11 16 F 19:57 ，表示有效日期是2016年11月8日。
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <h4>
+                                                英语月份缩写如下：
+                                            </h4>
+                                            <p>
+                                                一月：JAN 二月：FEB 三月：MAR 四月：APR 五月：MAY 六月：JUN
+                                            </p>
+                                            <p>
+                                                七月：JUL 八月：AUG 九月：SEP 十月：OCT 十一月：NOV 十二月：DEC
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <h4>
+                                                意大利语月份缩写如下：
+                                            </h4>
+                                            <p>
+                                                一月：GEN 二月：FEB 三月：MAR 四月：APR 五月：MAG 六月：GIU
+                                            </p>
+                                            <p>
+                                                七月：LUG 八月：AGO 九月：SET 十月：OTT 十一月：NOV 十二月：DIC
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <h4>
+                                                德语月份缩写如下：
+                                            </h4>
+                                            <p>
+                                                一月：Jan 二月：Feb 三月：Mär 四月：Apr 五月：Mai 六月：Jun
+                                            </p>
+                                            <p>
+                                                七月：Jul 八月：Aug 九月：Sep 十月：Okt 十一月：Nov 十二月：Dez
+                                            </p>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <h3 class="w-tit para">
+                                支付问题
+                            </h3>
+                            <dt class="w-tit2 para">
+                                1. 当您点击确认支付后，请不要关闭新打开的页面，否则支付将无法完成。
+                            </dt>
+                            <dt class="w-tit2 para">
+                                2. 如果您的支付信息银行没有及时传输给我们，导致银行卡已经扣款成功，但商品没有购买成功，我们感到非常抱歉。不过请放心，我们会在第二个工作日和银行对账，确认您的扣款成功后，在能完成购买的情况下，立刻帮您完成购买，否则相应款项会原路径返回您的支付账户。
+                            </dt>
+                            <dt class="w-tit2">
+                                3. 打开支付页面，提示“该页无法显示”或空白页，可能是什么原因？
+                            </dt>
+                            <dd class="para">
+                                <ul>
+                                    <li>
+                                        A. 没有升级IE浏览器，导致加密级别过低，无法进入银行系统。
+                                    </li>
+                                    <li>
+                                        B. 上网环境或上网方式受限，可能是网络服务商限制，建议更换一种上网方式。
+                                    </li>
+                                    <li>
+                                        C. 尝试刷新页面；如果刷新不能解决问题，可能由于浏览器缓存设置的原因，请在IE菜单-&gt;工具-&gt;Internet选项-&gt;点击“删除cookies”和“删除文件”，用以清除临时文件。
+                                    </li>
+                                </ul>
+                            </dd>
+                            <dt class="w-tit2">
+                                4. 银行页面打不开的解决方法？
+                            </dt>
+                            <dd class="para">
+                                <ul>
+                                    <li>
+                                        A. 没有升级IE浏览器，导致加密级别过低，无法进入银行系统。
+                                    </li>
+                                    <li>
+                                        B. 如果是个人电脑，请关闭您的防火墙再试。
+                                    </li>
+                                    <li>
+                                        C. 在IE浏览器“工具”菜单-&gt;Internet选项-&gt;高级-&gt;安全，在SSL2.0和SSL3.0的选项前打勾。
+                                    </li>
+                                    <li>
+                                        D. 查看密钥长度是否支持128位(IE-&gt;帮助-&gt;关于Internet Explorer)，如果低于128，请升级密钥包。
+                                    </li>
+                                    <li>
+                                        E. 请您把银行网址在受信任的站点中添加进去，添加方法为：打开IE浏览器-&gt;工具-&gt;Internet选项-&gt;安全-&gt;受信任的站点-&gt;站点-&gt;添加网易宝和银行的网站，重启IE浏览器登录网易宝进行相关操作。
+                                    </li>
+                                </ul>
+                            </dd>
+                            <dt class="w-tit2">
+                                5. 为什么交易付款不成功？
+                            </dt>
+                            <dd class="para">
+                                <ul>
+                                    <li>
+                                        A. 由于银行返回的通知信息比较晚，超过了此次交易的超时时间，交易已关闭，不过请放心，我们会在收到银行的通知后，原路径返回您的支付账户
+                                    </li>
+                                    <li>
+                                        B. 重复付款导致（交易状态已经是已付款状态），可能对同一笔交易重复付款，不过请放心，重复付款的金额会原路径返回您的支付账户
+                                    </li>
+                                </ul>
+                            </dd>
+                        </dl>
+                    {% elif el == "returnpolicy" %}
+                    {# 退货政策 #}
+                        <dl>
+                            <p class="para">
+                                美会说海外购秉承
+                                <strong class="f-fw">
+                                    “正直、责任、有态度”
+                                </strong>
+                                的优良传统，为广大客户提供最优质的商品及服务。我们所销售的海外商品均采自国外正规供应商，保证正品。但由于海外商品仓储物流周期长、监管政策严苛等原因，在跨境运输、
+                                转关、清关、国内派送等过程中部分商品难免会出现瑕疵。对此，我们尽力避免，同时提供完善的售后保证措施，保障您在购物过程中的权益。
+                            </p>
+                            <h3 class="w-tit2">
+                                1.0 退货流程
+                            </h3>
+                            <p style="margin:0 0 0 15px;">
+                                <img src="http://haitao.nos.netease.com/f9b46613d6e441abb5d57326256e6b44.jpg"
+                                width="800" height="220" alt="退货流程图" title="退货流程图">
+                            </p>
+                            <ol class="para">
+                                <li>
+                                    7天(含)内，商品出现问题，请在个人界面，点击“申请售后”，您的申请将由美会说的专业人员审核，若审批通过，自通过之日起14天内美会说售后团队未收到您的商品，您的申请单将自动转为审核不通过而关闭。未申请售后或审核不通过擅自寄回商品的，美会说海外购有权向用户收取仓储综合费用。
+                                </li>
+                                <li>
+                                    请您自行将问题商品寄回美会说售后，若核实您的商品符合美会说海外购退货政策，运费将以优惠券方式补偿回您下单时的账户；若商品不符合美会说海外购退货政策，运费将由您自行承担，且需承担原物返回的运费。
+                                </li>
+                            </ol>
+                            <h3 class="w-tit2">
+                                2.0 退款流程
+                            </h3>
+                            <p class="para">
+                                仅支持下单时支付方式退款
+                            </p>
+                            <h3 class="w-tit2">
+                                3.0 退货地址
+                            </h3>
+                            <p class="para">
+                                请联系客服咨询详情
+                            </p>
+                            <h3 class="w-tit2">
+                                4.0 退货政策总则
+                            </h3>
+                            <p>
+                                自顾客收到商品之日起7天(含)内可退货，客户在线申请退货，并确保：
+                            </p>
+                            <ol>
+                                <li>
+                                    商品外包装完整，相关附（配）件齐全；
+                                </li>
+                                <li>
+                                    商品表面无划痕、无磨（破）损、无磕碰、无使用、无拆卸等痕迹；
+                                </li>
+                                <li>
+                                    防伪标识、标签或其他防伪措施未刮开、撕损、修改及改动（若有），唯一性三包卡不能缺失或撕损（若有）；
+                                </li>
+                                <li>
+                                    赠品不得遗失破损。
+                                </li>
+                            </ol>
+                            <p class="para">
+                                “外包装”是指：生产厂商原包装。
+                            </p>
+                            <p>
+                                具体退货标准如下：
+                            </p>
+                            <table class="w-table" border="0" cellspacing="0" cellpadding="0">
+                                <tbody>
+                                    <tr>
+                                        <th width="90px">
+                                            退货类型
+                                        </th>
+                                        <th width="200px">
+                                            情况分类
+                                        </th>
+                                        <th width="">
+                                            是否支持
+                                            <br>
+                                            7天(含)内退货
+                                        </th>
+                                        <th>
+                                            是否收取
+                                            <br>
+                                            返回运费
+                                        </th>
+                                        <th>
+                                            补充说明
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            质量问题
+                                        </td>
+                                        <td>
+                                            出具检测报告或经品牌方确认属于质量问题的证明文件原件
+                                        </td>
+                                        <td>
+                                            是
+                                        </td>
+                                        <td>
+                                            否
+                                        </td>
+                                        <td>
+                                            /
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            商品
+                                            <br>
+                                            溢漏损失缺发
+                                        </td>
+                                        <td>
+                                            商品在物流过程中形成损坏、溢漏、破损等包括但不限于上述情况，经售后核实属实
+                                        </td>
+                                        <td>
+                                            是
+                                        </td>
+                                        <td>
+                                            否
+                                        </td>
+                                        <td>
+                                            必须提供实物图片信息以便售后保证处理时效
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            其他
+                                        </td>
+                                        <td>
+                                            除上述两种之外的其他情况，如未经售后审批自行退回或个人原因导致退货
+                                        </td>
+                                        <td>
+                                            否
+                                        </td>
+                                        <td>
+                                            /
+                                        </td>
+                                        <td>
+                                            /
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p style="margin-top:10px;">
+                                注：
+                            </p>
+                            <ol class="para">
+                                <li>
+                                    判断实际收货日期规则：以客户实际签收日期为准；
+                                </li>
+                                <li>
+                                    购买时使用的优惠券不予退还；
+                                </li>
+                                <li>
+                                    因政策原因，美会说仅提供退货服务。即确认收货后，明确非客户责任的前提下，客户可以提交退货申请。非客户责任一般是指非因客户原因导致的诸如：物流环节造成的破损溢漏、商品本身质量问题、仓库错发缺发、与前台页面信息描述完全不符等情形。
+                                </li>
+                                <li>
+                                    对组合出售的商品，仅对满足上述退货标准的单件或多件商品提供退货服务，不扩展至组合全部商品。
+                                </li>
+                            </ol>
+                            <h3 class="w-tit2">
+                                特别说明，以下情况不予办理退货：
+                            </h3>
+                            <ol class="para">
+                                <li>
+                                    任何非美会说海外购出售的商品不予退货；含防伪码商品，防伪码涂层一经刮开或涂改不予退货；含防伪标签商品，防伪标签一经撕损或改动不予退货； 3C数码类产品序列号与出库商品不一致不予退货；以及其他无法判断是否由美会说海外购售出的商品不予退货；
+                                </li>
+                                <li>
+                                    商品页面明确告知属临保商品的不予退货；
+                                </li>
+                                <li>
+                                    因客户擅自改动商品导致的质量问题不予退货；
+                                </li>
+                                <li>
+                                    附件、保修卡等缺失或无法与主品匹配的商品不予退货；
+                                </li>
+                                <li>
+                                    网页商品图片及信息仅供参考，因拍摄灯光及不同显示器色差等问题可能造成实物与网页宣传图片存在色差，不属于质量问题，不予退货；
+                                </li>
+                                <li>
+                                    由于顾客个人能力或使用环境与商品属性存在差异而产生的顾客误报退货原因，不予退货；
+                                </li>
+                                <li>
+                                    其他依据法律或本规则细则规定不支持退货的商品不予退货。
+                                </li>
+                            </ol>
+                            <h3 class="w-tit2">
+                                各类目因质量问题退货细则如下：
+                            </h3>
+                            <h4>
+                                食品保健
+                            </h4>
+                            <p>
+                                处理流程：属于质量问题的，请将权威机构检测报告、附件、说明书、包装、赠品(如有)以及商品一并寄回办理退货手续。
+                            </p>
+                            <p>
+                                注意事项：
+                            </p>
+                            <ol class="para">
+                                <li>
+                                    食品饮料、保健食品类商品属于特殊商品，一经售出，非因质量问题不予退货；
+                                </li>
+                                <li>
+                                    为保证卫生安全，请顾客收到该类商品后，仔细检查商品与失效日期，若对日期读法有疑议，请即时咨询客服（咨询方式：http://im2.gm.163.com/static/kl/index.html），一旦签收不予退货；
+                                </li>
+                                <li>
+                                    保健品使用前请仔细阅读说明书，严格按照说明书的细则服用或使用，禁忌人群切勿食用，如有疑问请即时咨询客服（咨询方式：http://im2.gm.163.com/static/kl/index.html）。
+                                </li>
+                            </ol>
+                            <h4>
+                                母婴用品
+                            </h4>
+                            <p>
+                                处理流程： 属于质量问题的，请将权威机构检测报告、附件、说明书、包装、赠品(如有)以及商品一并寄回办理退货手续。
+                            </p>
+                            <p>
+                                注意事项：
+                            </p>
+                            <ol class="para">
+                                <li>
+                                    母婴用品、婴儿食品、贴身衣物类商品属于特殊商品，一经售出，非因质量问题不予退货；
+                                </li>
+                                <li>
+                                    为保证卫生安全，请顾客收到该类商品后，仔细检查商品与失效日期，若对日期读法有疑议，请即时咨询客服（咨询方式：http://im2.gm.163.com/static/kl/index.html），一旦签收不予退货；
+                                </li>
+                            </ol>
+                            <h4>
+                                美妆与个人洗护
+                            </h4>
+                            <p>
+                                处理流程： 属于质量问题的，请将权威机构检测报告、附件、说明书、包装、赠品(如有)以及商品一并寄回办理退货手续。
+                            </p>
+                            <p>
+                                注意事项：
+                            </p>
+                            <ol class="para">
+                                <li>
+                                    美妆、个人洗护、卫生安全类商品属于特殊商品(如卫生巾、成人性用品)，一经售出，非因质量问题不予退货；
+                                </li>
+                                <li>
+                                    化妆品过敏请即时咨询客服（咨询方式：http://im2.gm.163.com/static/kl/index.html）。
+                                </li>
+                            </ol>
+                            <h4>
+                                家居厨卫家装
+                            </h4>
+                            <p>
+                                处理流程： 属于质量问题的，请将附件、说明书、包装、赠品(如有)以及商品一并寄回办理退货手续。
+                            </p>
+                            <p>
+                                注意事项：
+                            </p>
+                            <ol class="para">
+                                <li>
+                                    宠物食品、用品不接受退货。
+                                </li>
+                            </ol>
+                            <h4>
+                                钟表、珠宝、首饰
+                            </h4>
+                            <p>
+                                处理流程：属于质量问题的，请将权威机构检测报告、附件、说明书、包装、赠品(如有)以及商品一并寄回办理退货手续。
+                            </p>
+                            <p>
+                                注意事项：
+                            </p>
+                            <ol class="para">
+                                <li>
+                                    钟表、珠宝、首饰等包含贵重金属商品属于特殊商品，一经售出，非因质量问题不予退货；
+                                </li>
+                                <li>
+                                    有明显使用痕迹、商品污损污染等情形的不予退货；
+                                </li>
+                                <li>
+                                    配件、赠品缺失不予退货；
+                                </li>
+                                <li>
+                                    开箱即损标识破裂的不予退货。
+                                </li>
+                            </ol>
+                            <h4>
+                                箱包类
+                            </h4>
+                            <p>
+                                处理流程： 属于质量问题的，请将附件、说明书、包装、赠品(如有)以及商品一并寄回办理退货手续。
+                            </p>
+                            <p>
+                                注意事项：
+                            </p>
+                            <ol class="para">
+                                <li>
+                                    细小划痕、线头、胶水痕迹等不影响商品质量、性能、用途的瑕疵不属于质量问题。
+                                </li>
+                            </ol>
+                            <p class="para">
+                                所有质量问题退货申请(质检报告,若有)需上传至少3张不同角度的图片
+                            </p>
+                            <div class="bg">
+                                <h3 class="w-tit2">
+                                    本《退货政策》的修改
+                                </h3>
+                                <p class="para">
+                                    我们可能随时修改本《退货政策》的条款，该等修改构成本《退货政策》的一部分，如您不同意修改的有权停止使用，如继续使用的视为同意修改。
+                                </p>
+                            </div>
+                        </dl>
+                    {% elif el == "cancelorder" %}
+                    {# 取消订单 #}
+                        <dl>
+                            <h3 class="w-tit">
+                                目前有两种情况，您可以取消订单
+                            </h3>
+                            <p class="paragraph">
+                                当订单状态为未支付、待发货时，如果您想取消订单，请在“
+                                <a href="/my_order" target="_blank" title="我的订单">
+                                    我的订单
+                                </a>
+                                ”页面操作栏中点击取消，即可取消订单。
+                            </p>
+                            <p class="paragraph">
+                                订单取消申请一旦提交成功，将无法进行任何修改或恢复，请您谨慎操作。
+                                <br>
+                                当订单已经发货后，将不支持取消或者修改订单操作。
+                                <br>
+                                在办理退款前，请确保您的商品符合
+                                <!--
+                                <a href="/footer/returnpolicy" target="_blank" title="退货政策">
+                                    退货政策
+                                </a>
+                                如果售后人员同意了您的退款申请，退款将按照原路径退回。
+                                -->
+                            </p>
+                            <p class="paragraph">
+                                未付款的订单，取消订单后优惠券全额返还；付款后的订单，优惠券会在取消后按优惠券的平摊比例金额退回。仅退无门槛现金券，满减券不予退回。
+                            </p>
+                        </dl>
+                    {% elif el == "returnprocess" %}
+                    {# 退款流程 #}
+                        <dl>
+                            <p>
+                                美会说海外购为您提供了在线受理退货退款服务，您只需要登录您的个人账户，在“我的订单”页面中针对商品在线 提交申请信息即可。
+                            </p>
+                            <p class="para">
+                                符合退款政策的商品，您可以申请退货退款。
+                            </p>
+                            <h4 class="w-tit2 para">
+                                退货退款流程如下：
+                            </h4>
+                            <h3 class="w-tit para">
+                                退货退款
+                            </h3>
+                            <dl>
+                                <dt>
+                                    <span class="title_icon">
+                                        <i>
+                                            1
+                                        </i>
+                                    </span>
+                                    <span class="title2">
+                                        在订单列表里选择需要申请售后的商品，点击申请售后
+                                    </span>
+                                </dt>
+                                <dd>
+                                    <img src="http://mm.bst.126.net/images/footer/returnprocess-1.jpg?v=20120714"
+                                    alt="退货退款流程第1步说明图" title="退货退款流程第1步说明图" width="720px" height="396px">
+                                </dd>
+                                <dt>
+                                    <span class="title_icon">
+                                        <i>
+                                            2
+                                        </i>
+                                    </span>
+                                    <span class="title2">
+                                        如果同时需要退货，请选择“退货退款”。填写退款金额及退款原因，并尽量提供相关凭证图片，点击提交申请。 最大可退金额为您的实付金额；若包裹含有邮费，包裹内最后一个商品提交退款申请，其最大可退金额包含邮费
+                                    </span>
+                                </dt>
+                                <dd>
+                                    <img src="http://mm.bst.126.net/images/footer/returnprocess-2.jpg?v=20150805"
+                                    alt="退货退款流程第2步说明图" title="退货退款流程第2步说明图" width="720px" height="396px">
+                                </dd>
+                                <dt>
+                                    <span class="title_icon">
+                                        <i>
+                                            3
+                                        </i>
+                                    </span>
+                                    <span class="title2">
+                                        退款申请提交后，需要等待商家处理。商家同意退款后，需要您将退货商品寄回商家所提供的退货地址，并填写物 流公司及物流单号；如果商家拒绝退款申请，请修改申请或与在线客服取得联系沟通退款申请
+                                    </span>
+                                </dt>
+                                <dd>
+                                    <img src="http://mm.bst.126.net/images/footer/returnprocess-5.jpg?v=20120714"
+                                    alt="退货退款流程第3步说明图" title="退货退款流程第3步说明图" width="720px" height="396px">
+                                    <img src="http://mm.bst.126.net/images/footer/returnprocess-6.jpg?v=20120714"
+                                    alt="退货退款流程第3步说明图" title="退货退款流程第3步说明图" width="720px" height="396px" style="margin-top:0;">
+                                </dd>
+                                <dt>
+                                    <span class="title_icon">
+                                        <i>
+                                            4
+                                        </i>
+                                    </span>
+                                    <span class="title2">
+                                        退货物流信息提交后，请等待商家确认收货。商家确认收货后，系统后续会自动发起退款；如果商家拒绝退款申 请，请修改申请或与在线客服取得联系沟通退款申请。退款金额会在三到七个工作日内退回您的账户
+                                    </span>
+                                </dt>
+                                <dd>
+                                    <img src="http://mm.bst.126.net/images/footer/returnprocess-7.jpg?v=20120714"
+                                    alt="退货退款流程第4步说明图" title="退货退款流程第4步说明图" width="720px" height="396px">
+                                </dd>
+                            </dl>
+                        </dl>
+                    {% elif el == "refund" %}
+                    {# 退款说明 #}
+                        <dl>
+                            <p class="paragraph">
+                                在办理退款前，请确保您的商品符合退货政策。如果售后人员同意了您的退款申请，退款将按照原路径退回。
+                            </p>
+                            <h2 class="w-tit">
+                                邮费退还说明
+                            </h2>
+                            <table class="w-table para" border="0" cellspacing="0" cellpadding="0">
+                                <tbody>
+                                    <tr>
+                                        <th width="120px">
+                                            退货原因
+                                        </th>
+                                        <th width="120px">
+                                            发货邮费
+                                        </th>
+                                        <th width="120px">
+                                            寄回邮费
+                                        </th>
+                                        <th>
+                                            备注
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            客户自己的原因
+                                        </td>
+                                        <td>
+                                            客户承担
+                                        </td>
+                                        <td>
+                                            客户承担
+                                        </td>
+                                        <td>
+                                            一律不接受客户的到付邮件或者平邮邮件。
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            物流配送、第三方不可抗力、美会说海外购自己的原因
+                                        </td>
+                                        <td>
+                                            美会说海外购承担
+                                        </td>
+                                        <td>
+                                            美会说海外购承担
+                                        </td>
+                                        <td>
+                                            寄出邮费按照商品价格比例分摊。用户退回的邮费将返还到用户的账户。
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <h3 class="w-tit2">
+                                举例说明：
+                            </h3>
+                            <p class="para">
+                                如果您购买了价格100元的商品A，和价格50元的商品B，邮费为30元。如果为物流配送、第三方不可抗力、美会说海外购自己的原因导致的退货。
+                                <br>
+                                则A商品退货时，退还的邮费=30*100/（100+50）=20元
+                                <br>
+                                B商品退货时，退还的邮费=30*50/（100+50）=10元
+                                <br>
+                                如果您将退货商品退回，商品经客服审核不影响二次使用和销售，则在客服确认收货后用户退回的邮费将返还到您的账户。
+                            </p>
+                            <hr>
+                            <h2 class="w-tit">
+                                关税退还说明
+                            </h2>
+                            <table class="w-table para" border="0" cellspacing="0" cellpadding="0">
+                                <tbody>
+                                    <tr>
+                                        <th>
+                                            退货原因
+                                        </th>
+                                        <th>
+                                            关税
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            客户自己的原因
+                                        </td>
+                                        <td>
+                                            如已缴纳关税，退还关税
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            物流配送、第三方不可抗力、美会说海外购自己的原因
+                                        </td>
+                                        <td>
+                                            如已缴纳关税，退还关税
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <h3 class="w-tit2">
+                                举例说明：
+                            </h3>
+                            <p class="para">
+                                如果您购买了价格100元的商品A，和价格50元的商品B，A商品关税为50元，B商品关税为25元，超过了关税免征 额50元。
+                                <br>
+                                则A商品退货时，退还的关税=50元
+                                <br>
+                                B商品退货时，退还的关税=25元
+                            </p>
+                            <hr>
+                            <h2 class="w-tit">
+                                优惠券退还说明
+                            </h2>
+                            <table class="w-table para" border="0" cellspacing="0" cellpadding="0">
+                                <tbody>
+                                    <tr>
+                                        <th>
+                                            优惠券类型
+                                        </th>
+                                        <th>
+                                            退还方式
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            满减优惠券
+                                        </td>
+                                        <td>
+                                            不退还
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            直接抵扣类现金券
+                                        </td>
+                                        <td>
+                                            商品退款完成后，退回已使用的现金券
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p class="para">
+                                目前美会说海外购上能使用的优惠券包括两种类型：满减优惠券和直接抵扣类现金券。在进行售后退款时，满减优惠券优 惠的金额将不予退还。直接抵扣类现金券优惠的金额在退款完成后，将通过现金券的形式返还给用户。
+                            </p>
+                            <h3 class="w-tit2">
+                                举例说明：
+                            </h3>
+                            <p class="para">
+                                如果您购买了价格100元的商品A，和价格50元的商品B，A和B商品共同使用了一张50元的现金券。
+                                <br>
+                                则A商品退货时，退还的现金券金额=50*100/（100+50）=33.33元
+                                <br>
+                                B商品退货时，退还的现金券金额=50*50/（100+50）=16.67元
+                            </p>
+                            <p class="para">
+                                商品最大退款金额=商品价格*数量-活动优惠分摊的金额-优惠券优惠分摊的金额+商品关税+邮费分摊的金额
+                            </p>
+                            <h3 class="w-tit2">
+                                举例说明：
+                            </h3>
+                            <p class="para">
+                                如果您购买了价格100元的1件商品A，价格200元的1件商品B，邮费为15元，商品A关税30元，B关税30元，A和B商品满足满300减50元活动，同时使用了50元无门槛现金券。
+                                <br>
+                                您的总实付金额=100+200+15+30+30-50-50=275元
+                                <br>
+                                当您单独为A办理退货时，最大退款金额=100-50*100/（100+200）-50*【100-50*100/（100+200）】/(100+200-50)+30+15*100/（100+200）=101.67元
+                                <br>
+                                当您单独为B办理退货时，最大退款金额=200-50*200/（100+200）-50*【200-50*200/（100+200）】/(100+200-50)+30+15*200/（100+200）=173.33元
+                            </p>
+                            <hr>
+                            <h2 class="w-tit">
+                                退款到账时间表
+                            </h2>
+                            <table class="w-table w-table-1 para" border="0" cellspacing="0" cellpadding="0">
+                                <tbody>
+                                    <tr>
+                                        <th colspan="3">
+                                            支付方式
+                                        </th>
+                                        <th>
+                                            退款方式
+                                        </th>
+                                        <th>
+                                            退款周期
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td rowspan="7" width="70px">
+                                            网易宝支付
+                                        </td>
+                                        <td rowspan="3" width="70px;">
+                                            网银支付
+                                        </td>
+                                        <td width="70px;">
+                                            信用卡
+                                        </td>
+                                        <td width="120px;">
+                                            退回原支付卡
+                                        </td>
+                                        <td rowspan="2" class="f-tal">
+                                            渤海银行、广发银行、杭州银行、民生银行、宁波银行、上海银行、兴业银行、中国银行、中信银行、光大银行；这10家银行的退款周期为3-5个工作日；除以上10家银行外，其他银行1-2个工作日到账
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            储蓄卡
+                                        </td>
+                                        <td>
+                                            退回原支付卡
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            储蓄卡
+                                        </td>
+                                        <td>
+                                            退款到网易宝账户
+                                        </td>
+                                        <td>
+                                            实时到账
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td rowspan="3">
+                                            快捷支付
+                                        </td>
+                                        <td>
+                                            信用卡
+                                        </td>
+                                        <td>
+                                            退回原支付卡
+                                        </td>
+                                        <td>
+                                            一个工作日到账
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            储蓄卡
+                                        </td>
+                                        <td>
+                                            退回原支付卡
+                                        </td>
+                                        <td class="f-tal">
+                                            工商银行：2-3个工作日；中国银行、建设银行、平安银行、光大银行：3-5个工作日；其他银行1个工作日到账
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            储蓄卡
+                                        </td>
+                                        <td>
+                                            退款到网易宝账户
+                                        </td>
+                                        <td>
+                                            实时到账
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            余额支付
+                                        </td>
+                                        <td>
+                                            退款到网易宝账户
+                                        </td>
+                                        <td>
+                                            实时到账
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            支付宝支付
+                                        </td>
+                                        <td colspan="4">
+                                            到账时间
+                                            <a href="https://cshall.alipay.com/lab/help_detail.htm?help_id=379855"
+                                            target="_blank" title="查看支付宝支付到账时间">
+                                                请点击这里
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </dl>
+                    {% elif el == "deliverymode" %}
+                    {# 配送方式 #}
+                        <dl>
+                            <dl>
+                                <dt>
+                                    <span class="title_icon">
+                                        <i>
+                                            1
+                                        </i>
+                                    </span>
+                                    <span class="title">保税商品配送</span>
+                                </dt>
+                                <dd>
+                                    <img src="/images/www/deliverymode-1.png" alt="保税商品配送流程图"
+                                    title="保税商品配送流程图" width="678px" height="157px">
+                                </dd>
+                            </dl>
+                            <hr>
+                            <dl>
+                                <dt>
+                                    <span class="title_icon">
+                                        <i>
+                                            2
+                                        </i>
+                                    </span>
+                                    <span class="title">直邮商品配送</span>
+                                </dt>
+                                <dd>
+                                    <img src="/images/www/deliverymode-2.png" alt="直邮商品配送流程图"
+                                    title="直邮商品配送流程图" width="678px" height="173px">
+                                </dd>
+                            </dl>
+                            <hr>
+                            <h3 class="w-tit2">
+                                如果您的订单从保税仓发出，自物流公司接收包裹至包裹派送到您的手中，不同城市的时限不同：
+                            </h3>
+                            <ol>
+                                <li>
+                                    长三角地区（江浙沪）重点城市最快1-2天送达
+                                </li>
+                                <li>
+                                    部分西部偏远地区、郊县（如喀什、海拉尔等）预计4-6天到达
+                                </li>
+                                <li>
+                                    其他地区2-3天不等
+                                </li>
+                            </ol>
+                            <p class="para">
+                                如果您的订单从海外直邮回国，自仓库收到您的订单至订单派送到您手中，预计7-15天即可到货。
+                            </p>
+                            <h3 class="w-tit2">
+                                注意事项：
+                            </h3>
+                            <ol class="para">
+                                <li>
+                                    暂时不支持港澳台地区的派送
+                                </li>
+                                <li>
+                                    如遇双十一等大型活动期间，或者遇台风、暴雨、大雾等不可抗力的原因下，订单到达时间将根据具体到达情况而定。
+                                </li>
+                                <li>
+                                    美会说海外购提供的订单物流跟踪功能所查询的信息均来源于合作快递公司官网，部分官网信息由于同步不及时，有可能出现更新延迟现象，为您带来的不便敬请谅解。
+                                </li>
+                            </ol>
+                        </dl>
+                    {% elif el == "freight" %}
+                    {# 运费标准 #}
+                        <dl>
+                            <dt class="paragraph">
+                                <span class="title_icon">
+                                    <i>
+                                        1
+                                    </i>
+                                </span>
+                                <span class="title2">国际段物流费用由美会说海外购承担</span>
+                            </dt>
+                            <dt class="paragraph">
+                                <span class="title_icon">
+                                    <i>
+                                        2
+                                    </i>
+                                </span>
+                                <span class="title2">国内段运费标准如下：</span>
+                            </dt>
+                            <dl>
+                                <p>
+                                    美会说海外购全场商品包邮
+                                </p>
+                                <p>
+                                    商品采用何种运费标准，可在商品详情页-运费项查看
+                                </p>
+                                <p>
+                                    订单中如果存在包邮商品，则整个订单可免运费
+                                </p>
+                                <p class="paragraph">
+                                    若用户承担运费的商品发生退货，运费会按照商品价格比例分摊后退还，具体说明请浏览
+                                    <a href="/footer/refund" target="_blank">
+                                        邮费退还说明
+                                    </a>
+                                </p>
+                            </dl>
+                            <dt class="paragraph">
+                                <span class="title_icon">
+                                    <i>
+                                        3
+                                    </i>
+                                </span>
+                                <span class="title2">
+                                    随着美会说海外购业务的发展，运费标准可能会进行相应调整，请留意页面说明
+                                </span>
+                            </dt>
+                        </dl>
+                    {% elif el == "logistracking" %}
+                    {# 物流跟踪 #}
+                        <dl>
+                            <h4 class="w-tit2">
+                                您可以登录您的美会说海外购账户，在我的订单—订单详情页面中查看您订单的实时配送情况。
+                            </h4>
+                            <p>
+                                部分快递公司物流信息系统显示会略有延迟，如订单已显示为发货状态，但无物流信息显示，请您稍等约24小时左右，即可查询到。或者您可以直接在页面点击物流公司官网进行实时订单物流状态查询。
+                            </p>
+                            <p class="para">
+                                <strong class="red">
+                                    请您签收货品时，尽量在快递人员在场时当面检查商品
+                                </strong>
+                                （如果快递人员坚持先前签收再验货，可以在签收之后立刻检查）。
+                            </p>
+                            <h4 class="w-tit2">
+                                请注意：
+                            </h4>
+                            <ol>
+                                <li>
+                                    务必检查封箱胶带是否为美会说海外购专用胶带，胶带是否有被拆开重新粘贴过的痕迹。
+                                </li>
+                                <li>
+                                    务必检查包装箱是否为美会说海外购专用红色包装箱。
+                                </li>
+                                <li>
+                                    快递包装是否有破损、渗漏、缺少等现象。
+                                </li>
+                                <li>
+                                    若出现以上情况，建议您尽快与我们取得联系，并拍照存档，把照片发给我们的客服人员，以便我们对物流快递公司进行追责。
+                                </li>
+                            </ol>
+                            <p class="para">
+                                退货运费说明参见
+                                <a href="/footer/refund" target="_blank" title="退款说明">
+                                    退款说明
+                                </a>
+                            </p>
+                        </dl>
+                    {% elif el == "siteintro" %}
+                    {# 网站简介 #}
+                        <dl>
+                            <h3 class="w-tit">
+                                “美会说药妆海外购”是一家自营海外正品药妆特卖网站
+                            </h3>
+                            <h4 class="w-tit2 paragraph">
+                                ——主打药妆用品，下设护肤、洗护、彩妆和健康食品等类目。
+                            </h4>
+                            <p class="paragraph">
+                                深入货源产地直采，独家代理资质，保证商品品质；重金批量采购，高效仓储物流，保证价格最具竞争力；自营备货政府背书，海外直采跨境直邮，30天无忧售后；和海关、保税区深入合作，电子化极速清关，下单后2-7个工作日送达。支持支付宝、微信等支付方式， 告别传统海外购的多币支付烦恼。
+                            </p>
+                            <p class="paragraph">
+                                美会说将力争在业界掀起一阵零经验、零风险的全民海淘风，让国人足不出户就能享用到全球人民海淘的药妆用品，彻底摆脱私人代购和传统海淘的困扰。美会说药妆海外购秉承着保真、保质、保值的优良传统，为广大客户提供最优质的商品和服务，立志成为中国药妆行业跨境电子商务的领军企业，让每一个消费者都能买到放心、优质、舒心的海外商品。
+                                <strong class="f-fw">
+
+                                </strong>
+                            </p>
+                        </dl>
+                    {% elif el == "contactus" %}
+                    {# 联系我们 #}
+                        <dl>
+                            <h3 class="w-tit">
+                                美会说药妆海外购 | 专注药妆
+                            </h3>
+                            <ul>
+                                <li>
+                                    <label>
+                                        客服电话：
+                                    </label>
+                                    <span>
+                                        400-6010-545
+                                    </span>
+                                    <span>
+                                        （周一到周日 09:00 - 24:00）
+                                    </span>
+                                </li>
+                                <li>
+                                    <label>
+                                        客服邮箱：
+                                    </label>
+                                    <a href="mailto:service@meihuishuo.com" title="美会说客服邮箱">
+                                        service@meihuishuo.com
+                                    </a>
+                                </li>
+                                <li>
+                                    <label>
+                                        官方网址：
+                                    </label>
+                                    <span>
+                                        www.meihuishuo.com
+                                    </span>
+                                </li>
+                                <li>
+                                    <label>
+                                        官方微博：
+                                    </label>
+                                    <a href="http://weibo.com/beautalk" target="_blank" title="美会说官方微博">
+                                        @美会说
+                                    </a>
+                                </li>
+                                <li>
+                                    <label>
+                                        官方微信：
+                                    </label>
+                                    <span>
+                                        美会说（ID：beautalk）
+                                    </span>
+                                </li>
+                            </ul>
+                            <p>
+                                如有任何问题，欢迎通过以上各种方式与我们联系。
+                            </p>
+                        </dl>
+                    {% end %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% end %}
+{% end %}
+
+{% block script %}
+    <script type="text/javascript">
+        $(".personLeftNav li h3").click(function () {
+            if (this.parentElement.classList.contains("expanded")){
+                this.parentElement.className = "collapsed";
+            } else {
+                this.parentElement.className = "expanded";
+            }
+        })
+    </script>
+{% end %}

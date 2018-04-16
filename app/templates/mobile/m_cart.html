@@ -1,0 +1,477 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    购物车-美会说药妆海外购
+{% end %}
+
+{% block style %}
+    <style type="text/css">
+        .g-hd{position:relative;z-index:2;}.n-page{min-height:100%;margin-top:-50px;padding-top:50px;z-index:1;}.n-bill{height:100%;background-color:#f2f0f0;margin-top:-15px;}.m-loading{padding:50%
+        0;background:#fff;}.m-emtpy{padding:15% 0;background:#fff;}.m-emtpy .tiptxt{padding:5px
+        0 25px;color:#333;}.m-cart{padding:0 0 15px 15px;margin-top:15px;background-color:#fff;}.m-cart
+        .ware{line-height:35px;border-bottom:1px solid #ddd;}.m-cart .ware *{vertical-align:middle;}.m-cart
+        .u-radiobox input{top:0;}.m-cart .gather{padding:10px 15px 0 0;}.m-cart
+        .gather .rpart{text-align:right;}.m-cart .gather .val{width:60px;display:inline-block;}.m-cart
+        .gather .tprice{color:#b2b2b2;}.m-cart .gather .total{margin-bottom:5px;}.m-cart
+        .gather .total .val,.m-cart .gather .total i{color:#d31b43;}.m-cart .u-overtip{margin-right:15px;margin-top:15px;}.m-cart
+        .u-btn{width:120px;height:40px;line-height:40px;font-size:17px;}.m-cartgoods
+        .gitm .itmbox{padding:10px 15px 10px 0;border-bottom:1px solid #ddd;}.m-cartgoods
+        .gitm.z-unable{margin-left:-15px;padding-left:15px;}.m-cartgoods .gitm.z-unable
+        .itmbox{background:#f8f8f8;}.m-cartgoods .gitm.z-unable .tt,.m-cartgoods
+        .gitm.z-unable .txt .tlt a,.m-cartgoods .gitm.z-unable .txt .sku,.m-cartgoods
+        .gitm.z-unable .opt .price,.m-cartgoods .gitm.z-unable .opt .amount{color:#999;}.m-cartgoods
+        .gitm.z-unable .u-setcount .countbox,.m-cartgoods .gitm.z-unable .u-setcount
+        .countbox .ipt{border-color:#ddd;color:#999;}.m-cartgoods .gitm .chs{padding-top:25px;}.m-cartgoods
+        .gitm .chs span{display:block;}.m-cartgoods .gitm .chs .tt{margin-right:8px;}.m-cartgoods
+        .gitm .promote{margin-bottom:10px;padding:7px 0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}.m-cartgoods
+        .gitm .promote .u-icn25{color:#fff;line-height:21px;width:50px;text-align:center;background-position:-430px
+        -403px;}.m-cartgoods .gitm .promote .z-unfull{color:#d41c44;}.m-cartgoods
+        .gitm .promote .z-unfull .u-rtarr{border-color:#d41c44 #d41c44 transparent
+        transparent;}.m-cartgoods .gitm .goodinfo{max-width:70%;overflow:hidden;}.m-cartgoods
+        .gitm .status{padding-top:5px;color:#d41c44;line-height:1.5;}.m-cartgoods
+        .gitm .s-red{color:#d41c44;}.m-cartgoods .gitm .imgwrap{position:relative;display:block;border:1px
+        solid #ddd;width:62px;height:62px;}.m-cartgoods .gitm .imgwrap img{width:100%;}.m-cartgoods
+        .gitm .imgwrap .tag{position:absolute;left:0px;bottom:0px;right:0px;height:17px;line-height:17px;text-align:center;color:#fff;background:rgba(212,28,68,0.8);}.m-cartgoods
+        .gitm .txt{margin-left:70px;}.m-cartgoods .gitm .txt .tlt{line-height:17px;}.m-cartgoods
+        .gitm .txt .sku{color:#999;height:18px;}.m-cartgoods .gitm .opt{text-align:right;}.m-cartgoods
+        .gitm .opt p{line-height:1.3;}.m-cartgoods .gitm .amount{color:#656565;margin-bottom:5px;font-family:simsun;}.m-cartgoods
+        .u-zptag{display:inline-block;padding:0 6px;height:20px;margin-right:5px;background:#e31436;color:#fff;border-radius:3px;line-height:20px;}.m-loading
+        img{width:23px;height:23px;}.f-fw{font-weight:bold;}.f-toe{overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+        .m-dialog .confirm .txt{text-align: center;min-height: 40px;}
+
+        .m-memberLabel{display: inline-block;margin-left: 5px;background-color: #F68587;height: 18px;line-height: 18px;
+            padding: 0 5px;color: #fff;font-size: 12px;vertical-align: 5px;border-radius: 2px;}
+        .u-setcount .countbox {display: -webkit-inline-box;}
+        .u-icn14{margin-top: 2px;}
+    </style>
+{% end %}
+
+
+{% block headertitle %}
+    购物车
+    <span id="cartnum">
+        （<span id="cartcount">{{ count }}</span>）
+    </span>
+{% end %}
+
+{% block content %}
+    <div class="g-bd n-page">
+        <article class="n-bill" id="carts">
+            {% if cart_goods %}
+            <form id="submit-order" action="/order/confirm" method="post">
+                {% module xsrf_form_html() %}
+            <!--Regular list-->
+            <section class="m-cart">
+                <p class="ware">
+                    <span class="u-radiobox">
+                        <input type="checkbox" id="selectAll0" checked="checked">
+                    </span>
+                </p>
+                <ul class="m-cartgoods">
+                    {% for goods in cart_goods %}
+                    <li class="gitm" id="{{ goods['cart_item_id'] }}">
+                        <div class="itmbox f-cb">
+                            <div class="chs f-fl">
+                                <span class="u-radiobox">
+                                    <input type="checkbox" name="{{ goods['goods_id'] }}" data-id="{{ goods['cart_item_id'] }}"
+                                           data-newbuyer="{{ "1" if goods["new_buyer"] else "0" }}" checked="checked">
+                                    <input type="hidden" class="goods" name="goods" value="{{goods['goods_id']}}:{{goods['goods_count']}}">
+                                </span>
+                            </div>
+                            <div class="goodinfo f-fl">
+                                <div class="fig f-fl">
+                                    <a class="imgwrap" href="/goods/{{ goods['goods_id'] }}">
+                                        <img src="{{ goods['goods_img_url'] }}">
+                                    </a>
+                                </div>
+                                <div class="txt">
+                                    <p class="tlt f-toe">
+                                        <a href="/goods/{{ goods['goods_id'] }}">
+                                            {{ goods['goods_title'] }}
+                                        </a>
+                                    </p>
+                                    <p class="sku f-toe">
+                                    </p>
+                                    <div class="u-setcount ">
+                                        <span class="countbox">
+                                            <span class="minus z-dis">
+                                                {% if goods["goods_count"] > 1 %}
+                                                <i class="u-icn14 u-icn14-1">-</i>
+                                                {% else %}
+                                                <i class="u-icn14 u-icn14-1" style="color: rgb(185, 177, 177)">-</i>
+                                                {% end %}
+                                            </span>
+                                            <input type="text" name="tempBuyAmount" id="tempBuyAmount" class="ipt" readonly="readonly"
+                                            autocomplete="off" data-value="{{ goods['goods_id'] }}" min="1" max="99" id="" value="{{ goods["goods_count"] }}">
+                                            {% if not goods["new_buyer"] %}
+                                            <span class="plus addcount">
+                                            {% else %}
+                                                <span class="plus">
+                                            {% end %}
+                                                <i class="u-icn14">+</i>
+                                            </span>
+                                        </span>
+                                        {% if goods["new_buyer"] %}
+                                            <span class="m-memberLabel">
+                                                新人优惠
+                                            </span>
+                                        {% end %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="opt f-fr">
+                                <p class="price">
+                                    ¥
+                                    <i class="f-fw goods-price">
+                                        {{ goods['price'] }}
+                                    </i>
+                                </p>
+                                <p class="amount" id="{{ goods['goods_id'] }}_amount">
+                                    ×{{ goods['goods_count'] }}
+                                </p>
+                                <b class="u-remove" form-data="{{ goods['cart_item_id'] }}"></b>
+                            </div>
+                        </div>
+                    </li>
+                    {% end %}
+                </ul>
+                <div class="gather f-cb">
+                    <span class="f-fl">
+                        已选商品
+                        <i id="selectednum"></i>
+                        件
+                    </span>
+                    <div class="rpart f-fr">
+{#                        <p class="tprice">#}
+{#                            商品总额：#}
+{#                            <span class="val" id="tprice-nocou">#}
+{#                                ¥487.00#}
+{#                            </span>#}
+{#                        </p>#}
+{#                            <p class="tprice">#}
+{#                                活动优惠：#}
+{#                                <span class="val">#}
+{#                                    -¥0.00#}
+{#                                </span>#}
+{#                            </p>#}
+                        <p class="total">
+                            总计：
+                            <span class="val">
+                                ¥
+                                <i class="f-fw" id="tprice">
+                                    487.00
+                                </i>
+                            </span>
+                        </p>
+                        <a class="u-btn" onclick="toPay()">
+                            结算
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            </form>
+            {% else %}
+            <section class="m-emtpy f-tac">
+{#                    <span class="u-icn5">#}
+{#                    </span>#}
+                <p class="tiptxt">
+                    购物车里空空如也，赶紧去逛逛吧！
+                </p>
+                <a href="/" class="u-btn" style="background: #d22147">
+                    去逛逛
+                </a>
+            </section>
+            {% end %}
+        </article>
+    </div>
+    <div class="progress progress-fix animated" style="display: none;">
+        <div class="progress-bar progress-bar-striped active" role="progressbar"
+        style="width: 100%; background-color: rgb(92, 184, 92);">
+        </div>
+    </div>
+    <div class="m-toast" style="display: none;">
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
+            <tr>
+                <td width="100%" align="center" valign="center">
+                    <div class="toast box animated info show toastFadeIn errText"></div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="m-notify m-notify-right">
+    </div>
+{% end %}
+
+{% block script %}
+    <script type="text/javascript">
+
+        function toPay () {
+             // 结算前判断是否有选择的商品
+             var has_checkbox = false,
+                 newbuyer_count = 0;
+             $(".m-cartgoods :checkbox").each(function () {
+                 if(this.checked){
+                     has_checkbox = true;
+                     if ($(this).attr("data-newbuyer") == "1") {
+                         var id = $(this).attr("data-id");
+                         newbuyer_count += parseInt($("#"+id+" #tempBuyAmount").val());
+                     }
+                 }
+             });
+             console.log(newbuyer_count);
+             if (!has_checkbox) {
+                $(".m-toast").css("display", "block");
+                $(".errText").text("请选择商品");
+                setTimeout('$(".m-toast").css("display", "none");', 800);
+                return false;
+             } else {
+                 if (newbuyer_count > 1) {
+                     errorMsg("新人优惠商品每人限购一件", 800);
+                 } else {
+                    if (!is_login()) {
+                        var next = window.location.pathname;
+                        window.location.href = "/signin?next="+next;
+                        return
+                    }
+                     $('#submit-order').submit();
+                 }
+             }
+        }
+
+        // 删除购物车后,检测购物车是否为空
+        function checkCartNull(){
+            var cartitem = $(".gitm");
+            if (cartitem.length == 0){
+                var content = '<section class="m-emtpy f-tac"><p class="tiptxt">购物车里空空如也，赶紧去逛逛吧！</p>' +
+                        '<a href="/"class="u-btn"style="background: #d22147">去逛逛</a></section>';
+                $("#submit-order").remove();
+                $("#carts").append(content);
+            }
+        }
+
+        function allchk() {
+            // 更新总价格 已经选择商品件数
+            var chknum = $(".m-cartgoods :checkbox").size(),  //选项总个数
+                chk = 0,  // 选择的商品种类数
+                goods_count = 0, // 选择的商品总个数
+                sum_price = 0.0;  // 总价
+            $(".m-cartgoods :checkbox").each(function () {
+                if(this.checked){
+                    // 统计选择的总价格
+                    var count = $(this).closest(".gitm").find("#tempBuyAmount").val();
+                    var price = $(this).closest(".gitm").find(".goods-price").text();
+                    sum_price += parseFloat(price) * 100 * count / 100;
+                    goods_count += parseInt(count);
+                    chk++;  // 统计选择的个数
+                    $(this).closest(".gitm").find(".goods").attr("name", "goods");
+                } else {  // 没有选择则将 hidden 表单数据修改
+                    $(this).closest(".gitm").find(".goods").attr("name", "goods_del");
+{#                        $(this).closest(".goods").attr("name", "goods_del");#}
+                }
+            });
+            var select_all = $("#selectAll0");
+            if(parseInt(chknum)==chk){  //全选
+                select_all.attr("checked",true);
+                select_all.prop("checked",true);
+            }else{  //不全选
+                select_all.attr("checked",false);
+                select_all.prop("checked",false);
+            }
+            $("#selectednum").text(goods_count);
+
+            // 总价格
+            $(".tprice-nocou").text(sum_price);
+            $(".tprice").text(sum_price);
+            $("#tprice").text(sum_price);
+        }
+
+        function checkBtnStatus(element) {
+            var amount = $(element).closest("#tempBuyAmount").val();
+            var dis = $(element).closest(".u-icn14-1");
+            if (amount > 1){
+                dis.css("color", "")
+            } else {
+                dis.css("color", "rgb(185, 177, 177)")
+            }
+
+        }
+
+        $(".m-cartgoods :checkbox").click(function() {
+            // 每次选择都更新界面数据
+            allchk();
+        });
+
+        $("#selectAll0").click(function() {
+            var boxes = $(".m-cartgoods :checkbox");
+            if(this.checked){
+                boxes.attr("checked", true);
+                boxes.prop('checked',true);
+                allchk()
+            }else{
+                boxes.attr("checked", false);  // 兼容性问题
+                boxes.prop('checked',false);
+                allchk()
+            }
+         });
+
+        function getAmountElementById(id) {
+            return $("#"+id+"_amount")
+        }
+
+        $(".addcount").on("click", function() {
+            var plus_element = this;
+            var element = $(this).parent().children("#tempBuyAmount");
+            var goods_id = element.attr("data-value"),
+                count = parseInt(element.val())+1;
+            var loginMhs = new $.LoginMhs();
+            if (!loginMhs.isLogin()) {
+                var cartHelper = new $.CartHelper();
+                cartHelper.updateCart(goods_id, 1);
+                element.val(count);
+                getAmountElementById(goods_id).text("×"+count);
+                var cartnum = parseInt($("#cartcount").text());
+                $("#cartcount").text(cartnum+1);
+                allchk();
+                return
+            }
+            $.ajax({
+                type: "POST",
+                async: true,
+                url: "/cart/update",
+                data: {_xsrf: getCookie("_xsrf"), "goods_id": goods_id, "goods_count": count},
+                dataType: "json",
+                success: function(data) {
+                    if (data["status"]  == "error") {
+                        errorMsg(data["message"], 800);
+                    } else {
+                        element.val(count);
+                        getAmountElementById(goods_id).text("×"+count);
+                        var cartnum = parseInt($("#cartcount").text());
+                        $("#cartcount").text(cartnum+1);
+                        // 修改该商品总价格和数量
+                        allchk();
+                        checkBtnStatus(plus_element);  // 加减按钮颜色状态
+{##}
+{#                          // 修改 hidden 表单数据#}
+                        $(element).closest(".gitm").find(".goods").attr("value", goods_id+":"+count);
+{#                          $(element).parent().children(".u-chk").attr("value", goods_id+":"+count);#}
+                    }
+                },
+                error: function() {
+                    errorMsg("服务器开小差了，请重试", 800);
+                }
+            })
+        });
+
+        $(".z-dis").on("click", function() {
+            var dis_element = this;
+            var element = $(this).parent().children("#tempBuyAmount");
+            var goods_id = element.attr("data-value"),
+                count = parseInt(element.val())-1;
+            var loginMhs = new $.LoginMhs();
+            if (!loginMhs.isLogin()) {
+                if (count > 0 ) {
+                    var cartHelper = new $.CartHelper();
+                    cartHelper.updateCart(goods_id, -1);
+                    element.val(count);
+                    getAmountElementById(goods_id).text("×" + count);
+                    var cartnum = parseInt($("#cartcount").text());
+                    $("#cartcount").text(cartnum - 1);
+                    allchk();
+                }
+                return
+            }
+            if (count > 0 ) {
+                $.ajax({
+                    type: "POST",
+                    async: true,
+                    url: "/cart/update",
+                    data: {_xsrf: getCookie("_xsrf"), "goods_id": goods_id, "goods_count": count},
+                    dataType: "json",
+                    success: function (data) {
+                        if (data["status"] == "error") {
+                            errorMsg(data["message"], 800);
+                        } else {
+                            element.val(count);
+                            getAmountElementById(goods_id).text("×" + count);
+                            var cartnum = parseInt($("#cartcount").text());
+                            $("#cartcount").text(cartnum - 1);
+                            // 修改该商品总价格和数量
+                            allchk();
+                            checkBtnStatus(dis_element);  // 加减按钮颜色状态
+                            {#                            // 修改 hidden 表单数据#}
+                            $(element).closest(".gitm").find(".goods").attr("value", goods_id+":"+count);
+                        }
+                    },
+                    error: function () {
+                            errorMsg("服务器开小差了，请重试", 800);
+                    }
+                })
+            }
+        });
+
+        $(".u-remove").on("click", function() {
+            var id = $(this).attr("form-data");
+            var alert_html = '<div class="m-dialog"><div class="confirm show"><div class="txt ">确定删除该商品吗？</div>' +
+                    '<div class="btns btns-2"><span class="btn" id="cancel-delete">取消</span>' +
+                    '<span class="btn" id="ok-delete" form-data='+id+'>确定</span></div></div></div>';
+            $("body").append(alert_html);
+            $("#cancel-delete").on("click", function() {
+                $(".m-dialog").remove();
+            });
+            $("#ok-delete").on("click", function(){
+                var id = $(this).attr("form-data");
+                deleteCart(id);
+            });
+        });
+
+        $("#cancel-delete").on("click", function(){
+            $(".m-dialog").remove();
+        });
+
+        function deleteCart(id){
+            var loginMhs = new $.LoginMhs();
+            if (loginMhs.isLogin()) {
+                $.ajax({
+                    type: "POST",
+                    async: true,
+                    url: "/cart/delete",
+                    data: {_xsrf: getCookie("_xsrf"), "id": id},
+                    dataType: "json",
+                    success: function (data) {
+                        if (data["status"] == "error") {
+                            $(".m-dialog").remove();
+                            errorMsg(data["message"], 800);
+                            return false;
+                        } else {
+                            $(".m-dialog").remove();
+                            var cartnum = parseInt($("#cartcount").text());
+                            var disnum = parseInt($("#" + id + "").find("#tempBuyAmount").val());
+                            $("#cartcount").text(cartnum - disnum);
+                            $("#" + id + "").remove();
+                            allchk();
+                            checkCartNull();  // 检测是否还存在商品
+                        }
+                    },
+                    error: function () {
+                        errorMsg("服务器开小差了，请重试", 800);
+                        return false;
+                    }
+                });
+            } else {
+                $(".m-dialog").remove();
+                var cartnum = parseInt($("#cartcount").text());
+                var disnum = parseInt($("#" + id + "").find("#tempBuyAmount").val());
+                $("#cartcount").text(cartnum - disnum);
+                $("#" + id + "").remove();
+                allchk();
+                checkCartNull();  // 检测是否还存在商品
+            }
+            var cartHelper = new $.CartHelper();
+            cartHelper.deleteProduct(id)
+        }
+        allchk();
+    </script>
+{% end %}

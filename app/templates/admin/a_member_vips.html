@@ -1,0 +1,157 @@
+{% extends "../admin/a_layout.html" %}
+
+{% block title %}美会说 - {{ handler.settings["site_name"] }}管理后台{% end %}
+
+{% block head %}
+{% end %}
+
+
+{% block header %}
+{% module AdminNavModule() %}
+{% end %}
+
+
+{% block content %}
+
+{% module AdminMenuModule("members") %}
+
+<div class="content-wrapper" style="min-height: 612px;">
+  <div class="content-header">
+    <h1>VIP 会员管理</h1>
+  </div>
+
+  <!-- Main content -->
+  <div class="content">
+  <form role="form" method="get">
+   {% module xsrf_form_html() %}
+    <div class="row">
+      <div class="col-xs-12">
+
+        <div class="nav-tabs-custom">
+          <ul class="nav nav-tabs">
+            <li><a href="/members/">全部会员</a></li>
+            <li class="active"><a href="/members/vips">VIP 会员</a></li>
+          </ul>
+
+          <div class="box-body" style="text-align: center;">
+            <div class="pages">
+              <div class="col-sm-9" id="Pagination1"></div>
+              <div class="col-sm-3 searchPage">
+                <span class="page-sum">共<strong>{{member_count/num+1}}</strong>页</span>
+                <span class="page-go1">跳转<input type="text">页</span>
+                <a href="javascript:;" class="page-btn1">GO</a>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <table class="table table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      <th style="text-align: center;"> 序号 </th>
+                      <th style="text-align: center;"> 会员名称 </th>
+                      <th style="text-align: center;"> 电话 </th>
+                      <th style="text-align: center;"> 注册时间 </th>
+                      <th style="text-align: center;"> 购买 VIP 时间 </th>
+                      <th style="text-align: center;"> 会员等级 </th>
+                      <th style="text-align: center;"> 会员到期时间 </th>
+                      <th style="text-align: center;"> 返现金额 </th>
+                      <th style="text-align: center;"> 返利金额 </th>
+                      <th style="text-align: center;"> 总资产 </th>
+                      <th style="text-align: center;"> 操作 </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for index, member in enumerate(members) %}
+                    <tr style="text-align: center;">
+                      <td> {{index+1}} </td>
+                      <td> <a href="/member/detail/{{member.member_id}}/"> {{member.member_name}} </a> </td>
+                      <td> {{member.telephone}} </td>
+                      <td> {{member.create_time}} </td>
+                      <td> {{ member.last_vip_at_str }} </td>
+                      <td> {{ member.vip_type_str }} </td>
+                      <td> {{ member.vip_avail_at_str }} </td>
+                      <td> {{ member.invite_vip_returns }} </td>
+                      <td> {{ member.invite_vip_buys }} </td>
+                      <td> {{ member.account_balance }} </td>
+                      <td>
+                        <a href="/member/detail/{{member.member_id}}/">查看</a>
+                      </td>
+                    </tr>
+                    {% end %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="pages">
+              <input type="hidden" value="{{member_count/num+1}}" id="page_num">
+              <input type="hidden" value="{{handler.start + num}}" id="current_page">
+              <input type="hidden" value="{{member_id}}" id="member_id">
+              <input type="hidden" value="{{telephone}}" id="telephone">
+              <div class="col-sm-9" id="Pagination"></div>
+              <div class="col-sm-3 searchPage">
+                <span class="page-sum">共<strong>{{member_count/num+1}}</strong>页</span>
+                <span class="page-go">跳转<input type="text">页</span>
+                <a href="javascript:;" class="page-btn">GO</a>
+              </div>
+            </div>
+          </div>
+      </div>
+      </div>
+    </div>
+  </form>
+  </div>
+</div>
+
+{% end %}
+
+
+{% block footer %}
+{% module AdminFooterModule() %}
+{% end %}
+
+
+{% block tail_script %}
+<script type="text/javascript">
+  $(document).ready(function(){
+    var current_page = $("#current_page").val();
+    $("#Pagination, #Pagination1").pagination($("#page_num").val(), current_page,
+            "/members/?telephone="+$("#telephone").val()+"&member_id="+$("#member_id").val()+"&is_staff="+$("#is_staff").val());
+
+    $("#resetbtn").click(function(){
+      $("#member_id").val("");
+      $("#telephone").val("");
+      $("#is_staff").val("");
+    });
+
+    function staff(member_id, is_staff) {
+        $.ajax({
+            type: "POST",
+            async: true,
+            url: "/member/staff/"+member_id+"/",
+            data: {_xsrf: getCookie("_xsrf"), is_staff: is_staff},
+            dataType: "json",
+            success: function(data) {
+                if (data["result"] == "success") {
+                    window.location.reload()
+                } else if (data["result"] == "error") {
+                    alert(data['message'])
+                }
+            },
+            error: function() {
+                alert("服务器异常，请刷新重试");
+            }
+        });
+    }
+
+    $(".set-staff").click(function() {
+        var member_id = $(this).attr("data-val");
+        staff(member_id, "Y");
+    });
+
+    $(".remove-staff").click(function() {
+        var member_id = $(this).attr("data-val");
+        staff(member_id, "N");
+    });
+  });
+</script>
+{% end %}

@@ -1,0 +1,338 @@
+{% extends "layout/w_layout.html" %}
+
+{% block title %}
+    忘记密码 - 美会说药妆海外购
+{% end %}
+
+{% block style %}
+    <link rel="stylesheet" href="{{ handler.build_assets_url("/css/www/registe.css") }}">
+    <style type="text/css">
+       .registe-h1 {
+           display: inline-block;
+           zoom: 1;
+           height: 43px;
+           line-height: 100px;
+           margin-left: 6px;
+           font-size: 22px;
+       }
+       .msgStyle {
+            text-align: center;
+            font-size: 19px;
+            color: #333;
+            margin-top: 8px;
+        }
+        .reg-note {
+            padding-right: 60px;
+        }
+    </style>
+{% end %}
+
+{% block docHead %}
+<header id="docHead">
+    <div id="docHeadWrap">
+        <a href="/" class="logokaola" title="忘记密码"></a>
+        <div id="topimg">
+            <img src="/images/www/topimg_default.png" height="100%">
+        </div>
+    </div>
+</header>
+{% end %}
+
+{% block menu %}
+{% end %}
+
+{% block content %}
+<div class="registe-content">
+    <div class="page lang-zh-S">
+    <div class="back-login">
+        <a href="/signin">
+            <span class="back-login-txt">返回登录 >></span>
+        </a>
+    </div>
+    <div class="content">
+        {% module xsrf_form_html() %}
+        <div class="form-step1">
+            <div class="form-step">
+                <div class="form-step2">
+                    <div class="reg-title">
+                        重置密码
+                    </div>
+                    <div class="reg-note">
+                        手机号没有注册请选择 <a href="/registe"><span class="back-login-txt">立即注册</span></a>
+                    </div>
+                    <div class="form-list form-main-list">
+                <div method="post" action="#" id="J_InfoForm">
+                    <div class="form-group">
+                        <div class="form-item">
+                            <span class="form-label tsl" data-phase-id="r_p_mobileNum">
+                                手机号
+                            </span>
+                            <div class="mobile-text">
+                                <input autocomplete="off" class="form-text mobile-input" name="mobile" id="telephone" type="text" value="" placeholder="请输入你的手机号码"/>&nbsp;&nbsp;
+                                <input type="button" autocomplete="off" class="yzm-btn btn btn-white btn-weak tsl btn-normal" data-phase-id="r_p_getCheckcodeTip" id="send_code" value="获取验证码">
+                                <span id="telephone-error" style="color:#D22147"></span>
+                            </div>
+                        </div>
+                        <div class="form-item">
+                            <span class="form-label tsl">验证码</span>
+                            <input class="form-text checkcode-text" id="code" type="text" name="code" value="" maxlength="8">
+                            <span id="code-error" style="color:#D22147"></span>
+                            <div id="send-code-succ" class="msg msg-type-ok msg-display-block" style="display:none;" data-type="info" data-show="1" data-display="block"><i class="iconfont">󰅖</i><div class="msg-tit"></div><div class="msg-cnt">校验码已发送至你的手机，请查收</div></div>
+                        </div>
+                        <div class="form-item">
+                            <span class="form-label tsl" data-phase-id="r_p_password">重新设置密码</span>
+                            <input class="form-text" id="Password" name="pwd" type="password" placeholder="设置你的登录密码" data-inner_placeholder="r_p_input_enterPassword" value="">
+                            <span id="password-error" style="color:#D22147"></span>
+                        </div>
+
+                        <div class="form-item">
+                            <span class="form-label tsl" data-phase-id="r_p_confirmPassword">再次确认密码</span>
+                            <input class="form-text" id="rePassword" name="confirmPwd" type="password" placeholder="请再次输入你的密码" data-inner_placeholder="r_p_input_reEnterPassword" data-outer_placeholder="r_p_input_reEnterPwd" value="">
+                            <span id="repassword-error" style="color:#D22147"></span>
+                        </div>
+                        <div class="form-item">
+                            <button type="submit" id="btn-registe-step2" class="btn btn-large tsl" data-phase-id="r_p_submit">重置密码</button>
+                            <div class="msg tsl msg-type-error msg-hide" data-phase-id="" data-type="error" data-show="0" id="J_MsgInfoForm" data-display="block">
+                                <i class="iconfont"></i>
+                                <div class="msg-tit"></div>
+                                <div class="msg-cnt"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+
+<div id="message-dialog" style="display: none;">
+    <div class="iDialog commTipsPop m-window-2 iDialogAniCore" style="z-index: 10001; width: 520px; height: 250px; margin-left: -260px; left: 50%; margin-top: -125px; top: 50%;">
+        <table class="iDialogWrapTable">
+            <tbody>
+                <tr>
+                    <td class="itd-mid-left">
+                    </td>
+                    <td class="itd-mid-center">
+                        <div class="iDialogContent">
+                            <div class="iDialogHead">
+                                <h1>
+                                    提示
+                                </h1>
+                            </div>
+                            <a class="iDialogClose" hidefocus="true" href="javascript:;">
+                            </a>
+                            <div class="iDialogBody">
+                                <div class="iDialogMain" style="height: 50px;">
+                                    <div class="msgStyle">
+                                        <div class="tipText"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="iDialogFoot">
+                                <a href="javascript:;" rel="1" class="iDialogBtn BtnOk focusBtn">
+                                    <span>
+                                        确认
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="itd-mid-right">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="iDialogLayout" style="z-index: 10000;">
+    </div>
+</div>
+
+{% end %}
+
+{% block script %}
+<!-- <script type="text/javascript" src="/js/jquery-1.11.3.min.js"></script> -->
+<script type="text/javascript">
+    String.prototype.trim = function() {
+      return this.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+    };
+
+    $("#loginin").click(function() {
+        var username = $("#username"),
+            password = $("#password"),
+            error    = $("#LoginErrInfo"),
+            useremail_box = $("#useremail_box"),
+            password_box = $("#password_box");
+
+        useremail_box.css("borderColor", "#DDD");
+        password_box.css("borderColor", "#DDD");
+        if (!username.val() && !password.val()) {
+            error.text("请输入用户名和密码").parent().css("display", "block");
+            useremail_box.css("borderColor", "#D22147");
+            password_box.css("borderColor", "#D22147");
+            username.focus();
+            return false
+        }
+        if (!username.val()) {
+            error.text("请输入用户名").parent().css("display", "block");
+            useremail_box.css("borderColor", "#D22147");
+            username.focus();
+            return false
+        }
+        if (!password.val()) {
+            error.text("请输入密码").parent().css("display", "block");
+            password_box.css("borderColor", "#D22147");
+            password.focus();
+            return false
+        }
+        error.parent().css("display", "none")
+    });
+
+    $(".ks-dialog-close").click(function() {
+        $(".form-step1-1").css("display", "none");
+    });
+
+    $(".iDialogClose, .closeDialog, .BtnOk").click(function() {
+        $("#message-dialog").css("display", "none");
+    });
+
+    $("#code").focus(function(){
+        $("#code-error").text("");
+    });
+
+    $("#Password").focus(function(){
+        $("#password-error").text("");
+    });
+
+    $("#rePassword").focus(function(){
+        $("#repassword-error").text("");
+    });
+
+    $("#telephone").focus(function(){
+        $("#telephone-error").text("");
+    });
+
+    function registe_step1() {
+        var tel = $("#telephone").val(); //获取手机号
+        var telReg = tel.match(/^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/);
+
+        //如果手机号码不能通过验证
+        if(!telReg){
+            $("#telephone-error").text("请输入正确的电话号码");
+            return "error"
+        } else {
+            $("#telephone-error").text("");
+            var ret = "";
+            jQuery.ajax({
+                type: "POST",
+                async: false,
+                url: "/getcheckcode",
+                data: {_xsrf: getCookie("_xsrf"), "telephone": tel, "action": "forgetpwd"},
+                success: function(data) {
+                    if (data["status"] == "success") {
+                        $("#send-code-succ").css("display", "block");
+                    } else if (data["result"] == "error") {
+                        $("#telephone-error").text(data["message"]);
+                        $(".yzm-btn").text("获取验证码").attr('disabled',false).css('cursor','pointer');
+                        ret = "error"
+                    }
+                },
+                error: function() {
+                    $("#telephone-error").text("服务器繁忙 请稍后再试");
+                    ret = "error"
+                },
+                dataType: "json"
+            });
+            return ret;
+        }
+    };
+
+
+    $("#send_code").click(function() {
+        var status = registe_step1();
+        if (status != "error") {
+            var el_send_code = document.getElementById("send_code"),
+                jq_el_send_code = $("#send_code"),
+                seconds = 119;
+            $(this).val('120秒后重发');
+        	$(this).attr('disabled',true).css('cursor','not-allowed');
+            function b(){
+        		var s = seconds--;
+        		if (s<1) {
+        			clearInterval(a);
+                    el_send_code.value = '重新获取验证码';
+                    el_send_code.removeAttribute("disabled");
+                    jq_el_send_code.css("cursor", "pointer");
+        		} else {
+                    jq_el_send_code.val(s + "秒后重发");
+                }
+            }
+            var a = setInterval(b, 1000);
+            return false;
+        }
+    });
+
+    $("#telephone").focus(function(){
+        $("#telephone-error").text("");
+    })
+
+    $("#btn-registe-step2").click(function() {
+        var telephone  = $("#telephone").val();
+        var code       = $("#code").val();
+        var password   = $("#Password").val();
+        var repassword = $("#rePassword").val();
+        var error = false;
+        if (!telephone){
+            $("#telephone-error").text("请输入手机号码");
+            error = true;
+        }
+        if (!code || code.length != 6){
+            $("#code-error").text("请输入正确的6位数验证码");
+            error = true;
+        }
+        if (!password || password.length < 6 || password.length > 16){
+            $("#password-error").text("请输入长度在6～16位的密码");
+            error = true;
+        }
+        if (!repassword){
+            $("#repassword-error").text("请确认密码");
+            error = true;
+        }
+        if (repassword && password != repassword){
+            $("#repassword-error").text("两次密码输入不一致");
+            error = true;
+        }
+        if (!error) {
+            jQuery.ajax({
+                type: "POST",
+                async: true,
+                url: "/password/reset",
+                data: {_xsrf: getCookie("_xsrf"), "telephone": telephone, "password": password, "code": code},
+                success: function (data) {
+                    if (data["status"] == "success") {
+                        window.location.href = "/";
+                    } else if (data["status"] == "error") {
+                        $("#message-dialog").css("display", "block");
+                        $(".tipText").text(data["message"]);
+                        return "error";
+                    }
+                },
+                error: function () {
+                    return "error"
+                },
+                dataType: "json"
+            });
+        }
+    });
+
+    // Enter
+    $("#telephone, #code, #Password, #rePassword").keydown(function(event) {
+        e = event ? event :(window.event ? window.event : null);
+        if (event.keyCode == "13") {
+           $("#btn-registe-step2").click()
+        }
+    });
+</script>
+{% end %}

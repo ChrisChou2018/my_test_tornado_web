@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no, email=no">
+        <link rel="shortcut icon" href="/images/mobile/favicon.ico">
+        <title>
+            美会说药妆海外购-登录
+        </title>
+        <link href="{{ handler.build_assets_url("/css/mobile/core.css") }}" type="text/css" rel="stylesheet">
+        <style type="text/css">
+            .m-form-login .fitm{zoom:1; margin-top: 5px;}.m-form-login .fitm:after{display:block;clear:both;visibility:hidden;height:0;overflow:hidden;content:".";}.m-form-login
+            .fitm-1{margin:20px 15px 10px;}.m-form-login .fitm-2{padding:0 20px;font-size:13px;line-height:24px;}.m-form-login
+            .fitm-2 a,.m-form-login .fitm-2 a:hover{color:#878787;}.m-thirdpart{padding:150px
+            20px 50px;}.m-thirdpart .tit{position:relative;border-bottom:1px dotted
+            #aaa;}.m-thirdpart .tit .txt{position:absolute;left:50%;top:-13px;margin:0
+            0 0 -70px;width:140px;background:#fff;text-align:center;color:#666;font-size:16px;line-height:26px;}.m-thirdpart
+            .lnk{position:relative;padding:15px 0 0;width:230px;margin:0 auto;text-align:center;}.m-thirdpart
+            .lnk a{margin:0 15px;}.m-thirdpart .lnk .m-notice1{position:absolute;left:0;top:70px;}#submit{background-color:#c4282b;}
+            .registe-note{margin-left:10px;font-size:14px;margin:10px;}
+            .getCheckcode{line-height: 44px;padding: 0 5px;font-size:16px;color:#404040;background-color:#f7f7f7;
+                border:1px solid #d0d0d0;border-radius:6px;margin: 0 14px;}
+
+            .am-list{-webkit-box-sizing:border-box;box-sizing:border-box;padding:6px 0;}
+            .am-flexbox{-webkit-box-sizing:border-box;box-sizing:border-box;text-align:left;display:-webkit-box!important;display:box!important;-webkit-box-orient:horizontal;-webkit-box-pack:center;-webkit-box-align:center;}
+            .am-flexbox .am-flexbox-item{-webkit-box-sizing:border-box;box-sizing:border-box;-webkit-box-flex:1;box-flex:1;margin-left:8px;min-width:20px;}
+            .am-list .am-list-item:last-child{border-bottom-right-radius:6px;border-bottom-left-radius:6px;background-clip:padding-box;border-bottom-width:1px;}
+            .am-list .am-list-item:first-child{border-top-left-radius:6px;border-top-right-radius:6px;background-clip:padding-box;}
+            .am-list div.am-list-item-form{-webkit-box-sizing:border-box;box-sizing:border-box;padding:0 10px;}
+            .am-list .am-list-item{-webkit-box-sizing:border-box;box-sizing:border-box;display:block;position:relative;
+                z-index:10;margin:0;padding:10px 30px 10px 10px;width:100%;border:1px solid #bfbfbf;border-bottom-width:0;background-color:#fff;color:#000;text-align:left;vertical-align:middle;}
+            .am-list .am-list-item:after{visibility:hidden;display:block;font-size:0;content:" ";clear:both;height:0;}
+            .am-list .am-list-item-icon:last-child{margin-left:8px;}
+            .am-list .am-list-item .am-list-item-icon{display:inline-block;white-space:nowrap;}
+            .am-ft-lightgray{color:#ccc!important;}.am-ft-xxl{font-size:20px!important;}
+            .am-list div.am-list-item-form input[type=text], .am-list div.am-list-item-form input[type=email], .am-list div.am-list-item-form input[type=number], .am-list div.am-list-item-form input[type=tel], .am-list div.am-list-item-form input[type=password], .am-list div.am-list-item-form input[type=url], .am-list div.am-list-item-form input[type=search] {
+                -webkit-box-sizing: border-box;box-sizing: border-box;-webkit-appearance: none;
+                padding: 8px 0;width: 100%;height: 45px;border: 0;font-size:16px;}
+            .getCheckcode[disabled=disabled] {color: #fff!important;border-color: #ddd!important;background: #ddd!important;
+                background-image: -webkit-gradient(linear,left top,left bottom,from(#ddd),to(#ddd))!important;background-image: linear-gradient(#ddd,#ddd)!important;
+                opacity: .7;}
+        </style>
+    </head>
+
+    <body>
+        <header class="g-hd " id="g-hd">
+            <div class="m-topnav-wrap">
+                <div class=" m-topnav" id="topbar-box">
+                    <div class="m-topnavbar">
+                        <span id="backbtn" class="u-icn18 backbtn">
+                        </span>
+                        <span class="tit" id="toptitle">
+                            注册
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class="g-bd">
+            <div class="m-form m-form-login">
+                <div id="loginform" autocomplete="off" >
+                    <div class="registe-note">
+                        请输入手机号码注册新用户
+                    </div>
+                    <div class="registe-one">
+                        <div class="fitm">
+                            <div class="u-suggest">
+                                <input id="username" class="u-ipt" type="text" name="username" autocomplete="off"
+                                data-required="true" placeholder="电话号码">
+                                <i id="namedel" class="u-icn6" style="display:none;">
+                                    &nbsp;
+                                </i>
+                                <ul id="suglist" class="suglist" style="visibility:hidden;">
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="fitm fitm-1">
+                            <a id="registe1" class="u-btn u-btn-1 s-fc5" href="javascript: void(0);">
+                                下一步
+                            </a>
+                        </div>
+                    </div>
+                    <div class="registe-two" style="display: none">
+                        <form action="/registe/setp2" method="post">
+                            {% module xsrf_form_html() %}
+                            <div class="am-content">
+                                <div class="am-list">
+                                    <div class="am-flexbox">
+                                        <div class="am-flexbox-item">
+                                            <div class="am-list-item am-list-item-form am-input-autoclear am-flexbox">
+                                                <div class="am-flexbox-item">
+                                                    <input type="hidden" name="telephone" id="telephone">
+                                                    <input type="tel" class="am-input-autoclear am-input-required" placeholder="短信校验码"
+                                                    name="code" id="code" autocomplete="off" value="">
+                                                </div>
+                                                <span class="am-list-item-icon am-ft-lightgray am-ft-xxl">
+                                                    <i class="iconfont iconfont-clear">
+                                                    </i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="am-checkcode">
+                                            <div id="getCheckcode" class="getCheckcode am-button am-button-white">
+                                                点击重新获取
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="fitm">
+                                <input id="password" class="u-ipt" type="password" name="password" autocomplete="off"
+                                data-required="true" placeholder="密码">
+                            </div>
+                            <div class="fitm">
+                                <input id="repassword" class="u-ipt" type="password" name="repassword" autocomplete="off"
+                                data-required="true" placeholder="确认密码">
+                            </div>
+                            <div class="fitm fitm-1">
+                                <a id="registe2" class="u-btn u-btn-1 s-fc5" href="javascript: void(0);">
+                                    提交
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="fitm fitm-2">
+                    <a class="regis f-fr" href="/signin">
+                        去登录
+                    </a>
+                </div>
+            </div>
+        </div>
+        <footer class="m-docfoot">
+            <p class="aboutnest">
+                美会说
+                <br>
+                美会说版权所有©2011-2016
+            </p>
+        </footer>
+        <div class="progress progress-fix animated" style="display: none;">
+            <div class="progress-bar progress-bar-striped active" role="progressbar"
+            style="width: 0%; background-color: rgb(91, 192, 222);">
+            </div>
+        </div>
+        <div class="m-toast" style="display: none;">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
+                <tr>
+                    <td width="100%" align="center" valign="center">
+                        <div class="toast box animated info  show toastFadeIn errText"></div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="m-notify m-notify-right">
+        </div>
+    </body>
+    <script type="text/javascript" src="{{ handler.build_assets_url("/js/jquery-1.11.3.min.js") }}"></script>
+    <script src="{{ handler.build_assets_url("/js/mobile/unity.js") }}" type="text/javascript"></script>
+    <script type="text/javascript">
+        function getCookie(name) {
+            var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
+            return r ? r[1] : undefined;
+        }
+
+        $("#registe1").on("click", function(){
+            getCheckCode();
+        });
+
+        $("#registe2").on("click", function(){
+            var telephone = $("#telephone").val(),
+                code = $("#code").val(),
+                password = $("#password").val(),
+                repassword = $("#repassword").val();
+            if (telephone == ""){errorMsg("系统错误,请刷新重试", 800);return}
+            if (!code || code.length != 6){errorMsg("请输入合法的校验码", 800);return}
+            if (!password){errorMsg("请输入需要设置的密码");return}
+            if (password.length < 6 || password.length > 16){errorMsg("请输入长度在6-16位的密码", 800);return}
+            if (password!=repassword){errorMsg("两次密码不一致", 800);return}
+
+            if (getUrlParam("from") == "detail"){
+                var count = getUrlParam("count"),
+                    next = getUrlParam("next");
+                next = next + "&count=" + count;
+            } else {
+                next = getUrlParam("next");
+            }
+
+            $.ajax({
+                type: "POST",
+                async: true,
+                url: "/registe",
+                data: {_xsrf: getCookie("_xsrf"), "telephone": telephone, "code": code, "password": password, "next": escape(next)},
+                dataType: "json",
+                success: function(data) {
+                    if (data["status"]  == "error") {
+                        errorMsg(data["message"], 800);
+                    } else if (data["status"] == "success") {
+                        $(".m-toast").css("display", "block");
+                        $(".errText").text("注册成功", 800);
+                        window.location.href=unescape(unescape(data["next"]));
+                    }
+                },
+                error: function() {
+                    errorMsg("服务器错误,请稍后再试", 800);
+                }
+            })
+        });
+
+        $("#getCheckcode").on("click", function(){
+            getCheckCode();
+        });
+
+        function startTimer(second){
+            var seconds = second- 1,
+                codeElement = $("#getCheckcode");
+            codeElement.html('<span class="gets">'+second.toString()+'</span>秒后重新获取');
+            codeElement.attr('disabled',true).css('cursor','not-allowed');
+            codeElement.prop('disabled',true).css('cursor','not-allowed');
+            var a = setInterval(b, 1000);
+            return false;
+            function b(){
+                var s = seconds--;
+                if (s<1) {
+                    clearInterval(a);
+                    $("#getCheckcode").html('重新获取校验码').attr('disabled',false).css('cursor','pointer');
+                    $("#getCheckcode").html('重新获取校验码').prop('disabled',false).css('cursor','pointer');
+                }
+                 $("#getCheckcode .gets").text(s);
+            }
+        }
+
+        function getCheckCode() {
+            var telephone = $("#username").val();
+            if (telephone == "") {
+                errorMsg("电话号码不能为空", 800);
+                return
+            }
+            var reg = new RegExp("^1[0-9]{10}$");
+            var ret = telephone.match(reg);
+            if (ret == null) {
+                 errorMsg("请输入正确的手机号码", 800);
+                return ;
+            }
+
+            $.ajax({
+                type: "POST",
+                async: true,
+                url: "/getcheckcode",
+                data: {_xsrf: getCookie("_xsrf"), "telephone": telephone, "action": "registe"},
+                dataType: "json",
+                success: function(data) {
+                    if (data["result"]  == "error") {
+                        errorMsg(data["message"], 800);
+                    } else {
+                        $(".m-topnavbar").html('<span id="return-reg-one" class="u-icn18 backbtn"></span>' +
+                                '<span class="tit" id="toptitle">注册</span>');
+                        $(".registe-note").text("请输入"+telephone+"的校验码和密码");
+                        $("#telephone").val(telephone);
+                        $(".registe-one").css("display", "none");
+                        $(".registe-two").css("display", "block");
+                        $("#code").focus();
+                        startTimer(120);
+                        $("#return-reg-one").on("click", function(){
+                            window.location.href = "/registe";
+                        });
+                    }
+                },
+                error: function() {
+                    errorMsg("服务器错误,请稍后再试", 800);
+                }
+            })
+        }
+
+        $("#backbtn").on("click", function(){
+            window.location.href = "/";
+        });
+    </script>
+</html>
