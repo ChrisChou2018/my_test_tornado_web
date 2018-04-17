@@ -4,10 +4,10 @@
 import uuid
 from datetime import datetime
 
-from meihuishuo.libs.handlers import WwwBaseHandler, JsWwwBaseHandler
-from meihuishuo.models.member_model import Member, Address
-from meihuishuo.libs.decorators import www_authenticated
-from meihuishuo.models.goods_model import Goods, HomeLimitedGoods, Collection, Country, CurrencyType
+from app.libs.handlers import WwwBaseHandler, JsWwwBaseHandler
+from app.models.member_model import Member, Address
+from app.libs.decorators import www_authenticated
+# from app.models.goods_model import Goods, HomeLimitedGoods, Collection, Country, CurrencyType
 
 
 class WAccountSecurityHandler(WwwBaseHandler):
@@ -28,64 +28,6 @@ class WAccountSecurityHandler(WwwBaseHandler):
                     member_info=member_info, category_list=category_list)
 
 
-class WMyFavoriteHandler(WwwBaseHandler):
-    @www_authenticated
-    def get(self):
-        category_list = self.get_category()
-
-        member_id = self.current_user.member_id
-        goods = []
-
-        goods_ids = [each.related_id for each in
-                     Collection.select().where(Collection.member_id == member_id)
-                               .order_by(Collection.create_time.desc())]
-        if not goods_ids:
-            self.render("www/w_my_favorite.html", goods=goods,
-                        category_list=category_list)
-
-        goods_list = [each for each in
-                      Goods.select().where(Goods.goods_id.in_(goods_ids))]
-        limited_goods_list = [each for each in
-                              HomeLimitedGoods.list_limited_goods_by_goods_ids(goods_ids)]
-
-        country_list = [each for each in Country.list_countries()]
-        current_type_list = [each for each in CurrencyType.list_currency_type()]
-
-        for goods_id in goods_ids:
-            for each in goods_list:
-                goods_dict = dict()
-                if goods_id == each.goods_id:
-                    for limited_goods in limited_goods_list:
-                        if each.goods_id == limited_goods.goods_id:
-                            each.stock = limited_goods.goods_left_count
-                            break
-
-                    goods_dict["goods_id"] = each.goods_id
-                    goods_dict["goods_img_url"] = self.build_photo_url(each.img_view, pic_type="goods", cdn=True)
-                    goods_dict["buy_count"] = int(each.buy_count)
-                    goods_dict["goods_title"] = each.goods_title
-                    goods_dict["price"] = str(each.current_price)
-                    goods_dict["stock_count"] = int(each.stock) if each.stock else 1
-                    goods_dict["goods_brief_intro"] = each.abbreviation
-                    goods_dict["overseas_price"] = each.overseas_price
-                    goods_dict["domestic_price"] = each.domestic_price
-                    goods_dict["foreign_price"] = each.foreign_price
-                    goods_dict["symbol"] = "￥"
-                    goods_dict["country_name"] = each.origin
-                    goods_dict["country_img_url"] = ""
-                    for c_t in current_type_list:
-                        if each.foreign_type == c_t.uuid:
-                            goods_dict["symbol"] = c_t.symbol
-                            break
-                    for country in country_list:
-                        if country.country_cn_name in each.origin:
-                            goods_dict["country_name"] = country.country_cn_name
-                            goods_dict["country_img_url"] = self.build_country_img_url(country.country_id)
-                            break
-                    goods.append(goods_dict)
-
-        self.render("www/w_my_favorite.html", goods=goods,
-                    category_list=category_list)
 
 
 class WMyAddressHandler(WwwBaseHandler):
@@ -236,7 +178,7 @@ class WJsDefaultAddressHandler(JsWwwBaseHandler):
 
 urls = [
     (r"/account_security/?", WAccountSecurityHandler),
-    (r"/my_favorite/?", WMyFavoriteHandler),
+    # (r"/my_favorite/?", WMyFavoriteHandler),
     (r"/my_address/?", WMyAddressHandler),
     (r"/my_address/delete/?", WJsDeleteAddressHandler),
     (r"/my_address/add/?", WJsAddAddressHandler),

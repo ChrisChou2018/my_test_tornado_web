@@ -1,6 +1,6 @@
 # coding:utf-8
 
-from meihuishuo.libs.handlers import WwwBaseHandler
+from app.libs.handlers import WwwBaseHandler
 
 class FooterHandler(WwwBaseHandler):
     """针对网站底部页面对应的请求

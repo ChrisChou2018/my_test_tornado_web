@@ -1,19 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import urlparse
-from urllib import urlencode
-
+from urllib import parse
+from urllib.parse import urlencode
 import functools
-import data
-from meihuishuo.models.member_model import Member
+from app.libs import data
+from app.models.member_model import Member
 
 
 def admin_authenticated(method):
     @functools.wraps(method)
     def wrapper(self, *args, **kwargs):
         if not self.current_user or not self.current_user.role:
-            self.redirect("/signin")
+            self.redirect("/admin/signin")
             return
         return method(self, *args, **kwargs)
     return wrapper
@@ -26,7 +25,7 @@ def www_authenticated(method):
             if self.request.method in ("GET", "POST", "HEAD"):
                 url = self.get_login_url()
                 if "?" not in url:
-                    if urlparse.urlsplit(url).scheme:
+                    if parse.urlsplit(url).scheme:
                         next_url = self.request.full_url()
                     else:
                         next_url = self.request.uri

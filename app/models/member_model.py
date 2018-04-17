@@ -5,9 +5,9 @@ import time
 import json
 import bcrypt
 import peewee
-import base_model
+from app.models import base_model
 
-import meihuishuo.libs.common as lib_common
+import app.libs.common as lib_common
 
 from peewee import fn, SQL
 
