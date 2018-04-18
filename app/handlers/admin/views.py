@@ -19,7 +19,7 @@ import string
 import random
 import hashlib
 import uuid
-from datetime import *
+# from datetime import *
 import bcrypt
 
 
@@ -29,7 +29,7 @@ a_walcome
 '''
 # /
 class AdminHomeHandler(SiteBaseHandler):
-    # @admin_authenticated
+    @admin_authenticated
     def get(self):
         self.render("admin/a_index.html")
 
@@ -69,33 +69,33 @@ class AdminSigninHandler(SiteBaseHandler):
             return
 
         # Update the storage of password.
-        user_manager = UserManager.get_user_by_login(form_data["login_name"])
+        user_manager = Member.get_member_by_login(form_data["login_name"])
         if not user_manager:
             form_errors["form"] = "用户名/密码不匹配"
             self._render(form_data, form_errors)
             return
 
-        md5d = hashlib.md5(form_data["password"]).hexdigest()
-        user_hashpw = str(user_manager.user_hashpw)
-        user_pwd = user_manager.user_pwd
+        md5d = hashlib.md5(form_data["password"].encode(encoding='utf8')).hexdigest()
+        user_hashpw = str(user_manager.hash_pwd)
+        user_pwd = user_manager.password
 
         signin_flag = False
         if user_hashpw:
-            if bcrypt.hashpw(md5d, user_hashpw) == user_hashpw:
+            if bcrypt.hashpw(md5d.encode('utf8'), user_hashpw.encode('utf8')) == user_hashpw.encode('utf8'):
                 signin_flag = True
         elif user_pwd:
             if md5d == user_pwd:
                 signin_flag = True
-                hashd = bcrypt.hashpw(md5d, bcrypt.gensalt())
-                user_manager.user_hashpw = hashd
-                user_manager.user_pwd = ""
+                hashd = bcrypt.hashpw(md5d.encode('utf8'), bcrypt.gensalt())
+                user_manager.hash_pwd = hashd
+                user_manager.password = ""
 
         if not signin_flag:
             form_errors["form"] = "用户名/密码不匹配"
             self._render(form_data, form_errors)
             return
 
-        sess_key = ''.join(random.choice(string.lowercase + string.digits) \
+        sess_key = ''.join(random.choice(string.ascii_lowercase + string.digits) \
             for i in range(10)
         )
         session = {"id":sess_key, "time":int(time.time())}
@@ -115,10 +115,10 @@ class AdminSigninHandler(SiteBaseHandler):
         user_manager.save()
 
         self.set_cookie(self.settings["cookie_key_sess"],
-            user_manager.user_id+":"+sess_key
+            user_manager.member_id+":"+sess_key
         )
 
-        self.redirect("/")
+        self.redirect("/admin")
 
     def _list_form_keys(self):
         return ("login_name", "password")
@@ -139,7 +139,6 @@ class AdminSignoutHandler(SiteBaseHandler):
 '''
 a_members
 '''
-
 class AdminMembersHandler(SiteBaseHandler):
     @tornado.web.addslash
     @has_permission("member")
@@ -168,6 +167,7 @@ class AdminMembersHandler(SiteBaseHandler):
             telephone=telephone, num=50, members=members,
             is_staff=is_staff, member_count=member_count
         )
+
 
 class AdminMemberVipsHandler(SiteBaseHandler):
     """Member Vips

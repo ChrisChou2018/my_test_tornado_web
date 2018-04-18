@@ -8,7 +8,7 @@ import tornado.ioloop
 import tornado.options
 import config_web
 import app.handlers
-import app.handlers.www.w_footer
+# import app.handlers.www.w_footer
 # import app.handlers.www.w_callback
 import app.models.base_model as base_model
 import app.libs.common as lib_common
