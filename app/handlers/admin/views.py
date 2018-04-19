@@ -32,7 +32,6 @@ a_walcome
 class AdminHomeHandler(SiteBaseHandler):
     @admin_authenticated
     def get(self):
-        print(self.current_user)
         self.render("admin/a_index.html")
 
 
@@ -117,9 +116,8 @@ class AdminSigninHandler(SiteBaseHandler):
         user_manager.save()
 
         self.set_cookie(self.settings["cookie_key_sess"],
-            user_manager.member_id+":"+sess_key
+            user_manager.email+":"+sess_key
         )
-
         self.redirect("/admin")
 
     def _list_form_keys(self):
@@ -145,32 +143,37 @@ class RegisterForm(object):
         self.password = {'re':"^.{0,30}$", 'msg':'密码长度不超过30'}
         self.password2 = {'re':"^.{0,30}$", 'msg':'密码长度不超过30'}
     
-    def check_valid(self, request):
+    def check_valid(self, form_data):
         form_dict = self.__dict__
-        flag = False
         clear_data = {}
         return_data = {
             'clear_data':None,
             'error_msg':{},
             'status':True,
         }
-        if request.get_argument('password') != request.get_argument('password2'):
-            return_data['status'] = False
+        if form_data.get('password') != form_data.get('password2'):
             return_data['error_msg'] = {'password':'两次密码不一致'}
-            return return_data
-        elif not request.get_argument('password') or not request.get_argument('password2'):
-            return_data['status'] = False
+        elif not form_data.get('password') or not form_data.get('password2'):
             return_data['error_msg'] = {'password':'密码不能为空'}
+        elif not form_data.get('member_name'):
+            return_data['error_msg'] = {'member_name':'昵称不能为空'}
+        elif not form_data.get('email'):
+            return_data['error_msg'] = {'email':'邮箱不能为空'}
+        if return_data['error_msg']:
+            return_data['status'] = False
             return return_data
         for key, regular in form_dict.items():
-            post_value = request.get_argument(key)
+            post_value = form_data.get(key)
             # 让提交的数据 和 定义的正则表达式进行匹配
             ret = re.match(regular['re'], post_value)
             if not ret:
-                break
+                return_data['status'] = False
+                return_data['error_msg'] = {key:regular['msg']}
+                return return_data
             clear_data[key] = post_value
         else:
-            flag = True
+            return_data['clear_data'] = clear_data
+            return return_data
         
         
 
@@ -181,13 +184,25 @@ class AdminRegisterHandler(SiteBaseHandler):
         self._render()
     
     def post(self):
-        form_data = self._build_form_data()
-        form_errors = self._validate_form_data(form_data)
-        if form_errors:
-            self._render(form_data, form_errors)
+        form_data =  self._build_form_data()
+        obj = RegisterForm()
+        return_data = obj.check_valid(form_data)
+        if return_data['error_msg']:
+            self._render(form_data, return_data['error_msg'])
             return
-        
+        clear_data = return_data['clear_data']
+        haspwd = hashlib.md5(clear_data['password'].encode(encoding='utf8')).hexdigest()
+        clear_data['password'] = haspwd
+        clear_data.update({'sessions':json.dumps(list()),
+                            'status':'1',
+                            'role':'admin',
+                            'create_time':dt.datetime.now()})
+        Member.create(**clear_data)
+        return self.render("admin/a_register_success.html")
     
+    def _list_form_keys(self):
+        return ("member_name", "email", "password", "password2")
+
     def _render(self, form_data=None, form_errors=None):
         self.render("admin/a_register.html", form_data=form_data,
             form_errors=form_errors

@@ -59,19 +59,19 @@ class Member(base_model.BaseModel):
         return self.vip_avail_at > time.time()
 
     @classmethod
-    def get_member_by_login(cls, telephone):
+    def get_member_by_login(cls, email):
         try:
-            return Member.get((Member.telephone == telephone) | (Member.email == telephone))
+            return Member.get((Member.member_name == email) | (Member.email == email))
         except Member.DoesNotExist:
             return None
 
     @classmethod
-    def get_user_by_sess(self, member_id, session_id):
+    def get_user_by_sess(self, email, session_id):
         member = None
         sessions = None
 
         try:
-            member = Member.get(Member.member_id == member_id)
+            member = Member.get(Member.email == email)
             sessions = json.loads(member.sessions)
         except:
             return None
