@@ -21,16 +21,18 @@ import hashlib
 import uuid
 # from datetime import *
 import bcrypt
+import re
 
 
 
 '''
 a_walcome
 '''
-# /
+# /admin
 class AdminHomeHandler(SiteBaseHandler):
     @admin_authenticated
     def get(self):
+        print(self.current_user)
         self.render("admin/a_index.html")
 
 
@@ -56,7 +58,7 @@ class AdminJsAddJobHandler(ApiBaseHandler):
 '''
 a_account.py
 '''
-# /signin
+# /admin/signin
 class AdminSigninHandler(SiteBaseHandler):
     def get(self):
         self._render()
@@ -128,79 +130,136 @@ class AdminSigninHandler(SiteBaseHandler):
             form_errors=form_errors
         )
 
-# /signout
+# /admin/signout
 class AdminSignoutHandler(SiteBaseHandler):
     @tornado.web.addslash
     def get(self):
         self.clear_cookie(self.settings["cookie_key_sess"])
-        self.redirect("/signin")
+        self.redirect("/admin/signin")
 
 
-'''
-a_members
-'''
-class AdminMembersHandler(SiteBaseHandler):
-    @tornado.web.addslash
-    @has_permission("member")
-    def get(self):
-        member_id = self.get_argument("member_id", "")
-        telephone = self.get_argument("telephone", "")
-        is_staff = self.get_argument("is_staff", "")
-        if is_staff == "Y":
-            is_staff = True
-        elif is_staff == "N":
-            is_staff = False
+class RegisterForm(object):
+    def __init__(self):
+        self.member_name = {'re':"^.{0,15}$", 'msg':'长度不超过15'}
+        self.email = {'re':"^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$", 'msg':'邮箱格式不正确'}
+        self.password = {'re':"^.{0,30}$", 'msg':'密码长度不超过30'}
+        self.password2 = {'re':"^.{0,30}$", 'msg':'密码长度不超过30'}
+    
+    def check_valid(self, request):
+        form_dict = self.__dict__
+        flag = False
+        clear_data = {}
+        return_data = {
+            'clear_data':None,
+            'error_msg':{},
+            'status':True,
+        }
+        if request.get_argument('password') != request.get_argument('password2'):
+            return_data['status'] = False
+            return_data['error_msg'] = {'password':'两次密码不一致'}
+            return return_data
+        elif not request.get_argument('password') or not request.get_argument('password2'):
+            return_data['status'] = False
+            return_data['error_msg'] = {'password':'密码不能为空'}
+            return return_data
+        for key, regular in form_dict.items():
+            post_value = request.get_argument(key)
+            # 让提交的数据 和 定义的正则表达式进行匹配
+            ret = re.match(regular['re'], post_value)
+            if not ret:
+                break
+            clear_data[key] = post_value
         else:
-            is_staff = None
-        vip_only = self.get_argument("vip_only", "")
-        is_vip = True if vip_only == "Y" else False
-        member_count = Member.list_members(
-            is_count=True, member_id=member_id, telephone=telephone, is_staff=is_staff,
-            is_vip=is_vip
-        )
-        members = [each for each in Member.list_members(
-            start=self.start, num=50, member_id=member_id, telephone=telephone,
-            is_staff=is_staff, is_vip=is_vip)
-        ]
-        self.render(
-            "a_members/a_members.html", member_id=member_id,
-            telephone=telephone, num=50, members=members,
-            is_staff=is_staff, member_count=member_count
-        )
+            flag = True
+        
+        
 
 
-class AdminMemberVipsHandler(SiteBaseHandler):
-    """Member Vips
-    """
-    @tornado.web.addslash
-    @has_permission("member")
+# /admin/register
+class AdminRegisterHandler(SiteBaseHandler):
     def get(self):
-        is_vip = True
-        member_count = Member.list_members(is_count=True, is_vip=is_vip)
-        members = [member_model.format_member(m) for m in Member.list_members(
-            start=self.start, num=50, is_vip=is_vip, orderby="last_vip_at_desc")]
-        self.render(
-            "a_members/a_member_vips.html", num=50, members=members, member_id="",
-            telephone="", member_count=member_count, is_staff=False
-        )
-
-
-class AdminMemberStaffHandler(JsSiteBaseHandler):
-    @tornado.web.addslash
-    @has_permission("member")
-    def post(self, member_id):
-        is_staff = self.get_argument("is_staff", "")
-        if is_staff == "N":
-            is_staff = False
-        else:
-            is_staff = True
-
-        member = Member.load_member_by_member_id(member_id)
-        if not member:
-            self.data["message"] = "没有该用户"
-            self.write(self.data)
+        self._render()
+    
+    def post(self):
+        form_data = self._build_form_data()
+        form_errors = self._validate_form_data(form_data)
+        if form_errors:
+            self._render(form_data, form_errors)
             return
+        
+    
+    def _render(self, form_data=None, form_errors=None):
+        self.render("admin/a_register.html", form_data=form_data,
+            form_errors=form_errors
+        )
 
-        Member.update_member({"telephone": member.telephone, "is_staff": is_staff})
-        self.data["result"] = "success"
-        self.write(self.data)
+
+
+# '''
+# a_members
+# '''
+# class AdminMembersHandler(SiteBaseHandler):
+#     @tornado.web.addslash
+#     @has_permission("member")
+#     def get(self):
+#         member_id = self.get_argument("member_id", "")
+#         telephone = self.get_argument("telephone", "")
+#         is_staff = self.get_argument("is_staff", "")
+#         if is_staff == "Y":
+#             is_staff = True
+#         elif is_staff == "N":
+#             is_staff = False
+#         else:
+#             is_staff = None
+#         vip_only = self.get_argument("vip_only", "")
+#         is_vip = True if vip_only == "Y" else False
+#         member_count = Member.list_members(
+#             is_count=True, member_id=member_id, telephone=telephone, is_staff=is_staff,
+#             is_vip=is_vip
+#         )
+#         members = [each for each in Member.list_members(
+#             start=self.start, num=50, member_id=member_id, telephone=telephone,
+#             is_staff=is_staff, is_vip=is_vip)
+#         ]
+#         self.render(
+#             "a_members/a_members.html", member_id=member_id,
+#             telephone=telephone, num=50, members=members,
+#             is_staff=is_staff, member_count=member_count
+#         )
+
+
+# class AdminMemberVipsHandler(SiteBaseHandler):
+#     """Member Vips
+#     """
+#     @tornado.web.addslash
+#     @has_permission("member")
+#     def get(self):
+#         is_vip = True
+#         member_count = Member.list_members(is_count=True, is_vip=is_vip)
+#         members = [member_model.format_member(m) for m in Member.list_members(
+#             start=self.start, num=50, is_vip=is_vip, orderby="last_vip_at_desc")]
+#         self.render(
+#             "a_members/a_member_vips.html", num=50, members=members, member_id="",
+#             telephone="", member_count=member_count, is_staff=False
+#         )
+
+
+# class AdminMemberStaffHandler(JsSiteBaseHandler):
+#     @tornado.web.addslash
+#     @has_permission("member")
+#     def post(self, member_id):
+#         is_staff = self.get_argument("is_staff", "")
+#         if is_staff == "N":
+#             is_staff = False
+#         else:
+#             is_staff = True
+
+#         member = Member.load_member_by_member_id(member_id)
+#         if not member:
+#             self.data["message"] = "没有该用户"
+#             self.write(self.data)
+#             return
+
+#         Member.update_member({"telephone": member.telephone, "is_staff": is_staff})
+#         self.data["result"] = "success"
+        # self.write(self.data)

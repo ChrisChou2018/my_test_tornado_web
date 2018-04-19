@@ -13,14 +13,14 @@ from peewee import fn, SQL
 
 
 class Member(base_model.BaseModel):
-    member_id = peewee.CharField(db_column="MemberId", primary_key=True)
+    member_id = peewee.AutoField(db_column="MemberId", primary_key=True)
     # login_name = peewee.CharField(db_column="LoginName")
-    # member_name = peewee.CharField(db_column="MemberName")
+    member_name = peewee.CharField(db_column="MemberName")
     password = peewee.CharField(db_column="LpassWord")
     hash_pwd = peewee.CharField(db_column="HashPwd", default="")
     # member_lvl = peewee.CharField(db_column="MemberLvl")
     # member_score = peewee.CharField(db_column="MemberScore")
-    telephone = peewee.CharField(db_column="Telephone")
+    # telephone = peewee.CharField(db_column="Telephone")
     email = peewee.CharField(db_column="Email")
     # pay_password = peewee.CharField(db_column="PayPassword")
     status = peewee.CharField(db_column="Status")
@@ -267,9 +267,9 @@ class Member(base_model.BaseModel):
             (Member.telephone.in_(telephones))&(Member.status!=99))
         ]
 
-    @classmethod
-    def insert_members(cls, members):
-        Member.insert_many(members).execute()
+    # @classmethod
+    # def insert_members(cls, members):
+    #     Member.insert_many(members).execute()
 
 
 def update_member_by_member_id(member_id, update_dict):
