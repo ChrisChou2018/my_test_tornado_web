@@ -12,7 +12,7 @@ import tornado.web
 import re
 
 
-# /admin/signin/
+# /signin/
 class AdminSigninHandler(SiteBaseHandler):
     def get(self):
         self._render()
@@ -83,14 +83,14 @@ class AdminSigninHandler(SiteBaseHandler):
             form_errors=form_errors
         )
 
-# /admin/signout/
+# /signout/
 class AdminSignoutHandler(SiteBaseHandler):
     @tornado.web.addslash
     def get(self):
         self.clear_cookie(self.settings["cookie_key_sess"])
         self.redirect("/signin")
 
-# /admin/register/
+# registerForm 
 class RegisterForm(object):
     def __init__(self):
         self.member_name = {'re':"^.{0,15}$", 'msg':'长度不超过15'}
@@ -131,7 +131,7 @@ class RegisterForm(object):
             return return_data
         
 
-# /admin/register
+# /register
 class AdminRegisterHandler(SiteBaseHandler):
     def get(self):
         self._render()
@@ -158,5 +158,74 @@ class AdminRegisterHandler(SiteBaseHandler):
 
     def _render(self, form_data=None, form_errors=None):
         self.render("admin/a_register.html", form_data=form_data,
+            form_errors=form_errors
+        )
+
+
+
+class ChangePasswordForm(object):
+    def __init__(self):
+        self.password = {'re':"^.{0,30}$", 'msg':'密码长度不超过30'}
+        self.password2 = {'re':"^.{0,30}$", 'msg':'密码长度不超过30'}
+        
+    def check_valid(self, form_data):
+        form_dict = self.__dict__
+        clear_data = {}
+        return_data = {
+            'clear_data':None,
+            'error_msg':{},
+            'status':True,
+        }
+        
+        if not form_data.get('password') or not form_data.get('password2'):
+            return_data['error_msg'] = {'password':'密码不能为空'}
+        if return_data['error_msg']:
+            return_data['status'] = False
+            return return_data
+        for key, regular in form_dict.items():
+            post_value = form_data.get(key)
+            # 让提交的数据 和 定义的正则表达式进行匹配
+            ret = re.match(regular['re'], post_value)
+            if not ret:
+                return_data['status'] = False
+                return_data['error_msg'] = {key:regular['msg']}
+                return return_data
+            clear_data[key] = post_value
+        else:
+            return_data['clear_data'] = clear_data
+            return return_data
+
+
+# /change_password
+class AdminChangePasswordHandler(SiteBaseHandler):
+    def get(self):
+        self._render()
+    
+    def post(self):
+        form_data =  self._build_form_data()
+        obj = ChangePasswordForm()
+        return_data = obj.check_valid(form_data)
+        if return_data['error_msg']:
+            self._render(form_data, return_data['error_msg'])
+            return
+        clear_data = return_data.get('clear_data')
+        print(clear_data)
+        old_haspwd = hashlib.md5(clear_data['password'].encode()).hexdigest()
+        new_haspwd = hashlib.md5(clear_data['password2'].encode()).hexdigest()
+        if bcrypt.hashpw(old_haspwd.encode('utf8'), self.current_user.hash_pwd.encode('utf8')) == self.current_user.hash_pwd.encode('utf8'):
+            hashd = bcrypt.hashpw(new_haspwd.encode('utf8'), bcrypt.gensalt())
+            Member.update_pwd(self.current_user.member_id, hashd)
+            self.redirect('/signout/')
+        else:
+            return_data['error_msg'] = {'password':'密码错误'}
+            self._render({}, return_data['error_msg'])
+            return
+        
+    
+    def _list_form_keys(self):
+        return ("password", "password2")
+
+    def _render(self, form_data=None, form_errors=None):
+        self.render("admin/a_change_password.html", form_data=form_data,
             form_errors=form_errors
         )

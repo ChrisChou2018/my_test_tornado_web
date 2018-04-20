@@ -8,5 +8,6 @@ urls = [
     (r"/signin/?",                          AdminSigninHandler),
     (r"/signout/?",                         AdminSignoutHandler),
     (r"/register/?",                        AdminRegisterHandler),
+    (r"/change_password/?",                 AdminChangePasswordHandler),
     (r"/j/add_job/?",                       AdminJsAddJobHandler),
 ]
