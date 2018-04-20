@@ -12,7 +12,7 @@ def admin_authenticated(method):
     @functools.wraps(method)
     def wrapper(self, *args, **kwargs):
         if not self.current_user or not self.current_user.role:
-            self.redirect("/admin/signin")
+            self.redirect("/signin")
             return
         return method(self, *args, **kwargs)
     return wrapper

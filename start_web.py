@@ -49,11 +49,11 @@ urls = [
     ]
 
 app = BaseApplication(
-    url_wrapper(urls),  #url_wrapper 检索列表中的元素元素类型如果是include倒入的列表类型将其实现路径拼接如:/admin/signin/
+    [],
+    # url_wrapper(urls),  #url_wrapper 检索列表中的元素元素类型如果是include倒入的列表类型将其实现路径拼接如:/admin/signin/
     **config_web.settings
     )
 app.add_handlers(config_web.settings["admin_domain"], admin_urls)
-
 # base_model.setup_db_obj()
 # lib_common.assets_map()
 

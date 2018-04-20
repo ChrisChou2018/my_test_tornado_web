@@ -73,7 +73,7 @@ class AdminSigninHandler(SiteBaseHandler):
         self.set_cookie(self.settings["cookie_key_sess"],
             user_manager.email+":"+sess_key
         )
-        self.redirect("/admin")
+        self.redirect("/")
 
     def _list_form_keys(self):
         return ("login_name", "password")
@@ -88,7 +88,7 @@ class AdminSignoutHandler(SiteBaseHandler):
     @tornado.web.addslash
     def get(self):
         self.clear_cookie(self.settings["cookie_key_sess"])
-        self.redirect("/admin/signin")
+        self.redirect("/signin")
 
 # /admin/register/
 class RegisterForm(object):
