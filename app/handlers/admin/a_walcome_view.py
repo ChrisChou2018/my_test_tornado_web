@@ -2,7 +2,7 @@ from app.libs.decorators import admin_authenticated
 from app.libs.handlers import SiteBaseHandler, ApiBaseHandler
 
 
-# /admin/
+# /
 class AdminHomeHandler(SiteBaseHandler):
     @admin_authenticated
     def get(self):
