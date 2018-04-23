@@ -1,13 +1,13 @@
-from app.handlers.admin.a_account_view import *
-from app.handlers.admin.a_walcome_view import *
+from app.handlers.admin import a_account_view
+from app.handlers.admin import a_walcome_view
 
 
 
 urls = [
-    (r"/?",                                 AdminHomeHandler),
-    (r"/signin/?",                          AdminSigninHandler),
-    (r"/signout/?",                         AdminSignoutHandler),
-    (r"/register/?",                        AdminRegisterHandler),
-    (r"/change_password/?",                 AdminChangePasswordHandler),
-    (r"/j/add_job/?",                       AdminJsAddJobHandler),
+    (r"/?",                                 a_walcome_view.AdminHomeHandler),
+    (r"/j/add_job/?",                       a_walcome_view.AdminJsAddJobHandler),
+    (r"/signin/?",                          a_account_view.AdminSigninHandler),
+    (r"/signout/?",                         a_account_view.AdminSignoutHandler),
+    (r"/register/?",                        a_account_view.AdminRegisterHandler),
+    (r"/change_password/?",                 a_account_view.AdminChangePasswordHandler),
 ]

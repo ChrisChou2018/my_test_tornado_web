@@ -17,6 +17,7 @@ from app.libs.url_include import url_wrapper, include
 from app.handlers.admin.ui_modules import ui_modules as ui_modules_dict
 from app.handlers.admin.urls import urls as admin_urls
 
+
 define("port", default=9900)
 define("debug", default=True)
 define("smode", default="debug")
@@ -44,9 +45,9 @@ class BaseApplication(tornado.web.Application):
                    request_summary, request_time)
 
 
-urls = [
-        ('/admin',              include('app.handlers.admin.urls'),),
-    ]
+# urls = [
+#         ('/admin',              include('app.handlers.admin.urls'),),
+#     ]
 
 app = BaseApplication(
     [],
@@ -61,6 +62,7 @@ app.add_handlers(config_web.settings["admin_domain"], admin_urls)
 def main():
     app.listen(options.port, address="127.0.0.1", xheaders=True)
     tornado.ioloop.IOLoop.instance().start()
+
 
 
 if __name__ == "__main__":

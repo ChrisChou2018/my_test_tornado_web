@@ -3,9 +3,9 @@
 
 import tornado.web
 
-# import app.libs.db_object as db_object
+# import app.lib.db_object as db_object
 
-from app.libs.handlers import BaseHandler
+# from app.lib.handlers import BaseHandler
 
 
 # /

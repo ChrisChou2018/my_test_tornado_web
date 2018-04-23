@@ -1,7 +1,6 @@
 from app.libs.decorators import admin_authenticated
 from app.libs.handlers import SiteBaseHandler, ApiBaseHandler
 
-
 # /
 class AdminHomeHandler(SiteBaseHandler):
     @admin_authenticated
