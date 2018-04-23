@@ -90,7 +90,7 @@ class AdminSignoutHandler(SiteBaseHandler):
         self.clear_cookie(self.settings["cookie_key_sess"])
         self.redirect("/signin")
 
-# /register/
+
 class RegisterForm(object):
     def __init__(self):
         self.member_name = {'re':"^.{0,15}$", 'msg':'长度不超过15'}
@@ -195,7 +195,7 @@ class ChangePasswordForm(object):
             return return_data
 
 
-# /change_password
+# /change_password/
 class AdminChangePasswordHandler(SiteBaseHandler):
     def get(self):
         self._render()
