@@ -47,7 +47,7 @@ def convert_picture(picture_id, base_static_path, picture_path, picture_type="ph
 
     root_path = os.path.join(base_static_path, target_path_name, "root", picture_id[:2])
     if not os.path.exists(root_path):
-        os.makedirs(root_path, 0755)
+        os.makedirs(root_path, 0o755)
 
     picture.resize((picture_width, picture_height), Image.ANTIALIAS).save(
         root_path+"/"+picture_id+".jpg", "JPEG", quality=86
@@ -64,7 +64,7 @@ def convert_picture(picture_id, base_static_path, picture_path, picture_type="ph
             spec["type"], picture_id[:2]
         )
         if not os.path.exists(d_path_target):
-            os.makedirs(d_path_target, 0755)
+            os.makedirs(d_path_target, 0o755)
 
         width_scale = float(picture_width/float(spec["width"]))
         height_scale = float(picture_height/float(spec["height"]))
@@ -173,7 +173,7 @@ def save_upload_picture(picture_file, base_static_path,
     d_path_raw = os.path.join(base_static_path, "photos", "raw", picture_id[:2])
     f_path_raw = os.path.join(d_path_raw, picture_id+".jpg")
     if not os.path.exists(d_path_raw):
-        os.makedirs(d_path_raw, 0755)
+        os.makedirs(d_path_raw, 0o755)
 
     with open(f_path_raw, "wb") as f:
         if is_api:

@@ -4,15 +4,15 @@
 import os
 import os.path
 import hashlib
-import urllib2
+import urllib
 import json
 import random
 import xml.etree.ElementTree as ET
 import xml.dom.minidom
 import re
-import meihuishuo.models.util_model as util_model
+# import app.models.util_model as util_model
 import config_web
-import meihuishuo.libs.data as lib_data
+import app.libs.data as lib_data
 import datetime as dt
 import time
 
@@ -117,41 +117,41 @@ def str_to_html(strings, term_type):
     return replace_img_to_cdn(strings)
 
 
-def deal_article_goods(content, article_id, title, status="new"):
-    ags = list()
-    a_goods = list()
-    goods = re.findall(r"%---.*?---%", content)
+# def deal_article_goods(content, article_id, title, status="new"):
+#     ags = list()
+#     a_goods = list()
+#     goods = re.findall(r"%---.*?---%", content)
 
-    if status != "new":
-        a_goods = util_model.ArticleGoods.list_goods_by_article_id(article_id)
+#     if status != "new":
+#         a_goods = util_model.ArticleGoods.list_goods_by_article_id(article_id)
 
-    for each in goods:
-        is_has = False
-        s_l = each.split("@")
-        ag_dict = dict()
-        for ag in a_goods:
-            if ag.goods_id == s_l[0].replace("%---", ""):
-                is_has = True
-                if ag.article_title != title:
-                    util_model.ArticleGoods.update_article_goods(article_id,
-                        ag.goods_id, {"article_title": title}
-                    )
-                a_goods.remove(ag)
-                break
+#     for each in goods:
+#         is_has = False
+#         s_l = each.split("@")
+#         ag_dict = dict()
+#         for ag in a_goods:
+#             if ag.goods_id == s_l[0].replace("%---", ""):
+#                 is_has = True
+#                 if ag.article_title != title:
+#                     util_model.ArticleGoods.update_article_goods(article_id,
+#                         ag.goods_id, {"article_title": title}
+#                     )
+#                 a_goods.remove(ag)
+#                 break
 
-        if not is_has:
-            ag_dict["goods_id"] = s_l[0].replace("%---", "")
-            ag_dict["article_id"] = article_id
-            ag_dict["article_title"] = title
-            ags.append(ag_dict)
+#         if not is_has:
+#             ag_dict["goods_id"] = s_l[0].replace("%---", "")
+#             ag_dict["article_id"] = article_id
+#             ag_dict["article_title"] = title
+#             ags.append(ag_dict)
 
-    for each in a_goods:
-        util_model.ArticleGoods.update_article_goods(article_id,
-            each.goods_id, {"status": "deleted"}
-        )
+#     for each in a_goods:
+#         util_model.ArticleGoods.update_article_goods(article_id,
+#             each.goods_id, {"status": "deleted"}
+#         )
 
-    if ags:
-        util_model.ArticleGoods.insert_many_article_goods(ags)
+#     if ags:
+#         util_model.ArticleGoods.insert_many_article_goods(ags)
 
 
 def build_photo_url(photo_id, pic_version="title", pic_type="photos", cdn=False):
@@ -260,11 +260,13 @@ def post(url, data={}):
     while True:
         flag_count += 1
         try:
-            req = urllib2.Request(url=url, data=json.dumps(data))
+            #req = urllib2.Request(url=url, data=json.dumps(data))
+            req = urllib.request.Request(url=url, data=json.dumps(data))
             req.add_header('Content-Type', 'application/json')
-            res_data = urllib2.urlopen(req)
+            #res_data = urllib2.urlopen(req)
+            res_data = urllib.request.urlopen(req)
             return json.loads(res_data.read())
-        except Exception, e:
+        except Exception as e:
             if flag_count > 5:
                 return ""
             continue
@@ -282,7 +284,7 @@ def save_upload_excel(excel_file, base_static_path, file_name=""):
     d_path_raw = os.path.join(base_static_path, "files", "excel")
     f_path_raw = os.path.join(d_path_raw, file_name)
     if not os.path.exists(d_path_raw):
-        os.makedirs(d_path_raw, 0755)
+        os.makedirs(d_path_raw, 0o755)
 
     with open(f_path_raw, "wb") as f:
         f.write(excel_file)

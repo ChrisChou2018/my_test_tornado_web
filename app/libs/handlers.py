@@ -7,7 +7,7 @@ import tornado.log
 
 import config_web
 import app.libs.data as lib_data
-import app.libs.picture as lib_picture
+# import app.libs.picture as lib_picture
 
 import app.models.base_model as base_model
 
@@ -128,8 +128,8 @@ class SiteBaseHandler(DbBaseHandler):
         except:
             return None
 
-        # TODO
-        return None
+        member = Member.get_user_by_sess(member_id, session_id)
+        return member
 
 
 class WwwBaseHandler(DbBaseHandler):
@@ -191,6 +191,7 @@ class WwwBaseHandler(DbBaseHandler):
 
     def get_current_user(self):
         cookie_data = self.get_cookie(self.settings["cookie_key_sess"])
+        print(cookie_data)
         if not cookie_data:
             return None
 
@@ -202,31 +203,31 @@ class WwwBaseHandler(DbBaseHandler):
         member = Member.get_user_by_sess(member_id, session_id)
         return member
 
-    def get_category(self):
-        """get catagory
-        """
-        category_list = []
-        parent_list = Type.list_type_by_parent_id(parent_id="0")
-        for parent in parent_list:
-            # sub_type_list = Type.list_type_by_parent_id(parent_id=parent.uuid)
-            category = {}
-            category["id"] = parent.uuid
-            category["name"] = parent.title
-            category["children"] = []
-            # for sub_type in sub_type_list:
-            #     grandson_type_list = Type.list_type_by_parent_id(query_set=sub_type_list,
-            #                                                      parent_id=sub_type.uuid)
-            #     children = {}
-            #     children["id"] = sub_type.uuid
-            #     children["name"] = sub_type.title
-            #     children["children"] = []
-            #     for grandson_type in grandson_type_list:
-            #         children["children"].append({"id": grandson_type.uuid,
-            #                                     "name": str(grandson_type.title)})
-            #     category["children"].append(children)
-            category_list.append(category)
+    # def get_category(self):
+    #     """get catagory
+    #     """
+    #     category_list = []
+    #     parent_list = Type.list_type_by_parent_id(parent_id="0")
+    #     for parent in parent_list:
+    #         # sub_type_list = Type.list_type_by_parent_id(parent_id=parent.uuid)
+    #         category = {}
+    #         category["id"] = parent.uuid
+    #         category["name"] = parent.title
+    #         category["children"] = []
+    #         # for sub_type in sub_type_list:
+    #         #     grandson_type_list = Type.list_type_by_parent_id(query_set=sub_type_list,
+    #         #                                                      parent_id=sub_type.uuid)
+    #         #     children = {}
+    #         #     children["id"] = sub_type.uuid
+    #         #     children["name"] = sub_type.title
+    #         #     children["children"] = []
+    #         #     for grandson_type in grandson_type_list:
+    #         #         children["children"].append({"id": grandson_type.uuid,
+    #         #                                     "name": str(grandson_type.title)})
+    #         #     category["children"].append(children)
+    #         category_list.append(category)
 
-        return category_list
+    #     return category_list
 
 
 class MobileBaseHandler(SiteBaseHandler):
@@ -302,7 +303,7 @@ class ApiBaseHandler(DbBaseHandler):
     def get_current_user(self):
         try:
             session_data = self.request.headers['Authorization']
-        except Exception, e:
+        except Exception as e:
             session_data = None
 
         if not session_data:
@@ -317,14 +318,14 @@ class ApiBaseHandler(DbBaseHandler):
         return member
 
 
-    def _upload_photo(self, picture_type="avatar"):
-        pic_dict = dict()
-        if not self.request.body:
-            return pic_dict
+    # def _upload_photo(self, picture_type="avatar"):
+    #     pic_dict = dict()
+    #     if not self.request.body:
+    #         return pic_dict
 
-        pic_dict = lib_picture.save_upload_picture(
-            self.request.body, self.settings["static_path"],
-            picture_type=picture_type, is_api=True
-        )
-        return pic_dict
+    #     pic_dict = lib_picture.save_upload_picture(
+    #         self.request.body, self.settings["static_path"],
+    #         picture_type=picture_type, is_api=True
+    #     )
+    #     return pic_dict
 

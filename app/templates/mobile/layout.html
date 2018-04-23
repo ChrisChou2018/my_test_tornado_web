@@ -169,41 +169,41 @@
         {% block script %}
         <script type="text/javascript">
 
-{#            $(document).ready(function(){#}
-{#                var num = 1, //计数器初始化为1#}
-{#                    maxnum = 50; //设置一共要加载几次#}
-{#                $(window).scroll(function(){#}
-{#                    checkload();#}
-{#                });#}
-{#                //建立加载判断函数#}
-{#                function checkload(){#}
-{#                    var srollPos = $(window).scrollTop(), //滚动条距离顶部的高度#}
-{#                        windowHeight = $(window).height(), //窗口的高度#}
-{#                        dbHiht = $("body").height(); //整个页面文件的高度#}
-{#                    s = setTimeout(function(){#}
-{#                        if((windowHeight + srollPos) >= (dbHiht) && num != maxnum){#}
-{#                            LoadList(14);#}
-{#                            num++; //计数器+1#}
-{#                        }#}
-{#                    },500);#}
-{#                }#}
-{##}
-{#                //创建ajax加载函数#}
-{#                function LoadList(c){#}
-{#                    $.get("http://www.frontopen.com/xxx.php?chanel="+ c +"&start="+ num * 15 +"&num=15",#}
-{#                            function(result){#}
-{#                                t = setTimeout(#}
-{#                                        function(){#}
-{#                                            $("#list_box").append(result)#}
-{#                                        }, 1);#}
-{#                            }#}
-{#                    );#}
-{#                }#}
-{##}
-{#                function appendGoods(){}#}
-{#            });#}
+// {#            $(document).ready(function(){#}
+// {#                var num = 1, //计数器初始化为1#}
+// {#                    maxnum = 50; //设置一共要加载几次#}
+// {#                $(window).scroll(function(){#}
+// {#                    checkload();#}
+// {#                });#}
+// {#                //建立加载判断函数#}
+// {#                function checkload(){#}
+// {#                    var srollPos = $(window).scrollTop(), //滚动条距离顶部的高度#}
+// {#                        windowHeight = $(window).height(), //窗口的高度#}
+// {#                        dbHiht = $("body").height(); //整个页面文件的高度#}
+// {#                    s = setTimeout(function(){#}
+// {#                        if((windowHeight + srollPos) >= (dbHiht) && num != maxnum){#}
+// {#                            LoadList(14);#}
+// {#                            num++; //计数器+1#}
+// {#                        }#}
+// {#                    },500);#}
+// {#                }#}
+// {##}
+// {#                //创建ajax加载函数#}
+// {#                function LoadList(c){#}
+// {#                    $.get("http://www.frontopen.com/xxx.php?chanel="+ c +"&start="+ num * 15 +"&num=15",#}
+// {#                            function(result){#}
+// {#                                t = setTimeout(#}
+// {#                                        function(){#}
+// {#                                            $("#list_box").append(result)#}
+// {#                                        }, 1);#}
+// {#                            }#}
+// {#                    );#}
+// {#                }#}
+// {##}
+// {#                function appendGoods(){}#}
+// {#            });#}
         </script>
-        <script type="text/javascript">
+        <!-- <script type="text/javascript">
             {% if not handler.settings["running_status"] %}
                 var _hmt = _hmt || [];
                 (function() {
@@ -213,7 +213,7 @@
                   s.parentNode.insertBefore(hm, s);
                 })();
             {% end %}
-        </script>
+        </script> -->
         {% end %}
         <div class="m-gotop-wrap">
             <div class="ic-gotop">

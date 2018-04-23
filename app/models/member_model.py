@@ -5,51 +5,52 @@ import time
 import json
 import bcrypt
 import peewee
-import base_model
+from app.models import base_model
 
-import meihuishuo.libs.common as lib_common
+import app.libs.common as lib_common
 
 from peewee import fn, SQL
 
 
 class Member(base_model.BaseModel):
-    member_id = peewee.CharField(db_column="MemberId", primary_key=True)
-    login_name = peewee.CharField(db_column="LoginName")
+    member_id = peewee.AutoField(db_column="MemberId", primary_key=True)
+    # login_name = peewee.CharField(db_column="LoginName")
     member_name = peewee.CharField(db_column="MemberName")
     password = peewee.CharField(db_column="LpassWord")
     hash_pwd = peewee.CharField(db_column="HashPwd", default="")
-    member_lvl = peewee.CharField(db_column="MemberLvl")
-    member_score = peewee.CharField(db_column="MemberScore")
-    telephone = peewee.CharField(db_column="Telephone")
+    # member_lvl = peewee.CharField(db_column="MemberLvl")
+    # member_score = peewee.CharField(db_column="MemberScore")
+    # telephone = peewee.CharField(db_column="Telephone")
     email = peewee.CharField(db_column="Email")
-    pay_password = peewee.CharField(db_column="PayPassword")
+    # pay_password = peewee.CharField(db_column="PayPassword")
     status = peewee.CharField(db_column="Status")
     create_time = peewee.DateTimeField(db_column="CreateTime")
-    qq_openid = peewee.CharField(db_column="qq_openid")
-    update_time = peewee.DateTimeField(db_column="UpdateTime")
-    wb_openid = peewee.CharField(db_column="wb_openid")
-    sex = peewee.CharField(db_column="Sex")
-    birthday = peewee.CharField(db_column="Birthday")
-    member_num = peewee.CharField(db_column="MemberNum")
-    actual_member_lvl = peewee.CharField(db_column="ActualMemberLvl")
-    is_builtin = peewee.CharField(db_column="IsBuiltIn")
+    # qq_openid = peewee.CharField(db_column="qq_openid")
+    # update_time = peewee.DateTimeField(db_column="UpdateTime")
+    # wb_openid = peewee.CharField(db_column="wb_openid")
+    # sex = peewee.CharField(db_column="Sex")
+    # birthday = peewee.CharField(db_column="Birthday")
+    # member_num = peewee.CharField(db_column="MemberNum")
+    # actual_member_lvl = peewee.CharField(db_column="ActualMemberLvl")
+    # is_builtin = peewee.CharField(db_column="IsBuiltIn")
+    role = peewee.CharField(db_column="role")
     sessions = peewee.CharField(db_column="sessions")
-    wx_openid = peewee.CharField(db_column="wx_openid")
-    created_ip = peewee.CharField(db_column="created_ip")
-    access_token = peewee.CharField(db_column="access_token")
-    member_avatar = peewee.CharField(db_column="member_avatar")
-    default_address_id = peewee.CharField(db_column="default_address_id")
-    skin_test_result = peewee.CharField(db_column="skin_test_result")
-    vip_avail_at = peewee.IntegerField(db_column='vip_avail_at')
-    vip_type = peewee.CharField()
-    last_vip_via = peewee.CharField()
-    last_vip_at = peewee.IntegerField()
-    is_staff = peewee.BooleanField(db_column="is_staff", default=False)
-    gold_coin = peewee.IntegerField(db_column="gold_coin", default=0)
-    account_balance = peewee.DecimalField(db_column="account_balance")
-    zero_buy_order_id = peewee.CharField(db_column="zero_buy_order_id", default="")
-    invite_vip_returns = peewee.DecimalField(default=0)
-    invite_vip_buys = peewee.DecimalField(default=0)
+    # wx_openid = peewee.CharField(db_column="wx_openid")
+    # created_ip = peewee.CharField(db_column="created_ip")
+    # access_token = peewee.CharField(db_column="access_token")
+    # member_avatar = peewee.CharField(db_column="member_avatar")
+    # default_address_id = peewee.CharField(db_column="default_address_id")
+    # skin_test_result = peewee.CharField(db_column="skin_test_result")
+    # vip_avail_at = peewee.IntegerField(db_column='vip_avail_at')
+    # vip_type = peewee.CharField()
+    # last_vip_via = peewee.CharField()
+    # last_vip_at = peewee.IntegerField()
+    # is_staff = peewee.BooleanField(db_column="is_staff", default=False)
+    # gold_coin = peewee.IntegerField(db_column="gold_coin", default=0)
+    # account_balance = peewee.DecimalField(db_column="account_balance")
+    # zero_buy_order_id = peewee.CharField(db_column="zero_buy_order_id", default="")
+    # invite_vip_returns = peewee.DecimalField(default=0)
+    # invite_vip_buys = peewee.DecimalField(default=0)
 
     class Meta:
         db_table = "app_member"
@@ -58,19 +59,19 @@ class Member(base_model.BaseModel):
         return self.vip_avail_at > time.time()
 
     @classmethod
-    def get_member_by_login(cls, telephone):
+    def get_member_by_login(cls, email):
         try:
-            return Member.get((Member.telephone == telephone) | (Member.email == telephone))
+            return Member.get((Member.member_name == email) | (Member.email == email))
         except Member.DoesNotExist:
             return None
 
     @classmethod
-    def get_user_by_sess(self, member_id, session_id):
+    def get_user_by_sess(self, email, session_id):
         member = None
         sessions = None
 
         try:
-            member = Member.get(Member.member_id == member_id)
+            member = Member.get(Member.email == email)
             sessions = json.loads(member.sessions)
         except:
             return None
@@ -79,7 +80,7 @@ class Member(base_model.BaseModel):
             return None
 
         for session in sessions:
-            if isinstance(session, dict) and session.has_key("id") \
+            if isinstance(session, dict) and session.get("id") \
                     and session["id"] == session_id:
                 return member
 
@@ -266,9 +267,9 @@ class Member(base_model.BaseModel):
             (Member.telephone.in_(telephones))&(Member.status!=99))
         ]
 
-    @classmethod
-    def insert_members(cls, members):
-        Member.insert_many(members).execute()
+    # @classmethod
+    # def insert_members(cls, members):
+    #     Member.insert_many(members).execute()
 
 
 def update_member_by_member_id(member_id, update_dict):
