@@ -16,7 +16,7 @@ class Member(base_model.BaseModel):
     member_id = peewee.AutoField(db_column="MemberId", primary_key=True)
     # login_name = peewee.CharField(db_column="LoginName")
     member_name = peewee.CharField(db_column="MemberName")
-    password = peewee.CharField(db_column="LpassWord")
+    # password = peewee.CharField(db_column="LpassWord")
     hash_pwd = peewee.CharField(db_column="HashPwd", default="")
     # member_lvl = peewee.CharField(db_column="MemberLvl")
     # member_score = peewee.CharField(db_column="MemberScore")
@@ -150,8 +150,7 @@ class Member(base_model.BaseModel):
     @classmethod
     def update_pwd(cls, member_id, new_psw):
         # If member update their password, we use the bcrypt to encrypt.
-        query = Member.update(password="", hash_pwd=new_psw)\
-                      .where(Member.member_id == member_id)
+        query = Member.update(hash_pwd=new_psw).where(Member.member_id == member_id)
         query.execute()
 
     # admin

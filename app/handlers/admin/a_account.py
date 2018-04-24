@@ -25,53 +25,38 @@ class AdminSigninHandler(SiteBaseHandler):
             return
 
         # Update the storage of password.
-        user_manager = Member.get_member_by_login(form_data["login_name"])
-        if not user_manager:
+        member_obj = Member.get_member_by_login(form_data["login_name"])
+        if not member_obj:
             form_errors["form"] = "用户名/密码不匹配"
             self._render(form_data, form_errors)
             return
-
-        md5d = hashlib.md5(form_data["password"].encode(encoding='utf8')).hexdigest()
-        user_hashpw = str(user_manager.hash_pwd)
-        user_pwd = user_manager.password
-
+        md5d = hashlib.md5(form_data["password"].encode()).hexdigest()
+        member_hashpw = str(member_obj.hash_pwd)
         signin_flag = False
-        if user_hashpw:
-            if bcrypt.hashpw(md5d.encode('utf8'), user_hashpw.encode('utf8')) == user_hashpw.encode('utf8'):
+        if member_hashpw:
+            if bcrypt.hashpw(md5d.encode(), member_hashpw.encode()) == member_hashpw.encode():
                 signin_flag = True
-        elif user_pwd:
-            if md5d == user_pwd:
-                signin_flag = True
-                hashd = bcrypt.hashpw(md5d.encode('utf8'), bcrypt.gensalt())
-                user_manager.hash_pwd = hashd
-                user_manager.password = ""
-
         if not signin_flag:
             form_errors["form"] = "用户名/密码不匹配"
             self._render(form_data, form_errors)
             return
-
         sess_key = ''.join(random.choice(string.ascii_lowercase + string.digits) \
             for i in range(10)
         )
         session = {"id":sess_key, "time":int(time.time())}
-
         try:
-            sessions = json.loads(user_manager.sessions)
+            sessions = json.loads(member_obj.sessions)
         except:
             sessions = list()
         if not isinstance(sessions, list):
             sessions = list()
         sessions.append(session)
-
         if len(sessions) > 5:
             sessions = sessions[-5:]
-
-        user_manager.sessions = json.dumps(sessions)
-        user_manager.save()
-
+        member_obj.sessions = json.dumps(sessions)
+        member_obj.save()
         self.set_cookie(self.settings["cookie_key_sess"],
-            user_manager.email+":"+sess_key
+            member_obj.email+":"+sess_key
         )
         self.redirect("/")
 
@@ -144,8 +129,14 @@ class AdminRegisterHandler(SiteBaseHandler):
             self._render(form_data, return_data['error_msg'])
             return
         clear_data = return_data.get('clear_data')
-        haspwd = hashlib.md5(clear_data['password'].encode(encoding='utf8')).hexdigest()
-        clear_data['password'] = haspwd
+        member_obj = Member.get_member_by_email(clear_data.get('email')) or Member.get_member_by_member_name(clear_data.get('member_name'))
+        if member_obj:
+            return_data['error_msg']['has_member_error'] = '用户名或者邮箱已经存在'
+            self._render(form_data, return_data['error_msg'])
+            return
+        md5 = hashlib.md5(clear_data['password'].encode()).hexdigest()
+        haspwd = bcrypt.hashpw(md5.encode(), bcrypt.gensalt())
+        clear_data['hash_pwd'] = haspwd
         clear_data.update({'sessions':json.dumps(list()),
                             'status':'1',
                             'role':'admin',
@@ -208,7 +199,6 @@ class AdminChangePasswordHandler(SiteBaseHandler):
             self._render(form_data, return_data['error_msg'])
             return
         clear_data = return_data.get('clear_data')
-        print(clear_data)
         old_haspwd = hashlib.md5(clear_data['password'].encode()).hexdigest()
         new_haspwd = hashlib.md5(clear_data['password2'].encode()).hexdigest()
         if bcrypt.hashpw(old_haspwd.encode('utf8'), self.current_user.hash_pwd.encode('utf8')) == self.current_user.hash_pwd.encode('utf8'):
