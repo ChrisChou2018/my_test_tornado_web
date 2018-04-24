@@ -2,14 +2,15 @@
 # -*- coding: utf-8 -*-
 
 import json
-import urllib
+# import urllib
+from urllib import parse as urllib
 import unittest
 import tornado.testing
 import tornado.httpclient
 
-import meihuishuo.handlers.api.api_goods as handler_api_goods
+# import meihuishuo.handlers.api.api_goods as handler_api_goods
 
-from meihuishuo.tests.test_base import BaseHTTPTestCase
+from app.tests.test_base import BaseHTTPTestCase
 
 class CommonCheck(object):
     pass
@@ -24,10 +25,10 @@ class ApiFindGoodsImgListTest(CommonCheck, BaseHTTPTestCase):
     def get_handlers(self):
         pass
 
-    def set_handlers(self):
-        self.app.add_handlers(
-            self.app.settings["api_domain"], handler_api_goods.urls
-        )
+    # def set_handlers(self):
+    #     self.app.add_handlers(
+    #         self.app.settings["api_domain"], handler_api_goods.urls
+    #     )
 
     def test_api_find_goods_img_list(self):
         '''
@@ -81,7 +82,7 @@ class ApiFindGoodsImgListTest(CommonCheck, BaseHTTPTestCase):
 
     def _check_find_goods_img_list(self, json_data):
         if json_data:
-            print "FindGoodsImgList:", json_data
+            print("FindGoodsImgList:", json_data)
 
 
 class ApiFindGoodsDetailListHandlerTest(CommonCheck, BaseHTTPTestCase):
@@ -94,10 +95,10 @@ class ApiFindGoodsDetailListHandlerTest(CommonCheck, BaseHTTPTestCase):
     def get_handlers(self):
         pass
 
-    def set_handlers(self):
-        self.app.add_handlers(
-            self.app.settings["api_domain"], handler_api_goods.urls
-        )
+    # def set_handlers(self):
+    #     self.app.add_handlers(
+    #         self.app.settings["api_domain"], handler_api_goods.urls
+    #     )
 
     def test_api_find_goods_detail_list(self):
         '''
@@ -136,7 +137,7 @@ class ApiFindGoodsDetailListHandlerTest(CommonCheck, BaseHTTPTestCase):
 
     def _check_find_goods_detail_list(self, json_data):
         if json_data:
-            print "FindGoodsDetailList:", json_data
+            print("FindGoodsDetailList:", json_data)
 
 
 class ApiFindGoodsDetailHandlerTest(CommonCheck, BaseHTTPTestCase):
@@ -149,10 +150,10 @@ class ApiFindGoodsDetailHandlerTest(CommonCheck, BaseHTTPTestCase):
     def get_handlers(self):
         pass
 
-    def set_handlers(self):
-        self.app.add_handlers(
-            self.app.settings["api_domain"], handler_api_goods.urls
-        )
+    # def set_handlers(self):
+    #     self.app.add_handlers(
+    #         self.app.settings["api_domain"], handler_api_goods.urls
+    #     )
 
     def test_api_find_goods_detail(self):
         '''
@@ -247,7 +248,7 @@ class ApiFindGoodsDetailHandlerTest(CommonCheck, BaseHTTPTestCase):
 
     def _check_find_goods_detail(self, json_data):
         if json_data:
-            print "FindGoodsDetail:", json_data
+            print("FindGoodsDetail:", json_data)
 
 
 class ApiFindGoodsScoreHandlerTest(CommonCheck, BaseHTTPTestCase):
@@ -260,10 +261,10 @@ class ApiFindGoodsScoreHandlerTest(CommonCheck, BaseHTTPTestCase):
     def get_handlers(self):
         pass
 
-    def set_handlers(self):
-        self.app.add_handlers(
-            self.app.settings["api_domain"], handler_api_goods.urls
-        )
+    # def set_handlers(self):
+    #     self.app.add_handlers(
+    #         self.app.settings["api_domain"], handler_api_goods.urls
+    #     )
 
     def test_api_find_goods_score(self):
         '''
@@ -304,7 +305,7 @@ class ApiFindGoodsScoreHandlerTest(CommonCheck, BaseHTTPTestCase):
 
     def _check_find_goods_score(self, json_data):
         if json_data:
-            print "FindGoodsSorce:", json_data
+            print("FindGoodsSorce:", json_data)
 
 
 class ApiFindGoodsCommentHandlerTest(CommonCheck, BaseHTTPTestCase):
@@ -317,10 +318,10 @@ class ApiFindGoodsCommentHandlerTest(CommonCheck, BaseHTTPTestCase):
     def get_handlers(self):
         pass
 
-    def set_handlers(self):
-        self.app.add_handlers(
-            self.app.settings["api_domain"], handler_api_goods.urls
-        )
+    # def set_handlers(self):
+    #     self.app.add_handlers(
+    #         self.app.settings["api_domain"], handler_api_goods.urls
+    #     )
 
     def test_api_find_goods_comment(self):
         '''
@@ -362,7 +363,7 @@ class ApiFindGoodsCommentHandlerTest(CommonCheck, BaseHTTPTestCase):
 
     def _check_find_goods_comment(self, json_data):
         if json_data:
-            print "FindGoodsComment:", json_data
+            print("FindGoodsComment:", json_data)
 
 
 class ApiInsertHandlerHandlerTest(CommonCheck, BaseHTTPTestCase):
@@ -375,10 +376,10 @@ class ApiInsertHandlerHandlerTest(CommonCheck, BaseHTTPTestCase):
     def get_handlers(self):
         pass
 
-    def set_handlers(self):
-        self.app.add_handlers(
-            self.app.settings["api_domain"], handler_api_goods.urls
-        )
+    # def set_handlers(self):
+    #     self.app.add_handlers(
+    #         self.app.settings["api_domain"], handler_api_goods.urls
+    #     )
 
     def test_api_insert(self):
         '''
@@ -451,7 +452,7 @@ class ApiInsertHandlerHandlerTest(CommonCheck, BaseHTTPTestCase):
 
     def _check_insert(self, json_data):
         if json_data:
-            print "Insert:", json_data
+            print("Insert:", json_data)
 
 
 class ApiFindGoodsDetailHandlerTest(CommonCheck, BaseHTTPTestCase):
@@ -464,10 +465,10 @@ class ApiFindGoodsDetailHandlerTest(CommonCheck, BaseHTTPTestCase):
     def get_handlers(self):
         pass
 
-    def set_handlers(self):
-        self.app.add_handlers(
-            self.app.settings["api_domain"], handler_api_goods.urls
-        )
+    # def set_handlers(self):
+    #     self.app.add_handlers(
+    #         self.app.settings["api_domain"], handler_api_goods.urls
+    #     )
 
     def test_api_find_goods_detail(self):
         '''
@@ -530,5 +531,5 @@ class ApiFindGoodsDetailHandlerTest(CommonCheck, BaseHTTPTestCase):
 
     def _check_find_goods_detail(self, json_data):
         if json_data:
-            print "FindGoodsDetail:", json_data
+            print("FindGoodsDetail:", json_data)
 

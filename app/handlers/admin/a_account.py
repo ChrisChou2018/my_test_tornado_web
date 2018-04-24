@@ -90,13 +90,13 @@ class AdminSignoutHandler(SiteBaseHandler):
         self.clear_cookie(self.settings["cookie_key_sess"])
         self.redirect("/signin")
 
-# /register/
+
 class RegisterForm(object):
     def __init__(self):
-        self.member_name = {'re':"^.{0,15}$", 'msg':'长度不超过15'}
-        self.email = {'re':"^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$", 'msg':'邮箱格式不正确'}
-        self.password = {'re':"^.{0,30}$", 'msg':'密码长度不超过30'}
-        self.password2 = {'re':"^.{0,30}$", 'msg':'密码长度不超过30'}
+        self.member_name = {'re':r"^.{0,15}$", 'msg':'长度不超过15'}
+        self.email = {'re':r"^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$", 'msg':'邮箱格式不正确'}
+        self.password = {'re':r"^.{0,30}$", 'msg':'密码长度不超过30'}
+        self.password2 = {'re':r"^.{0,30}$", 'msg':'密码长 度不超过30'}
     
     def check_valid(self, form_data):
         form_dict = self.__dict__
@@ -164,8 +164,8 @@ class AdminRegisterHandler(SiteBaseHandler):
 
 class ChangePasswordForm(object):
     def __init__(self):
-        self.password = {'re':"^.{0,30}$", 'msg':'密码长度不超过30'}
-        self.password2 = {'re':"^.{0,30}$", 'msg':'密码长度不超过30'}
+        self.password = {'re':r"^.{0,30}$", 'msg':'密码长度不超过30'}
+        self.password2 = {'re':r"^.{0,30}$", 'msg':'密码长度不超过30'}
         
     def check_valid(self, form_data):
         form_dict = self.__dict__
@@ -195,7 +195,7 @@ class ChangePasswordForm(object):
             return return_data
 
 
-# /change_password
+# /change_password/
 class AdminChangePasswordHandler(SiteBaseHandler):
     def get(self):
         self._render()
