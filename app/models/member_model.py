@@ -16,7 +16,7 @@ class Member(base_model.BaseModel):
     member_id = peewee.AutoField(db_column="MemberId", primary_key=True)
     # login_name = peewee.CharField(db_column="LoginName")
     member_name = peewee.CharField(db_column="MemberName")
-    password = peewee.CharField(db_column="LpassWord")
+    # password = peewee.CharField(db_column="LpassWord")
     hash_pwd = peewee.CharField(db_column="HashPwd", default="")
     # member_lvl = peewee.CharField(db_column="MemberLvl")
     # member_score = peewee.CharField(db_column="MemberScore")
