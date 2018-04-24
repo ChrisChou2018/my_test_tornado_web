@@ -150,8 +150,7 @@ class Member(base_model.BaseModel):
     @classmethod
     def update_pwd(cls, member_id, new_psw):
         # If member update their password, we use the bcrypt to encrypt.
-        query = Member.update(password="", hash_pwd=new_psw)\
-                      .where(Member.member_id == member_id)
+        query = Member.update(hash_pwd=new_psw).where(Member.member_id == member_id)
         query.execute()
 
     # admin

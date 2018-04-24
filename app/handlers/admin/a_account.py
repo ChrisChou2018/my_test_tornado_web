@@ -194,7 +194,6 @@ class AdminChangePasswordHandler(SiteBaseHandler):
             self._render(form_data, return_data['error_msg'])
             return
         clear_data = return_data.get('clear_data')
-        print(clear_data)
         old_haspwd = hashlib.md5(clear_data['password'].encode()).hexdigest()
         new_haspwd = hashlib.md5(clear_data['password2'].encode()).hexdigest()
         if bcrypt.hashpw(old_haspwd.encode('utf8'), self.current_user.hash_pwd.encode('utf8')) == self.current_user.hash_pwd.encode('utf8'):
