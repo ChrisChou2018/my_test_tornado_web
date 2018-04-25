@@ -3,23 +3,23 @@
 
 import tornado.web
 
-import app.lib.db_object as db_object
+# import app.lib.db_object as db_object
 
-from app.lib.handlers import BaseHandler
+# from app.lib.handlers import BaseHandler
 
 
 # /
-class HomeHandler(BaseHandler):
-    def get(self):
-        articles = db_object.list_article_by_cond(
-            {"status":"normal"}, limit=10, is_strip_tags=True
-        )
-        self.render("index.html", articles=articles)
+# class HomeHandler(BaseHandler):
+#     def get(self):
+#         articles = db_object.list_article_by_cond(
+#             {"status":"normal"}, limit=10, is_strip_tags=True
+#         )
+#         self.render("index.html", articles=articles)
 
 
-urls = [
-    (r"/", HomeHandler),
-]
+# urls = [
+#     (r"/", HomeHandler),
+# ]
 
 
 class HeaderModule(tornado.web.UIModule):

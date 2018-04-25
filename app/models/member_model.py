@@ -13,14 +13,14 @@ from peewee import fn, SQL
 
 
 class Member(base_model.BaseModel):
-    member_id = peewee.CharField(db_column="MemberId", primary_key=True)
+    member_id = peewee.AutoField(db_column="MemberId", primary_key=True)
     # login_name = peewee.CharField(db_column="LoginName")
-    # member_name = peewee.CharField(db_column="MemberName")
-    password = peewee.CharField(db_column="LpassWord")
+    member_name = peewee.CharField(db_column="MemberName")
+    # password = peewee.CharField(db_column="LpassWord")
     hash_pwd = peewee.CharField(db_column="HashPwd", default="")
     # member_lvl = peewee.CharField(db_column="MemberLvl")
     # member_score = peewee.CharField(db_column="MemberScore")
-    telephone = peewee.CharField(db_column="Telephone")
+    # telephone = peewee.CharField(db_column="Telephone")
     email = peewee.CharField(db_column="Email")
     # pay_password = peewee.CharField(db_column="PayPassword")
     status = peewee.CharField(db_column="Status")
@@ -59,19 +59,19 @@ class Member(base_model.BaseModel):
         return self.vip_avail_at > time.time()
 
     @classmethod
-    def get_member_by_login(cls, telephone):
+    def get_member_by_login(cls, email):
         try:
-            return Member.get((Member.telephone == telephone) | (Member.email == telephone))
+            return Member.get((Member.member_name == email) | (Member.email == email))
         except Member.DoesNotExist:
             return None
 
     @classmethod
-    def get_user_by_sess(self, member_id, session_id):
+    def get_user_by_sess(self, email, session_id):
         member = None
         sessions = None
 
         try:
-            member = Member.get(Member.member_id == member_id)
+            member = Member.get(Member.email == email)
             sessions = json.loads(member.sessions)
         except:
             return None
@@ -150,8 +150,7 @@ class Member(base_model.BaseModel):
     @classmethod
     def update_pwd(cls, member_id, new_psw):
         # If member update their password, we use the bcrypt to encrypt.
-        query = Member.update(password="", hash_pwd=new_psw)\
-                      .where(Member.member_id == member_id)
+        query = Member.update(hash_pwd=new_psw).where(Member.member_id == member_id)
         query.execute()
 
     # admin
@@ -267,9 +266,9 @@ class Member(base_model.BaseModel):
             (Member.telephone.in_(telephones))&(Member.status!=99))
         ]
 
-    @classmethod
-    def insert_members(cls, members):
-        Member.insert_many(members).execute()
+    # @classmethod
+    # def insert_members(cls, members):
+    #     Member.insert_many(members).execute()
 
 
 def update_member_by_member_id(member_id, update_dict):

@@ -2,14 +2,15 @@
 # -*- coding: utf-8 -*-
 
 import json
-import urllib
+# import urllib
+from urllib import parse as urllib
 import unittest
 import tornado.testing
 import tornado.httpclient
 
-import meihuishuo.handlers.api.api_order as handler_api_orders
+# import meihuishuo.handlers.api.api_order as handler_api_orders
 
-from meihuishuo.tests.test_base import BaseHTTPTestCase
+from app.tests.test_base import BaseHTTPTestCase
 
 
 class CommonCheck(object):
@@ -27,10 +28,10 @@ class ApiMyOrderHandlerTest(CommonCheck, BaseHTTPTestCase):
         # return handler_api_orders.urls
         pass
 
-    def set_handlers(self):
-        self.app.add_handlers(
-            self.app.settings["api_domain"], handler_api_orders.urls
-        )
+    # def set_handlers(self):
+    #     self.app.add_handlers(
+    #         self.app.settings["api_domain"], handler_api_orders.urls
+    #     )
 
     def test_api_my_order(self):
         # request_body = urllib.urlencode()
@@ -50,7 +51,7 @@ class ApiMyOrderHandlerTest(CommonCheck, BaseHTTPTestCase):
 
     def _check_my_order(self, json_data):
         if json_data:
-            print "MyOrder:", json_data
+            print("MyOrder:", json_data)
 
 
 class ApiInsertIosHandlerTest(CommonCheck, BaseHTTPTestCase):
@@ -63,10 +64,10 @@ class ApiInsertIosHandlerTest(CommonCheck, BaseHTTPTestCase):
     def get_handlers(self):
         pass
 
-    def set_handlers(self):
-        self.app.add_handlers(
-            self.app.settings["api_domain"], handler_api_orders.urls
-        )
+    # def set_handlers(self):
+    #     self.app.add_handlers(
+    #         self.app.settings["api_domain"], handler_api_orders.urls
+    #     )
 
     def test_api_insert_ios(self):
         '''
@@ -179,7 +180,7 @@ class ApiInsertIosHandlerTest(CommonCheck, BaseHTTPTestCase):
 
     def _check_insert_ios(self, json_data):
         if json_data:
-            print "InsertIos", json_data
+            print("InsertIos", json_data)
 
 
 class ApiUpdateOrderHandlerTest(CommonCheck, BaseHTTPTestCase):
@@ -192,10 +193,10 @@ class ApiUpdateOrderHandlerTest(CommonCheck, BaseHTTPTestCase):
     def get_handlers(self):
         pass
 
-    def set_handlers(self):
-        self.app.add_handlers(
-            self.app.settings["api_domain"], handler_api_orders.urls
-        )
+    # def set_handlers(self):
+    #     self.app.add_handlers(
+    #         self.app.settings["api_domain"], handler_api_orders.urls
+    #     )
 
     def test_update_order_ios(self):
         '''
@@ -404,7 +405,7 @@ class ApiUpdateOrderHandlerTest(CommonCheck, BaseHTTPTestCase):
 
     def _check_update_order(self, json_data):
         if json_data:
-            print "UpdateOrder:", json_data
+            print("UpdateOrder:", json_data)
 
 
 class ApiFindLogisticsHandlerTest(CommonCheck, BaseHTTPTestCase):
@@ -417,10 +418,10 @@ class ApiFindLogisticsHandlerTest(CommonCheck, BaseHTTPTestCase):
     def get_handlers(self):
         pass
 
-    def set_handlers(self):
-        self.app.add_handlers(
-            self.app.settings["api_domain"], handler_api_orders.urls
-        )
+    # def set_handlers(self):
+    #     self.app.add_handlers(
+    #         self.app.settings["api_domain"], handler_api_orders.urls
+    #     )
 
     def test_find_logistics(self):
         '''
@@ -453,7 +454,7 @@ class ApiFindLogisticsHandlerTest(CommonCheck, BaseHTTPTestCase):
 
     def _check_find_logistics(self, json_data):
         if json_data:
-            print "FindLogistics", json_data
+            print("FindLogistics", json_data)
 
 
 class ApiMyOrderDelHandlerTest(CommonCheck, BaseHTTPTestCase):
@@ -466,10 +467,10 @@ class ApiMyOrderDelHandlerTest(CommonCheck, BaseHTTPTestCase):
     def get_handlers(self):
         pass
 
-    def set_handlers(self):
-        self.app.add_handlers(
-            self.app.settings["api_domain"], handler_api_orders.urls
-        )
+    # def set_handlers(self):
+    #     self.app.add_handlers(
+    #         self.app.settings["api_domain"], handler_api_orders.urls
+    #     )
 
     def test_my_order_del(self):
         '''
@@ -513,7 +514,7 @@ class ApiMyOrderDelHandlerTest(CommonCheck, BaseHTTPTestCase):
 
     def _check_mey_order_del(self, json_data):
         if json_data:
-            print "MyOrderDel", json_data
+            print("MyOrderDel", json_data)
 
 
 class ApiDeleteOrderHandlerTest(CommonCheck, BaseHTTPTestCase):
@@ -526,10 +527,10 @@ class ApiDeleteOrderHandlerTest(CommonCheck, BaseHTTPTestCase):
     def get_handlers(self):
         pass
 
-    def set_handlers(self):
-        self.app.add_handlers(
-            self.app.settings["api_domain"], handler_api_orders.urls
-        )
+    # def set_handlers(self):
+    #     self.app.add_handlers(
+    #         self.app.settings["api_domain"], handler_api_orders.urls
+    #     )
 
     def test_delete_order(self):
         '''
@@ -559,7 +560,7 @@ class ApiDeleteOrderHandlerTest(CommonCheck, BaseHTTPTestCase):
 
     def _check_delete_order(self, json_data):
         if json_data:
-            print "DeleteOrder", json_data
+            print("DeleteOrder", json_data)
 
 
 # class ApiGetOrderCounthandlerTest(CommonCheck, BaseHTTPTestCase):
@@ -601,10 +602,10 @@ class ApiInsertCommentHandlerTest(CommonCheck, BaseHTTPTestCase):
     def get_handlers(self):
         pass
 
-    def set_handlers(self):
-        self.app.add_handlers(
-            self.app.settings["api_domain"], handler_api_orders.urls
-        )
+    # def set_handlers(self):
+    #     self.app.add_handlers(
+    #         self.app.settings["api_domain"], handler_api_orders.urls
+    #     )
 
     def test_insert_comment(self):
         '''
@@ -637,7 +638,7 @@ class ApiInsertCommentHandlerTest(CommonCheck, BaseHTTPTestCase):
 
     def _check_insert_comment(self, json_data):
         if json_data:
-            print "InsertComment", json_data
+            print("InsertComment", json_data)
 
 
 class ApiGatherGoodsListHandlerTest(CommonCheck, BaseHTTPTestCase):
@@ -650,10 +651,10 @@ class ApiGatherGoodsListHandlerTest(CommonCheck, BaseHTTPTestCase):
     def get_handlers(self):
         pass
 
-    def set_handlers(self):
-        self.app.add_handlers(
-            self.app.settings["api_domain"], handler_api_orders.urls
-        )
+    # def set_handlers(self):
+    #     self.app.add_handlers(
+    #         self.app.settings["api_domain"], handler_api_orders.urls
+    #     )
 
     def test_gather_goods_list(self):
         '''
@@ -711,7 +712,7 @@ class ApiGatherGoodsListHandlerTest(CommonCheck, BaseHTTPTestCase):
 
     def _check_gather_order_list(self, json_data):
         if json_data:
-            print "GatherOrderList", json_data
+            print("GatherOrderList", json_data)
 
 
 class ApiInsertIosHandlerTest(CommonCheck, BaseHTTPTestCase):
@@ -725,10 +726,10 @@ class ApiInsertIosHandlerTest(CommonCheck, BaseHTTPTestCase):
         # return handler_api_orders.urls
         pass
 
-    def set_handlers(self):
-        self.app.add_handlers(
-            self.app.settings["api_domain"], handler_api_orders.urls
-        )
+    # def set_handlers(self):
+    #     self.app.add_handlers(
+    #         self.app.settings["api_domain"], handler_api_orders.urls
+    #     )
 
     def test_api_insert_ios(self):
         '''
@@ -788,7 +789,7 @@ class ApiInsertIosHandlerTest(CommonCheck, BaseHTTPTestCase):
 
     def _check_api_insert_ios(self, json_data):
         if json_data:
-            print "ApiInsertIosHandlerTest:", json_data
+            print("ApiInsertIosHandlerTest:", json_data)
 
 
 if __name__ == "__main__":

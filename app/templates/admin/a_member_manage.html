@@ -1,0 +1,87 @@
+{% extends '../admin/a_layout.html' %}
+{% block css %}
+{% end %}
+{% block title %}
+用户表            
+{% end %}
+
+{% block content %}
+<table class="table table-striped member_table">
+        
+        <!-- <thead>
+          <tr>
+            <th>#</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Username</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">1</th>
+            <td>Mark</td>
+            <td>Otto</td>
+            <td>@mdo</td>
+          </tr>
+          <tr>
+            <th scope="row">2</th>
+            <td>Jacob</td>
+            <td>Thornton</td>
+            <td>@fat</td>
+          </tr>
+          <tr>
+            <th scope="row">3</th>
+            <td>Larry</td>
+            <td>the Bird</td>
+            <td>@twitter</td>
+          </tr>
+        </tbody> -->
+</table>
+<div >
+<nav aria-label="Page navigation">
+    <ul class="pagination page_box">
+        
+    </ul>
+</nav>
+</div>
+{% end %}
+{% block js %}
+    <script>
+        $(function(){
+            $('.admin').addClass('active')
+            $('.member_manage').addClass('active')
+            init_table(1)
+        })
+        function init_table(page){
+            var page = page || 1
+            $.ajax({
+                url: 'v1/member_info',
+                method: 'get',
+                data:{'page':page},
+                success: function (data) {
+                    if(data.status){
+                        $('.page_box').children().remove()
+                        $('.member_table').children().remove()
+                        $('.member_table').append(data.data)
+                        $('.page_box').append(data.page)
+                        $('.page_btn').click(click_page_btn)
+                    }else{
+                        alert(data.message)
+                    }
+                },
+                dataType:'json',
+            });
+        }
+        function click_page_btn(){
+            var page = $(this).attr('page')
+            init_table(page)
+
+        }
+        // $(".M-box").pagination(56, {
+        //     num_edge_entries: 2,
+        //     num_display_entries: 4,
+        //     callback: pageselectCallback,
+        //     items_per_page:1
+        // });
+    </script>
+{% end %}
