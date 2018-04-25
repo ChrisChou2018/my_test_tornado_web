@@ -1,6 +1,5 @@
 {% extends '../admin/a_layout.html' %}
 {% block css %}
-    
 {% end %}
 {% block title %}
 用户表            
@@ -38,28 +37,51 @@
           </tr>
         </tbody> -->
 </table>
+<div >
+<nav aria-label="Page navigation">
+    <ul class="pagination page_box">
+        
+    </ul>
+</nav>
+</div>
 {% end %}
 {% block js %}
     <script>
         $(function(){
             $('.admin').addClass('active')
             $('.member_manage').addClass('active')
+            init_table(1)
+        })
+        function init_table(page){
+            var page = page || 1
             $.ajax({
                 url: 'v1/member_info',
                 method: 'get',
+                data:{'page':page},
                 success: function (data) {
                     if(data.status){
+                        $('.page_box').children().remove()
+                        $('.member_table').children().remove()
                         $('.member_table').append(data.data)
+                        $('.page_box').append(data.page)
+                        $('.page_btn').click(click_page_btn)
                     }else{
                         alert(data.message)
                     }
                 },
                 dataType:'json',
             });
-        })
-        function getCookie(name) {
-            var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
-            return r ? r[1] : undefined;
         }
+        function click_page_btn(){
+            var page = $(this).attr('page')
+            init_table(page)
+
+        }
+        // $(".M-box").pagination(56, {
+        //     num_edge_entries: 2,
+        //     num_display_entries: 4,
+        //     callback: pageselectCallback,
+        //     items_per_page:1
+        // });
     </script>
 {% end %}
