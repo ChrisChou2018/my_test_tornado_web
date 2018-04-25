@@ -33,18 +33,20 @@ def init_table(t_heads,tbodys):
     return thead_str + tbody_str
 
 
-class ApiMemberInfoHandler(ApiBaseHandler):
-    @api_authenticated
+class ApiMemberInfoHandler(SiteBaseHandler):
+    # @api_authenticated
+    @admin_authenticated
     def get(self):
         return_data = {
             'data':None,
             'message':'',
             'status':True,
         }
+        table_head = ['member_id', 'member_name', 'email', 'role']
         member_obj = Member.select()
         data_list = [[i.member_id, i.member_name, i.email, i.role] for i in member_obj]
         # self.set_header('Content-Type', 'application/json; charset=UTF-8')
-        return_data['data'] = init_table(['member_id', 'member_name', 'email', 'role'], data_list)
+        return_data['data'] = init_table(table_head, data_list)
         self.write(json.dumps(return_data))
         
 
