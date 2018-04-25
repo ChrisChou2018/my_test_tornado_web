@@ -46,7 +46,6 @@
         $.get(
             '/v1/member_info',
             function(data){
-                console.log(data)
                 $('.member_table').append(data.return_data)
             },
             'json'

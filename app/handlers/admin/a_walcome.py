@@ -31,8 +31,6 @@ def init_table(t_heads,tbodys):
     else:
         tbody_str += "/tbody"
     return thead_str + tbody_str
-    
-
 
 
 class ApiMemberInfoHandler(ApiBaseHandler):
@@ -40,7 +38,7 @@ class ApiMemberInfoHandler(ApiBaseHandler):
         member_obj = Member.select()
         data_list = [[i.member_id, i.member_name, i.email, i.role] for i in member_obj]
         return_data = init_table(['member_id', 'member_name', 'email', 'role'], data_list)
-        self.write({'return_data':return_data})
+        self.finish({'return_data':return_data})
         
 
 
