@@ -11,7 +11,6 @@ from app.models.member_model import Member
 def admin_authenticated(method):
     @functools.wraps(method)
     def wrapper(self, *args, **kwargs):
-        print(self.current_user)
         if not self.current_user or not self.current_user.role:
             self.redirect("/signin")
             return
