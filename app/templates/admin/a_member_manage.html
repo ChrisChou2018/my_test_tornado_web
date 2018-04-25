@@ -41,14 +41,37 @@
 {% end %}
 {% block js %}
     <script>
-        $('.admin').addClass('active')
-        $('.member_manage').addClass('active')
-        $.get(
-            '/v1/member_info',
-            function(data){
-                $('.member_table').append(data.return_data)
-            },
-            'json'
-        )
+        $(function(){
+            $('.admin').addClass('active')
+            $('.member_manage').addClass('active')
+            // $.get(
+            //     '/v1/member_info',
+            //     function(data){
+            //         $('.member_table').append(data.return_data)
+            //     },
+            //     'json'
+            // )
+            $.ajax({
+                url: '/v1/member_info',
+                method: 'get',
+                data : {'MemberId':getCookie('_xsrf')},
+                xhrFields: {
+                    withCredentials:true  //支持附带详细信息
+                },
+                // crossDomain:true,//请求偏向外域
+                success: function (data) {
+                    if(data.status){
+                        $('.member_table').append(data.data)
+                    }else{
+                        alert(data.message)
+                    }
+                },
+                dataType: 'json',
+            });
+        })
+        function getCookie(name) {
+            var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
+            return r ? r[1] : undefined;
+        }
     </script>
 {% end %}

@@ -11,6 +11,7 @@ from app.models.member_model import Member
 def admin_authenticated(method):
     @functools.wraps(method)
     def wrapper(self, *args, **kwargs):
+        print(self.current_user)
         if not self.current_user or not self.current_user.role:
             self.redirect("/signin")
             return
@@ -43,7 +44,7 @@ def api_authenticated(method):
             member_id = self.get_argument("MemberId", None)
             return_data = dict()
             if not member_id:
-                return_data["message"] = u"您还不是美会说用户，请先注册吧"
+                return_data["message"] = "你没有登陆"
                 return_data["status"] = "session_error"
                 self.write(return_data)
                 return
