@@ -129,9 +129,12 @@ class AdminRegisterHandler(SiteBaseHandler):
             self._render(form_data, return_data['error_msg'])
             return
         clear_data = return_data.get('clear_data')
-        member_obj = Member.get_member_by_email(clear_data.get('email')) or Member.get_member_by_member_name(clear_data.get('member_name'))
-        if member_obj:
-            return_data['error_msg']['has_member_error'] = '用户名或者邮箱已经存在'
+        member_obj_by_email, member_obj_by_name = Member.get_member_by_email(clear_data.get('email')), Member.get_member_by_member_name(clear_data.get('member_name'))
+        if member_obj_by_email:
+            return_data['error_msg']['has_member_error'] = '邮箱已经被注册'
+        elif member_obj_by_name:
+            return_data['error_msg']['has_member_error'] = '用户名已经存在'
+        if return_data['error_msg']:
             self._render(form_data, return_data['error_msg'])
             return
         md5 = hashlib.md5(clear_data['password'].encode()).hexdigest()

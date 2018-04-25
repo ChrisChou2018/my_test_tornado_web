@@ -1,0 +1,65 @@
+{% extends '../admin/a_layout.html' %}
+{% block css %}
+    
+{% end %}
+{% block title %}
+用户表            
+{% end %}
+
+{% block content %}
+<table class="table table-striped member_table">
+        
+        <!-- <thead>
+          <tr>
+            <th>#</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Username</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">1</th>
+            <td>Mark</td>
+            <td>Otto</td>
+            <td>@mdo</td>
+          </tr>
+          <tr>
+            <th scope="row">2</th>
+            <td>Jacob</td>
+            <td>Thornton</td>
+            <td>@fat</td>
+          </tr>
+          <tr>
+            <th scope="row">3</th>
+            <td>Larry</td>
+            <td>the Bird</td>
+            <td>@twitter</td>
+          </tr>
+        </tbody> -->
+</table>
+{% end %}
+{% block js %}
+    <script>
+        $(function(){
+            $('.admin').addClass('active')
+            $('.member_manage').addClass('active')
+            $.ajax({
+                url: 'v1/member_info',
+                method: 'get',
+                success: function (data) {
+                    if(data.status){
+                        $('.member_table').append(data.data)
+                    }else{
+                        alert(data.message)
+                    }
+                },
+                dataType:'json',
+            });
+        })
+        function getCookie(name) {
+            var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
+            return r ? r[1] : undefined;
+        }
+    </script>
+{% end %}

@@ -191,7 +191,6 @@ class WwwBaseHandler(DbBaseHandler):
 
     def get_current_user(self):
         cookie_data = self.get_cookie(self.settings["cookie_key_sess"])
-        print(cookie_data)
         if not cookie_data:
             return None
 
