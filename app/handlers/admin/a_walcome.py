@@ -1,16 +1,16 @@
-from app.libs.decorators import admin_authenticated
-from app.libs.handlers import SiteBaseHandler, ApiBaseHandler
+from app.libs import decorators
+from app.libs import handlers
 from app.models.member_model import Member
 import json
 # /
-class AdminHomeHandler(SiteBaseHandler):
-    @admin_authenticated
+class AdminHomeHandler(handlers.SiteBaseHandler):
+    @decorators.admin_authenticated
     def get(self):
         self.render("admin/a_index.html")
         
 
-class MemberManage(SiteBaseHandler):
-    @admin_authenticated
+class MemberManage(handlers.SiteBaseHandler):
+    @decorators.admin_authenticated
     def get(self):
         self.render("admin/a_member_manage.html")
 
@@ -18,7 +18,7 @@ class MemberManage(SiteBaseHandler):
 
 
 
-class AdminJsAddJobHandler(ApiBaseHandler):
+class AdminJsAddJobHandler(handlers.ApiBaseHandler):
     def get(self):
         # import app.models.rq_model as rq_model
         # import app.workers.wms_worker as wms_worker
