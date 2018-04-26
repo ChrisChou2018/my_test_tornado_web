@@ -25,6 +25,7 @@ class Member(base_model.BaseModel):
     # pay_password = peewee.CharField(db_column="PayPassword")
     status = peewee.CharField(db_column="Status")
     create_time = peewee.DateTimeField(db_column="CreateTime")
+    salt_key = peewee.CharField(db_column="SaltKey")
     # qq_openid = peewee.CharField(db_column="qq_openid")
     # update_time = peewee.DateTimeField(db_column="UpdateTime")
     # wb_openid = peewee.CharField(db_column="wb_openid")

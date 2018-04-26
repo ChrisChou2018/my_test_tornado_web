@@ -1,7 +1,6 @@
 
 from app.libs.handlers import SiteBaseHandler
 from app.models.member_model import Member
-import hashlib
 import bcrypt
 import random
 import string
@@ -30,11 +29,12 @@ class AdminSigninHandler(SiteBaseHandler):
             form_errors["form"] = "用户名/密码不匹配"
             self._render(form_data, form_errors)
             return
-        md5d = hashlib.md5(form_data["password"].encode()).hexdigest()
+        pass_word = form_data["password"]
+        salt_key = str(member_obj.salt_key)
         member_hashpw = str(member_obj.hash_pwd)
         signin_flag = False
         if member_hashpw:
-            if bcrypt.hashpw(md5d.encode(), member_hashpw.encode()) == member_hashpw.encode():
+            if bcrypt.hashpw((pass_word+salt_key).encode(), member_hashpw.encode()) == member_hashpw.encode():
                 signin_flag = True
         if not signin_flag:
             form_errors["form"] = "用户名/密码不匹配"
@@ -137,12 +137,16 @@ class AdminRegisterHandler(SiteBaseHandler):
         if return_data['error_msg']:
             self._render(form_data, return_data['error_msg'])
             return
-        md5 = hashlib.md5(clear_data['password'].encode()).hexdigest()
-        haspwd = bcrypt.hashpw(md5.encode(), bcrypt.gensalt())
+        pass_word = clear_data['password']
+        random_salt_key = ''.join(random.choice(string.ascii_lowercase + string.digits) \
+            for i in range(8)
+        )
+        haspwd = bcrypt.hashpw((pass_word+random_salt_key).encode(), bcrypt.gensalt())
         clear_data['hash_pwd'] = haspwd
         clear_data.update({'sessions':json.dumps(list()),
                             'status':'1',
                             'role':'admin',
+                            'salt_key':random_salt_key,
                             'create_time':dt.datetime.now()})
         Member.create(**clear_data)
         return self.render("admin/a_register_success.html")
@@ -202,11 +206,17 @@ class AdminChangePasswordHandler(SiteBaseHandler):
             self._render(form_data, return_data['error_msg'])
             return
         clear_data = return_data.get('clear_data')
-        old_haspwd = hashlib.md5(clear_data['password'].encode()).hexdigest()
-        new_haspwd = hashlib.md5(clear_data['password2'].encode()).hexdigest()
-        if bcrypt.hashpw(old_haspwd.encode('utf8'), self.current_user.hash_pwd.encode('utf8')) == self.current_user.hash_pwd.encode('utf8'):
-            hashd = bcrypt.hashpw(new_haspwd.encode('utf8'), bcrypt.gensalt())
+        old_haspwd = clear_data['password']
+        salt_key = self.current_user.salt_key
+        new_haspwd = clear_data['password2']
+        new_salt_key = ''.join(random.choice(string.ascii_lowercase + string.digits) \
+            for i in range(8)
+        )
+        if bcrypt.hashpw((old_haspwd + salt_key).encode('utf8'), self.current_user.hash_pwd.encode('utf8')) == self.current_user.hash_pwd.encode('utf8'):
+            hashd = bcrypt.hashpw((new_haspwd + new_salt_key).encode('utf8'), bcrypt.gensalt())
             Member.update_pwd(self.current_user.member_id, hashd)
+            query = Member.update({'salt_key':new_salt_key}).where(Member.member_id == self.current_user.member_id)
+            query.execute()
             self.redirect('/signout/')
         else:
             return_data['error_msg'] = {'password':'密码错误'}
