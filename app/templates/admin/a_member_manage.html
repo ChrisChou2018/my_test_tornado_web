@@ -35,17 +35,19 @@
             <div class="return_msg_box"></div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal" >Close</button>
-            <button type="button" class="btn btn-primary submit_btn">Submit</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary submit_btn" >Submit</button>
         </div>
         </div>
     </div>
 </div>
 
 <div class="row">
-    <div class="col-md-10"></div>
-    <div class="col-md-2">
-        <button type="button" class="btn btn-info app_user_btn" type="button" data-toggle="modal" data-target="#exampleModal" >AddUser <span class="glyphicon glyphicon-plus"></span></button>
+    <div class="col-md-8"></div>
+    <div class="col-md-4">
+        <button type="button" class="btn btn-info add_member_btn" type="button" data-toggle="modal" data-target="#exampleModal" >AddUser <span class="glyphicon glyphicon-plus"></span></button>
+        <button type="button" class="btn btn-default choose_member" type="button">Choose<span class="glyphicon glyphicon-saved"></span></button>
+        <button type="button" class="btn btn-danger delete_member" type="button">Delete<span class="glyphicon glyphicon-remove"></span></button>
     </div>
 </div>
 <table class="table table-striped member_table">
@@ -67,11 +69,25 @@
         $(function(){
             $('.admin').addClass('active')
             $('.member_manage').addClass('active')
-            init_table(1)
-            $('.app_user_btn').click(function(){
+            init_table()
+            $('.add_member_btn').click(function(){
                 $('.submit_btn').unbind()
-                $('.submit_btn').click(add_user)
+                $('.submit_btn').click(add_member)
             })
+            $('.choose_member').click(function(){
+                var tr =  $('.member_table tbody tr')
+                $.each(tr,function(index,item){
+                    var $ltd = $(item).children().last()
+                    if($ltd.css('display')=='none'){
+                        $ltd.css('display','block')
+                    }else{
+                        $ltd.css('display','none')
+                    }
+                    
+                })
+                
+            })
+            $('.delete_member').click(delete_member)
             
         })
         function click_page_btn(){
@@ -79,8 +95,9 @@
             init_table(page)
 
         }
-        // {clear_data: null, error_msg: {password: "两次密码不一致"}, status: false}
-        function add_user(){
+        
+        //添加用户事件
+        function add_member(){
             var $input_list = $('.member_form input')
             var data_dict = {}
             $input_list.each(function(index,item){
@@ -107,6 +124,36 @@
             )
             
         }
+
+        // 删除用户按钮
+        function delete_member(){
+            var tr =  $('.member_table tbody tr')
+            var member_id_list = []
+            $.each(tr,function(index,item){
+                    var $ltd = $(item).children().last()
+                    var $ftd = $(item).children().first()
+                    var $check_box = $ltd.children()
+                    if($ltd.css('display')=='block' && $check_box.prop('checked')){
+                        member_id_list.push($ftd.text())
+                    }
+                })
+            if(member_id_list.length>0){
+                $.post(
+                    '/v1/delete_member/',
+                    {'member_id_list':member_id_list, '_xsrf':getCookie('_xsrf')},
+                    function(value){
+                        if(value.status){
+                            init_table()
+                        }else{
+                            alert(value.error_msg)
+                        }
+                    },
+                    'json'
+                )
+            }
+        }
+
+        //获取cookie
         function getCookie(name) {
             var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
             return r ? r[1] : undefined;

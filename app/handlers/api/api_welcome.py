@@ -13,6 +13,7 @@ import random
 import string
 import datetime as dt
 
+
 class ApiMemberInfoHandler(SiteBaseHandler):
     @admin_authenticated
     def get(self):
@@ -27,7 +28,7 @@ class ApiMemberInfoHandler(SiteBaseHandler):
         except:
             current_page = 1
         member = member_model.Member
-        table_head = ['member_id', 'member_name', 'email', 'role']
+        table_head = ['member_id', 'member_name', 'email', 'role', 'more']
         member_obj = member.select().order_by(-member.member_id).paginate(int(current_page), 10)
         member_obj_count = member.select().count()
         page_obj = libs.Pagingfunc(current_page, member_obj_count)
@@ -76,4 +77,15 @@ class ApiRegisterMemberHandler(SiteBaseHandler):
     def _list_form_keys(self):
         return ("member_name", "email", "password", "password2")
 
-        
+
+class ApiDeleteMemberHandler(SiteBaseHandler):
+    def post(self):
+        try:
+            member_id_list = self.get_arguments('member_id_list[]')
+            member = member_model.Member
+            for i in member_id_list:
+                obj = member.delete().where(member.member_id==i)
+                obj.execute()
+            self.write(json.dumps({'status':True}))
+        except:
+            self.write(json.dumps({'status':False,'error_msg':'出错'}))

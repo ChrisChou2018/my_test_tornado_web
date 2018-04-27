@@ -10,7 +10,9 @@ def create_html_table(t_heads_data, tbodys_data):
         tbody_str += "<tr>"
         for j in i:
             tbody_str += "<td>{0}</td>".format(j)
-        tbody_str += "</tr>"
+        else:
+            tbody_str += "<td><a>编辑</a></td> <td style='display: none'><input type='checkbox'></td>"
+            tbody_str += "</tr>"
     else:
         tbody_str += "/tbody"
     return thead_str + tbody_str
