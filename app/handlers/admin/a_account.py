@@ -79,8 +79,6 @@ class AdminSignoutHandler(handlers.SiteBaseHandler):
 
 
 
-        
-
 # /register/
 class AdminRegisterHandler(handlers.SiteBaseHandler):
     """
@@ -131,7 +129,6 @@ class AdminRegisterHandler(handlers.SiteBaseHandler):
 
 
 
-
 # /change_password/
 class AdminChangePasswordHandler(handlers.SiteBaseHandler):
     """
@@ -172,7 +169,9 @@ class AdminChangePasswordHandler(handlers.SiteBaseHandler):
     def _list_form_keys(self):
         return ("password", "password2")
 
+
     def _render(self, form_data=None, form_errors=None):
         self.render("admin/a_change_password.html", form_data=form_data,
             form_errors=form_errors
         )
+
