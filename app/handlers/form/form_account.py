@@ -2,6 +2,10 @@ import re
 
 
 class RegisterForm(object):
+    """
+    注册和编辑用户form验证，默认是添加用户验证如果是编辑用户验证，
+    将check_valid中的is_edit变为true即可
+    """
     def __init__(self):
         self.member_name = {'re':r"^.{0,15}$", 'msg':'长度不超过15'}
         self.email = {'re':r"^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$", 'msg':'邮箱格式不正确'}
@@ -53,6 +57,9 @@ class RegisterForm(object):
 
 
 class ChangePasswordForm(object):
+    """
+    修改密码form验证
+    """
     def __init__(self):
         self.password = {'re':r"^.{0,30}$", 'msg':'密码长度不超过30'}
         self.password2 = {'re':r"^.{0,30}$", 'msg':'密码长度不超过30'}

@@ -20,6 +20,9 @@ def create_html_table(t_heads_data, tbodys_data):
 
 
 class Pagingfunc:
+	"""
+	用于生成html页面分页按钮的类
+	"""
 	def __init__(self, current_page, all_count, data_num=None, show_page=None, url=None, filter_args=None):
 		try:
 			self.current_page = int(current_page)

@@ -15,6 +15,9 @@ import datetime as dt
 
 
 class ApiMemberInfoHandler(SiteBaseHandler):
+    """
+    获取用户页面信息接口
+    """
     @admin_authenticated
     def get(self):
         return_data = {
@@ -40,6 +43,9 @@ class ApiMemberInfoHandler(SiteBaseHandler):
 
 
 class ApiRegisterMemberHandler(SiteBaseHandler):
+    """
+    注册用户接口
+    """
     @admin_authenticated
     def post(self):
         member = member_model.Member
@@ -79,6 +85,9 @@ class ApiRegisterMemberHandler(SiteBaseHandler):
 
 
 class ApiDeleteMemberHandler(SiteBaseHandler):
+    """
+    删除用户接口
+    """
     def post(self):
         try:
             member_id_list = self.get_arguments('member_id_list[]')
@@ -92,6 +101,9 @@ class ApiDeleteMemberHandler(SiteBaseHandler):
 
 
 class ApiEditMemberHandler(SiteBaseHandler):
+    """
+    注册用户接口
+    """
     def get(self):
         return_data = {
             'data':None,
