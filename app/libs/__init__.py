@@ -10,7 +10,9 @@ def create_html_table(t_heads_data, tbodys_data):
         tbody_str += "<tr>"
         for j in i:
             tbody_str += "<td>{0}</td>".format(j)
-        tbody_str += "</tr>"
+        else:
+            tbody_str += "<td><a class='edit_member' style='cursor:pointer;text-decoration:none;'>编辑</a></td> <td style='display: none'><input type='checkbox'></td>"
+            tbody_str += "</tr>"
     else:
         tbody_str += "/tbody"
     return thead_str + tbody_str
@@ -18,6 +20,9 @@ def create_html_table(t_heads_data, tbodys_data):
 
 
 class Pagingfunc:
+	"""
+	用于生成html页面分页按钮的类
+	"""
 	def __init__(self, current_page, all_count, data_num=None, show_page=None, url=None, filter_args=None):
 		try:
 			self.current_page = int(current_page)
@@ -53,19 +58,19 @@ class Pagingfunc:
 					start = self.current_page - half
 					stop = self.current_page + half
 		if self.current_page <= 1:
-			previous = "<li><a href='#'>上一页<span aria-hidden='true'>&laquo;</span></a></li>"
+			previous = "<li><a href='#' style='cursor:pointer;text-decoration:none;'>上一页<span aria-hidden='true'>&laquo;</span></a></li>"
 		else:
-			previous = "<li><a page=%s class='page_btn'>上一页<span aria-hidden='true'>&laquo;</span></a></li>" % (self.current_page - 1)
+			previous = "<li><a page=%s class='page_btn' style='cursor:pointer;text-decoration:none;'>上一页<span aria-hidden='true'>&laquo;</span></a></li>" % (self.current_page - 1)
 		html_list.append(previous)
 		for i in range(start, stop + 1):
 			if self.current_page == i:
-				temp = """<li><a page=%s class='page_btn' style='background-color:yellowgreen;'>%s</a></li>""" % (i, i)
+				temp = """<li><a page=%s class='page_btn' style='background-color:yellowgreen;cursor:pointer;text-decoration:none;'>%s</a></li>""" % (i, i)
 			else:
-				temp = "<li><a page=%s class='page_btn'>%s</a></li>" % (i, i)
+				temp = "<li><a page=%s class='page_btn' style='cursor:pointer;text-decoration:none;'>%s</a></li>" % (i, i)
 			html_list.append(temp)
 		if self.current_page >= self.all_page:
-			nex = "<li><a href='#'>下一页<span aria-hidden='true'>&raquo;</span></a></li>"
+			nex = "<li><a href='#' style='cursor:pointer;text-decoration:none;'>下一页<span aria-hidden='true'>&raquo;</span></a></li>"
 		else:
-			nex = "<li><a page=%s class='page_btn'>下一页<span aria-hidden='true'>&raquo;</span></a></li>" % (self.current_page + 1)
+			nex = "<li><a page=%s class='page_btn' style='cursor:pointer;text-decoration:none;'>下一页<span aria-hidden='true'>&raquo;</span></a></li>" % (self.current_page + 1)
 		html_list.append(nex)
 		return ''.join(html_list)

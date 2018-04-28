@@ -4,6 +4,12 @@
 {% block title %}
 用户表            
 {% end %}
+{% block page_header %}
+<ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i> Admin</a></li>
+    <li class="active">member_manage</li>
+</ol>
+{% end %}
 
 {% block content %}
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
@@ -35,17 +41,19 @@
             <div class="return_msg_box"></div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal" >Close</button>
-            <button type="button" class="btn btn-primary submit_btn">Submit</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary submit_btn" >Submit</button>
         </div>
         </div>
     </div>
 </div>
 
 <div class="row">
-    <div class="col-md-10"></div>
-    <div class="col-md-2">
-        <button type="button" class="btn btn-info app_user_btn" type="button" data-toggle="modal" data-target="#exampleModal" >AddUser <span class="glyphicon glyphicon-plus"></span></button>
+    <div class="col-md-8"></div>
+    <div class="col-md-4">
+        <button type="button" class="btn btn-info add_member_btn" type="button" data-toggle="modal" data-target="#exampleModal" >AddUser <span class="glyphicon glyphicon-plus"></span></button>
+        <button type="button" class="btn btn-default choose_member" type="button">Choose<span class="glyphicon glyphicon-saved"></span></button>
+        <button type="button" class="btn btn-danger delete_member" type="button">Delete<span class="glyphicon glyphicon-trash"></span></button>
     </div>
 </div>
 <table class="table table-striped member_table">
@@ -67,11 +75,27 @@
         $(function(){
             $('.admin').addClass('active')
             $('.member_manage').addClass('active')
-            init_table(1)
-            $('.app_user_btn').click(function(){
+            init_table()
+            $('.add_member_btn').click(function(){
                 $('.submit_btn').unbind()
-                $('.submit_btn').click(add_user)
+                $('.submit_btn').click(function(){
+                    add_or_edit_member(false)
+                })
             })
+            $('.choose_member').click(function(){
+                var tr =  $('.member_table tbody tr')
+                $.each(tr,function(index,item){
+                    var $ltd = $(item).children().last()
+                    if($ltd.css('display')=='none'){
+                        $ltd.css('display','block')
+                    }else{
+                        $ltd.css('display','none')
+                    }
+                    
+                })
+                
+            })
+            $('.delete_member').click(delete_member)
             
         })
         function click_page_btn(){
@@ -79,16 +103,87 @@
             init_table(page)
 
         }
-        // {clear_data: null, error_msg: {password: "两次密码不一致"}, status: false}
-        function add_user(){
+        
+ 
+
+        // 删除用户按钮
+        function delete_member(){
+            var tr =  $('.member_table tbody tr')
+            var member_id_list = []
+            $.each(tr,function(index,item){
+                    var $ltd = $(item).children().last()
+                    var $ftd = $(item).children().first()
+                    var $check_box = $ltd.children()
+                    if($ltd.css('display')=='block' && $check_box.prop('checked')){
+                        member_id_list.push($ftd.text())
+                    }
+                })
+            if(member_id_list.length>0){
+                $.post(
+                    '/v1/delete_member/',
+                    {'member_id_list':member_id_list, '_xsrf':getCookie('_xsrf')},
+                    function(value){
+                        if(value.status){
+                            init_table()
+                        }else{
+                            alert(value.error_msg)
+                        }
+                    },
+                    'json'
+                )
+            }
+        }
+
+        // 获取待编辑用户信息
+        var member_id = null
+        function get_edit_member_info(){
+            member_id = $(this).parent().parent().children().first().text()
+            var data_dict = null
+            $.get(
+                '/v1/edit_member/?member_id='+member_id,
+                function(value){
+                    if(value.status){
+                        data_dict = value.data
+                        $('#exampleModal').modal('show')
+                        var $input_list = $('.member_form input')
+                        $input_list.each(function(index, item){
+                            $(item).attr('old_value', data_dict[$(item).attr('name')])
+                            $(item).val(data_dict[$(item).attr('name')])
+                        })
+                        $('.submit_btn').unbind()
+                        $('.submit_btn').click(function(){
+                            add_or_edit_member(true)
+                        })
+                    }else{
+                        alert(value.message)
+                    }
+                },
+                'json'
+            )
+            
+        }
+
+        //添加用户事件活着编辑用户
+        function add_or_edit_member(is_edit){
+            var post_url = is_edit ? '/v1/edit_member/?member_id='+member_id : '/v1/register_member/'
             var $input_list = $('.member_form input')
             var data_dict = {}
             $input_list.each(function(index,item){
-                data_dict[$(item).attr('name')]=$(item).val()
+                var input_value = $(item).val().trim()
+                if(is_edit){
+                    var input_old_value = $(item).attr('old_value')
+                    if(input_value != input_old_value){
+                        data_dict[$(item).attr('name')]=input_value
+                    }
+                }else{
+                    data_dict[$(item).attr('name')]=input_value
+                }
+                
             })
+            data_dict['member_id'] = member_id
             data_dict['_xsrf'] = getCookie("_xsrf")
             $.post(
-                '/v1/register_member/',
+                post_url,
                 data_dict,
                 function(value){
                     if(value.status){
@@ -105,8 +200,10 @@
                 },
                 'json'
             )
-            
         }
+
+
+        //获取cookie
         function getCookie(name) {
             var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
             return r ? r[1] : undefined;
@@ -124,6 +221,7 @@
                         $('.member_table').append(data.data)
                         $('.page_box').append(data.page)
                         $('.page_btn').click(click_page_btn)
+                        $('.edit_member').click(get_edit_member_info)
                     }else{
                         alert(data.message)
                     }

@@ -79,10 +79,11 @@ class AdminSignoutHandler(handlers.SiteBaseHandler):
 
 
 
-        
-
 # /register/
 class AdminRegisterHandler(handlers.SiteBaseHandler):
+    """
+    用户注册页面
+    """
     def get(self):
         self._render()
     
@@ -128,9 +129,11 @@ class AdminRegisterHandler(handlers.SiteBaseHandler):
 
 
 
-
 # /change_password/
 class AdminChangePasswordHandler(handlers.SiteBaseHandler):
+    """
+    用户修改密码页面
+    """
     def get(self):
         self._render()
     
@@ -166,7 +169,9 @@ class AdminChangePasswordHandler(handlers.SiteBaseHandler):
     def _list_form_keys(self):
         return ("password", "password2")
 
+
     def _render(self, form_data=None, form_errors=None):
         self.render("admin/a_change_password.html", form_data=form_data,
             form_errors=form_errors
         )
+
