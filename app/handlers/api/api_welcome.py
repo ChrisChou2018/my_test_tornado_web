@@ -31,10 +31,21 @@ class ApiMemberInfoHandler(SiteBaseHandler):
         except:
             current_page = 1
         member = member_model.Member
+        try:
+            value = self.get_argument('search_value')
+            filter_args = 'search_value={0}'.format(value)
+            search_value = ((member.member_name == value) | (member.email == value))
+        except:
+            search_value = None
         table_head = ['member_id', 'member_name', 'email', 'role', 'more']
-        member_obj = member.select().order_by(-member.member_id).paginate(int(current_page), 10)
-        member_obj_count = member.select().count()
-        page_obj = libs.Pagingfunc(current_page, member_obj_count)
+        if not search_value:
+            member_obj = member.select().order_by(-member.member_id).paginate(int(current_page), 10)
+            member_obj_count = member.select().count()
+            page_obj = libs.Pagingfunc(current_page, member_obj_count)
+        else:
+            member_obj = member.select().where(search_value).order_by(-member.member_id).paginate(int(current_page), 10)
+            member_obj_count = member.select().where(search_value).count()
+            page_obj = libs.Pagingfunc(current_page, member_obj_count, filter_args=filter_args)
         data_list = [[i.member_id, i.member_name, i.email, i.role] for i in member_obj]
         # self.set_header('Content-Type', 'application/json; charset=UTF-8')
         return_data['data'] = libs.create_html_table(table_head, data_list)

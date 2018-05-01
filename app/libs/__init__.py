@@ -60,17 +60,17 @@ class Pagingfunc:
 		if self.current_page <= 1:
 			previous = "<li><a href='#' style='cursor:pointer;text-decoration:none;'>上一页<span aria-hidden='true'>&laquo;</span></a></li>"
 		else:
-			previous = "<li><a page=%s class='page_btn' style='cursor:pointer;text-decoration:none;'>上一页<span aria-hidden='true'>&laquo;</span></a></li>" % (self.current_page - 1)
+			previous = "<li><a page=%s %s class='page_btn'  style='cursor:pointer;text-decoration:none;'>上一页<span aria-hidden='true'>&laquo;</span></a></li>" % (self.current_page - 1, self.filter_args)
 		html_list.append(previous)
 		for i in range(start, stop + 1):
 			if self.current_page == i:
-				temp = """<li><a page=%s class='page_btn' style='background-color:yellowgreen;cursor:pointer;text-decoration:none;'>%s</a></li>""" % (i, i)
+				temp = """<li><a page=%s %s class='page_btn' style='background-color:yellowgreen;cursor:pointer;text-decoration:none;'>%s</a></li>""" % (i, self.filter_args, i)
 			else:
-				temp = "<li><a page=%s class='page_btn' style='cursor:pointer;text-decoration:none;'>%s</a></li>" % (i, i)
+				temp = "<li><a page=%s %s class='page_btn' style='cursor:pointer;text-decoration:none;'>%s</a></li>" % (i, self.filter_args, i)
 			html_list.append(temp)
 		if self.current_page >= self.all_page:
 			nex = "<li><a href='#' style='cursor:pointer;text-decoration:none;'>下一页<span aria-hidden='true'>&raquo;</span></a></li>"
 		else:
-			nex = "<li><a page=%s class='page_btn' style='cursor:pointer;text-decoration:none;'>下一页<span aria-hidden='true'>&raquo;</span></a></li>" % (self.current_page + 1)
+			nex = "<li><a page=%s %s class='page_btn' style='cursor:pointer;text-decoration:none;'>下一页<span aria-hidden='true'>&raquo;</span></a></li>" % (self.current_page + 1, self.filter_args)
 		html_list.append(nex)
 		return ''.join(html_list)

@@ -49,7 +49,21 @@
 </div>
 
 <div class="row">
-    <div class="col-md-8"></div>
+    <div class="col-md-8">
+        <div "row">
+            <div class="col-md-8">
+                <div class="input-group">
+                    <input type="text" class="form-control search_input" placeholder="Search for...">
+                    <span class="input-group-btn">
+                      <button class="btn btn-default search_input_btn" type="button">Search</button>
+                    </span>
+                  </div><!-- /input-group -->
+            </div>
+            <div class="col-md-4">
+
+            </div>
+        </div>
+    </div>
     <div class="col-md-4">
         <button type="button" class="btn btn-info add_member_btn" type="button" data-toggle="modal" data-target="#exampleModal" >AddUser <span class="glyphicon glyphicon-plus"></span></button>
         <button type="button" class="btn btn-default choose_member" type="button">Choose<span class="glyphicon glyphicon-saved"></span></button>
@@ -96,11 +110,16 @@
                 
             })
             $('.delete_member').click(delete_member)
+            $('.search_input_btn').click(function(){
+                var search_value = $('.search_input').val()
+                init_table(1, search_value)
+            })
             
         })
         function click_page_btn(){
-            var page = $(this).attr('page')
-            init_table(page)
+            var search_value = $(this).attr('search_value') || ''
+            var page_num = $(this).attr('page')
+            init_table(page_num, search_value)
 
         }
         
@@ -208,10 +227,15 @@
             var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
             return r ? r[1] : undefined;
         }
-        function init_table(page){
+
+
+        //获取表数据
+        function init_table(page, search_value){
             var page = page || 1
+            var search_value = search_value || ''
+            var request_url = search_value ? 'v1/member_info?search_value=' + search_value  : 'v1/member_info'
             $.ajax({
-                url: 'v1/member_info',
+                url: request_url,
                 method: 'get',
                 data:{'page':page},
                 success: function (data) {
