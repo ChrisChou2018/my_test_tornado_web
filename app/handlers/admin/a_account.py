@@ -9,7 +9,7 @@ import datetime as dt
 import json
 import tornado.web
 import re
-from app.handlers.form import form_account
+from app.handlers.admin import form
 
 
 # /signin/
@@ -90,7 +90,7 @@ class AdminRegisterHandler(handlers.SiteBaseHandler):
     def post(self):
         member = member_model.Member
         form_data =  self._build_form_data()
-        obj = form_account.RegisterForm()
+        obj = form.RegisterForm()
         return_data = obj.check_valid(form_data)
         if return_data['error_msg']:
             self._render(form_data, return_data['error_msg'])
@@ -139,7 +139,7 @@ class AdminChangePasswordHandler(handlers.SiteBaseHandler):
     
     def post(self):
         form_data =  self._build_form_data()
-        obj = form_account.ChangePasswordForm()
+        obj = form.ChangePasswordForm()
         return_data = obj.check_valid(form_data)
         if return_data['error_msg']:
             self._render(form_data, return_data['error_msg'])

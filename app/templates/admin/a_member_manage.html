@@ -23,19 +23,19 @@
             <form method="post" action="" class="member_form">
                 <div class="form-group">
                     <label for="recipient-name" class="control-label">Name:</label>
-                    <input type="text" class="form-control" id="recipient-name" name="f_member_name">
+                    <input type="text" class="form-control" id="recipient-name" name="member_name">
                 </div>
                 <div class="form-group">
                     <label for="recipient-name" class="control-label">Email:</label>
-                    <input type="text" class="form-control" id="recipient-name" name="f_email">
+                    <input type="text" class="form-control" id="recipient-name" name="email">
                 </div>
                 <div class="form-group">
                     <label for="recipient-name" class="control-label">Password:</label>
-                    <input type="password" class="form-control" id="recipient-name" name="f_password">
+                    <input type="password" class="form-control" id="recipient-name" name="password">
                 </div>
                 <div class="form-group">
                     <label for="recipient-name" class="control-label">RetypePassword:</label>
-                    <input type="password" class="form-control" id="recipient-name" name="f_password2">
+                    <input type="password" class="form-control" id="recipient-name" name="password2">
                 </div>
             </form>
             <div class="return_msg_box"></div>
@@ -70,7 +70,7 @@
         <button type="button" class="btn btn-danger delete_member" type="button">Delete<span class="glyphicon glyphicon-trash"></span></button>
     </div>
 </div>
-<table class="table table-striped member_table">
+<table class="table table-striped member_table" >
         
     
 </table>
@@ -139,7 +139,7 @@
                 })
             if(member_id_list.length>0){
                 $.post(
-                    '/v1/delete_member/',
+                    '/j/delete_member/',
                     {'member_id_list':member_id_list, '_xsrf':getCookie('_xsrf')},
                     function(value){
                         if(value.status){
@@ -159,7 +159,7 @@
             member_id = $(this).parent().parent().children().first().text()
             var data_dict = null
             $.get(
-                '/v1/edit_member/?member_id='+member_id,
+                '/j/edit_member/?member_id='+member_id,
                 function(value){
                     if(value.status){
                         data_dict = value.data
@@ -182,9 +182,9 @@
             
         }
 
-        //添加用户事件活着编辑用户
+        //添加用户或着编辑用户
         function add_or_edit_member(is_edit){
-            var post_url = is_edit ? '/v1/edit_member/?member_id='+member_id : '/v1/register_member/'
+            var post_url = is_edit ? '/j/edit_member/?member_id='+member_id : '/j/register_member/'
             var $input_list = $('.member_form input')
             var data_dict = {}
             $input_list.each(function(index,item){
@@ -233,7 +233,7 @@
         function init_table(page, search_value){
             var page = page || 1
             var search_value = search_value || ''
-            var request_url = search_value ? 'v1/member_info?search_value=' + search_value  : 'v1/member_info'
+            var request_url = search_value ? '/j/member_info?search_value=' + search_value  : '/j/member_info'
             $.ajax({
                 url: request_url,
                 method: 'get',
