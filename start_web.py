@@ -15,6 +15,8 @@ from app.libs.url_include import url_wrapper, include
 # from app.handlers.admin import ui_modules as UiModules
 # from app.handlers import api as api_admin
 from app.handlers import admin as admin_urls
+from app import models
+from app.handlers import admin
 
 define("port", default=9900)
 define("debug", default=True)
@@ -25,7 +27,7 @@ tornado.options.parse_command_line()
 
 # ui_modules = dict()
 # ui_modules.update(UiModules.ui_modules)
-# config_web.settings["ui_modules"] = ui_modules
+config_web.settings["ui_modules"] = admin
 
 
 class BaseApplication(tornado.web.Application):

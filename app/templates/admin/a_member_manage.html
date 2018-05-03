@@ -11,6 +11,7 @@
 </ol>
 {% end %}
 
+
 {% block content %}
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
     <div class="modal-dialog" role="document">
@@ -52,12 +53,14 @@
     <div class="col-md-8">
         <div "row">
             <div class="col-md-8">
+                <form action="" method="GET" class="search_input">
                 <div class="input-group">
-                    <input type="text" class="form-control search_input" placeholder="Search for...">
+                    <input type="text" class="form-control" placeholder="Search for..." name="search_value" value="{{ search_value if search_value else '' }}">
                     <span class="input-group-btn">
-                      <button class="btn btn-default search_input_btn" type="button">Search</button>
+                        <button class="btn btn-default search_input_btn" type="submit">Search</button>
                     </span>
                   </div><!-- /input-group -->
+                </form>
             </div>
             <div class="col-md-4">
 
@@ -70,26 +73,46 @@
         <button type="button" class="btn btn-danger delete_member" type="button">Delete<span class="glyphicon glyphicon-trash"></span></button>
     </div>
 </div>
+
 <table class="table table-striped member_table" >
+    <head>
+        <tr>
+            {% for i in table_head %}
+            <th>{{i}}</th>
+            {% end %}
+        </tr>
+    </head>
+    <tbody>
+        {% for i in member_obj %}
+        <tr>
+            <td>{{i.member_id}}</td>
+            <td>{{i.member_name}}</td>
+            <td>{{i.email}}</td>
+            <td>{{i.role}}</td>
+            <td><a class='edit_member' style='cursor:pointer;text-decoration:none;'>编辑</a></td> <td style='display: none'><input type='checkbox'></td>
+        </tr>
+        {% end %}
+    </tbody>
         
-    
 </table>
 
 <div>
     <nav aria-label="Page navigation">
         <ul class="pagination page_box">
-            
+            {% module Pagingfunc(current_page, member_obj_count, filter_args, url) %}
         </ul>
     </nav>
 </div>
 
+
 {% end %}
+
 {% block js %}
     <script>
         $(function(){
             $('.admin').addClass('active')
             $('.member_manage').addClass('active')
-            init_table()
+            // init_table()
             $('.add_member_btn').click(function(){
                 $('.submit_btn').unbind()
                 $('.submit_btn').click(function(){
@@ -110,10 +133,14 @@
                 
             })
             $('.delete_member').click(delete_member)
-            $('.search_input_btn').click(function(){
-                var search_value = $('.search_input').val()
-                init_table(1, search_value)
-            })
+            $('.edit_member').click(get_edit_member_info)
+            // $('.search_input_btn').click(function(){
+            //     var search_value = $('.search_input').val()
+            //     $.get(
+            //         'member_manage?page=1$'
+            //     )
+            // })
+            
             
         })
         function click_page_btn(){
@@ -143,7 +170,7 @@
                     {'member_id_list':member_id_list, '_xsrf':getCookie('_xsrf')},
                     function(value){
                         if(value.status){
-                            init_table()
+                            location.reload()
                         }else{
                             alert(value.error_msg)
                         }
@@ -207,7 +234,7 @@
                 function(value){
                     if(value.status){
                         $('#exampleModal').modal('hide')
-                        init_table()
+                        location.reload()
                     }else{
                         var error_msg_dict = value.error_msg
                         var msg_list = []
@@ -229,30 +256,30 @@
         }
 
 
-        //获取表数据
-        function init_table(page, search_value){
-            var page = page || 1
-            var search_value = search_value || ''
-            var request_url = search_value ? '/j/member_info?search_value=' + search_value  : '/j/member_info'
-            $.ajax({
-                url: request_url,
-                method: 'get',
-                data:{'page':page},
-                success: function (data) {
-                    if(data.status){
-                        $('.page_box').children().remove()
-                        $('.member_table').children().remove()
-                        $('.member_table').append(data.data)
-                        $('.page_box').append(data.page)
-                        $('.page_btn').click(click_page_btn)
-                        $('.edit_member').click(get_edit_member_info)
-                    }else{
-                        alert(data.message)
-                    }
-                },
-                dataType:'json',
-            });
-        }
+        // //获取表数据
+        // function init_table(page, search_value){
+        //     var page = page || 1
+        //     var search_value = search_value || ''
+        //     var request_url = search_value ? '/j/member_info?search_value=' + search_value  : '/j/member_info'
+        //     $.ajax({
+        //         url: request_url,
+        //         method: 'get',
+        //         data:{'page':page},
+        //         success: function (data) {
+        //             if(data.status){
+        //                 $('.page_box').children().remove()
+        //                 $('.member_table').children().remove()
+        //                 $('.member_table').append(data.data)
+        //                 $('.page_box').append(data.page)
+        //                 $('.page_btn').click(click_page_btn)
+        //                 $('.edit_member').click(get_edit_member_info)
+        //             }else{
+        //                 alert(data.message)
+        //             }
+        //         },
+        //         dataType:'json',
+        //     });
+        // }
         
     </script>
 {% end %}
