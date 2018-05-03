@@ -134,21 +134,7 @@
             })
             $('.delete_member').click(delete_member)
             $('.edit_member').click(get_edit_member_info)
-            // $('.search_input_btn').click(function(){
-            //     var search_value = $('.search_input').val()
-            //     $.get(
-            //         'member_manage?page=1$'
-            //     )
-            // })
-            
-            
         })
-        function click_page_btn(){
-            var search_value = $(this).attr('search_value') || ''
-            var page_num = $(this).attr('page')
-            init_table(page_num, search_value)
-
-        }
         
  
 
@@ -256,30 +242,6 @@
         }
 
 
-        // //获取表数据
-        // function init_table(page, search_value){
-        //     var page = page || 1
-        //     var search_value = search_value || ''
-        //     var request_url = search_value ? '/j/member_info?search_value=' + search_value  : '/j/member_info'
-        //     $.ajax({
-        //         url: request_url,
-        //         method: 'get',
-        //         data:{'page':page},
-        //         success: function (data) {
-        //             if(data.status){
-        //                 $('.page_box').children().remove()
-        //                 $('.member_table').children().remove()
-        //                 $('.member_table').append(data.data)
-        //                 $('.page_box').append(data.page)
-        //                 $('.page_btn').click(click_page_btn)
-        //                 $('.edit_member').click(get_edit_member_info)
-        //             }else{
-        //                 alert(data.message)
-        //             }
-        //         },
-        //         dataType:'json',
-        //     });
-        // }
         
     </script>
 {% end %}
