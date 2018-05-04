@@ -71,4 +71,3 @@ class CommentImage(base_model.BaseModel):
     file_type       = peewee.CharField(db_column="file_type", verbose_name="文件类型")
 
 
-

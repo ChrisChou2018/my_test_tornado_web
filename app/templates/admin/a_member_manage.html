@@ -111,9 +111,10 @@
     <script>
         $(function(){
             $('.admin').addClass('active')
-            $('.member_manage').addClass('active')
+            $('.admin .member_manage').addClass('active')
             // init_table()
             $('.add_member_btn').click(function(){
+                $('.modal-title').text('CreateMember')
                 $('.submit_btn').unbind()
                 $('.submit_btn').click(function(){
                     add_or_edit_member(false)
@@ -169,6 +170,7 @@
         // 获取待编辑用户信息
         var member_id = null
         function get_edit_member_info(){
+            $('.modal-title').text('EditMember')
             member_id = $(this).parent().parent().children().first().text()
             var data_dict = null
             $.get(

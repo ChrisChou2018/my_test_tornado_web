@@ -6,10 +6,12 @@ from tornado import escape
 urls = [
     (r"/?",                                 a_walcome.AdminHomeHandler),
     (r"/member_manage/?",                   a_walcome.MemberManage),
+	(r"/goods_manage/?",					a_walcome.GoodsManage),
     (r"/signin/?",                          a_account.AdminSigninHandler),
     (r"/signout/?",                         a_account.AdminSignoutHandler),
     (r"/register/?",                        a_account.AdminRegisterHandler),
     (r"/change_password/?",                 a_account.AdminChangePasswordHandler),
+	
 ]
 
 urls += [

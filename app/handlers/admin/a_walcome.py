@@ -56,45 +56,6 @@ class MemberManage(handlers.SiteBaseHandler):
 
 
 
-# class AdminJsMemberInfoHandler(handlers.JsSiteBaseHandler):
-#     """
-#     获取用户页面信息接口
-#     """
-#     @decorators.js_authenticated
-#     def get(self):
-#         return_data = {
-#             'data':None,
-#             'message':'',
-#             'status':True,
-#             'page':'',
-#         }
-#         try:
-#             current_page = self.get_argument('page')
-#         except:
-#             current_page = 1
-#         member = member_model.Member
-#         try:
-#             value = self.get_argument('search_value')
-#             filter_args = 'search_value={0}'.format(value)
-#             search_value = ((member.member_name == value) | (member.email == value))
-#         except:
-#             filter_args = None
-#             search_value = None
-#         table_head = ['member_id', 'member_name', 'email', 'role', 'more']
-#         if not search_value:
-#             member_obj = member.select().order_by(-member.member_id).paginate(int(current_page), 10)
-#             member_obj_count = member.select().count()
-#         else:
-#             member_obj = member.select().where(search_value).order_by(-member.member_id).paginate(int(current_page), 10)
-#             member_obj_count = member.select().where(search_value).count()
-#         page_obj = libs.Pagingfunc(current_page, member_obj_count, filter_args=filter_args)
-#         data_list = [[i.member_id, i.member_name, i.email, i.role] for i in member_obj]
-#         # self.set_header('Content-Type', 'application/json; charset=UTF-8')
-#         return_data['data'] = libs.create_html_table(table_head, data_list)
-#         return_data['page'] = page_obj.create_page_btn()
-#         self.write(json.dumps(return_data))
-
-
 
 class RegisterForm(object):
     """
@@ -148,6 +109,7 @@ class RegisterForm(object):
         else:
             return_data['clear_data'] = clear_data
             return return_data
+
 
 
 class AdminJsRegisterMemberHandler(handlers.JsSiteBaseHandler):
@@ -276,3 +238,7 @@ class AdminJsEditMemberHandler(handlers.JsSiteBaseHandler):
         return ("member_name", "email", "password", "password2",)
 
 
+
+class GoodsManage(handlers.SiteBaseHandler):
+    def get(self):
+        self.render('admin/a_goods.html')
