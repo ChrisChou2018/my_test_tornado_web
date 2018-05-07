@@ -128,7 +128,7 @@
           </a>
           <ul class="treeview-menu">
             <li class="member_manage"><a href="/member_manage"><i class="fa fa-circle-o"></i> member_manage</a></li>
-            <li class="goods_manage"><a href="/goods_manage"><i class="fa fa-circle-o"></i> goods_manage</a></li>
+            <li class="items_manage"><a href="/items_manage"><i class="fa fa-circle-o"></i> items_manage</a></li>
             <!-- <li><a href="../index2.html"><i class="fa fa-circle-o"></i> Dashboard v2</a></li> -->
           </ul>
         </li>
@@ -313,7 +313,9 @@
     <!-- Main content 主页-->
     <section class="content">
       <div class="row">
-          
+        {% block content_title %}
+            
+        {% end %}
       </div>
       <div class="row" style="overflow:auto">
           {% block content %}
@@ -708,7 +710,13 @@
       $('#new-event').val('')
     })
   })
+  //获取cookie
+  function getCookie(name) {
+      var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
+      return r ? r[1] : undefined;
+  }
 </script>
+
 {% block js %}
   
 {% end %}

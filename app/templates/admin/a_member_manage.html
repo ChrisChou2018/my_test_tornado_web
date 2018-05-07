@@ -11,8 +11,7 @@
 </ol>
 {% end %}
 
-
-{% block content %}
+{% block content_title %}
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -73,6 +72,9 @@
         <button type="button" class="btn btn-danger delete_member" type="button">Delete<span class="glyphicon glyphicon-trash"></span></button>
     </div>
 </div>
+{% end %}
+
+{% block content %}
 
 <table class="table table-striped member_table" >
     <head>
@@ -85,11 +87,15 @@
     <tbody>
         {% for i in member_obj %}
         <tr>
-            <td>{{i.member_id}}</td>
-            <td>{{i.member_name}}</td>
-            <td>{{i.email}}</td>
-            <td>{{i.role}}</td>
-            <td><a class='edit_member' style='cursor:pointer;text-decoration:none;'>编辑</a></td> <td style='display: none'><input type='checkbox'></td>
+            {% for j in table_head %}
+                {% if j != 'more' %}
+                    <td>{{ getattr(i, j) }}</td>
+                {% end %}
+            {% end %}
+            <td>
+                <a class='edit_member' style='cursor:pointer;text-decoration:none;'><span class="glyphicon glyphicon-pencil"></span> 编辑</a>
+            </td> 
+            <td style='display: none'><input type='checkbox'></td>
         </tr>
         {% end %}
     </tbody>
@@ -237,11 +243,7 @@
         }
 
 
-        //获取cookie
-        function getCookie(name) {
-            var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
-            return r ? r[1] : undefined;
-        }
+        
 
 
         

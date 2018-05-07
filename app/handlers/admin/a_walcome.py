@@ -1,19 +1,21 @@
 from app.libs import decorators
 from app.libs import handlers
 from app import libs
-from app.models import member_model
+from app.models import member_model, items_model
 import json
 import config_web
 import bcrypt
 import random
 import string
 import datetime as dt
+import time
 import re
 # /
 class AdminHomeHandler(handlers.SiteBaseHandler):
     @decorators.admin_authenticated
     def get(self):
         self.render("admin/a_index.html")
+    
 
 
 
@@ -175,7 +177,7 @@ class AdminJsDeleteMemberHandler(handlers.JsSiteBaseHandler):
 
 class AdminJsEditMemberHandler(handlers.JsSiteBaseHandler):
     """
-    注册用户接口
+    编辑用户接口
     """
     @decorators.js_authenticated
     def get(self):
@@ -239,6 +241,51 @@ class AdminJsEditMemberHandler(handlers.JsSiteBaseHandler):
 
 
 
-class GoodsManage(handlers.SiteBaseHandler):
+class AdminItemsManageHandler(handlers.SiteBaseHandler):
+    """
+    商品表页面
+    """
     def get(self):
-        self.render('admin/a_goods.html')
+        try:
+            current_page = self.get_argument('page')
+        except:
+            current_page = 1
+        items = items_model.Items
+        item_obj = items.select().order_by(-items.item_id)
+        table_head = ["item_id", "item_name", "item_info", "item_code", "item_barcode", 
+                    "price", 'current_price', 'foreign_price', "comment_count", 
+                    "hot_value", "buy_count", "key_word", "origin", "shelf_life", 
+                    "capacity", "for_people", "weight", "create_person", "create_time", 
+                    "update_person", "update_time", "more"]
+        self.render('admin/a_items.html', **{"item_obj":item_obj, "table_head":table_head})
+
+
+
+class AdminJsAddItemHandler(handlers.JsSiteBaseHandler):
+    """
+    添加商品
+    """
+    def post(self):
+        try:
+            items = items_model.Items
+            form_data = self._build_form_data()
+            print(form_data)
+            form_data.update({
+                "create_person":self.current_user.member_name,
+                "create_time":int(time.time()),
+                "update_time":int(time.time()),
+            })
+            print(form_data)
+            items.create(**form_data)
+            self.write(json.dumps({'status':True}))
+        except Exception as error:
+            self.write(json.dumps(
+                {
+                    "status":False,
+                    "error_msg":"服务器出错:\n{0}".format(str(error))
+                }
+            ))
+    def _list_form_keys(self):
+        return ("item_name", "item_info", "item_code", "item_barcode", "price",
+                "current_price", "foreign_price", "key_word", "origin", "shelf_life",
+                "capacity", "for_people", "weight")

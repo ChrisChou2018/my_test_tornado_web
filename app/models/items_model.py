@@ -3,11 +3,12 @@ import peewee
 
 
 
-class Goods(base_model.BaseModel):
-    goods_id        = peewee.AutoField(db_column="goods_id", primary_key=True, verbose_name='商品ID')
-    goods_name      = peewee.CharField(db_column="goods_name", verbose_name='商品名称')
-    goods_uuid      = peewee.CharField(db_column="goods_uuid", default='', verbose_name="商品识别码")
-    goods_info      = peewee.CharField(db_column="goods_info", default='', verbose_name='商品信息')
+class Items(base_model.BaseModel):
+    item_id         = peewee.AutoField(db_column="item_id", primary_key=True, verbose_name='商品ID')
+    item_name       = peewee.CharField(db_column="item_name", verbose_name='商品名称')
+    item_info       = peewee.CharField(db_column="item_info", default='', verbose_name='商品信息')
+    item_code       = peewee.CharField(db_column="item_code", default="", verbose_name="商品编码")
+    item_barcode    = peewee.CharField(db_column="item_barcode", default="", verbose_name="商品条码")
     price           = peewee.FloatField(db_column="price", default=0, verbose_name="商品原价")
     current_price   = peewee.FloatField(db_column='current_price', default=0, verbose_name="商品现价")
     foreign_price   = peewee.FloatField(db_column='foreign_price', default=0, verbose_name="国外价格")
@@ -21,16 +22,32 @@ class Goods(base_model.BaseModel):
     for_people      = peewee.CharField(db_column="for_people", default="", verbose_name="适用人群")
     weight          = peewee.CharField(db_column="weight", default="", verbose_name="重量")
     create_person   = peewee.CharField(db_column="create_person", verbose_name="创建人")
-    create_time     = peewee.DateTimeField(db_column="create_time", verbose_name="创建时间")
-    update_persom   = peewee.CharField(db_column="update_person", default="", verbose_name="更新人")
-    update_time     = peewee.CharField(db_column="update_time", verbose_name="更新时间")
+    create_time     = peewee.IntegerField(db_column="create_time", verbose_name="创建时间")
+    update_person   = peewee.CharField(db_column="update_person", default="", verbose_name="更新人")
+    update_time     = peewee.IntegerField(db_column="update_time", verbose_name="更新时间")
+    
+    
+    
+    class Meta:
+        db_table = "app_items"
+
+    
+    def get_item_by_itemid(self, item_id):
+        try:
+            return Items.get(Items.item_id == item_id)
+        except Items.DoesNotExist:
+            return None
+
+
+    def update_item(self, item_id, item_dict):
+        Items.update(**item_dict).where(Items.item_id == item_id).execute()
 
 
 
-class GoodsImage(base_model.BaseModel):
-    image_id        = peewee.AutoField(db_column="image_id", primary_key=True, verbose_name="图片ID")
-    googs_id        = peewee.BigIntegerField(db_column="goods_id", verbose_name="所属商品ID")
-    type_choces     = (
+class ItemsImage(base_model.BaseModel):
+    image_id       = peewee.AutoField(db_column="image_id", primary_key=True, verbose_name="图片ID")
+    item_id        = peewee.BigIntegerField(db_column="item_id", verbose_name="所属商品ID")
+    type_choces    = (
         (0, "首页图片"),
         (1, "商品缩略图"),
         (2, "商品样式图"),
@@ -39,35 +56,50 @@ class GoodsImage(base_model.BaseModel):
     )
     image_type      = peewee.IntegerField(db_column="image_type", choices=type_choces, verbose_name="图片类型")
     image_path      = peewee.CharField(db_column="image_path", verbose_name="路径")
-    file_size       = peewee.CharField(db_column="size", verbose_name="文件大小")
+    file_size       = peewee.CharField(db_column="file_size", verbose_name="文件大小")
     resolution      = peewee.CharField(db_column="resolution", verbose_name="分辨率")
     file_type       = peewee.CharField(db_column="file_type", verbose_name="文件类型")
+    
+    
+    class Meta:
+        db_table = "app_items_image"
 
 
-
-class GoodsTag(base_model.BaseModel):
+class ItemTag(base_model.BaseModel):
     tag_id          = peewee.AutoField(db_column="tag_id", verbose_name="标签ID")
     tag_name        = peewee.CharField(db_column="tag_name", verbose_name="标签名")
-    googs_id        = peewee.BigIntegerField(db_column="goods_id", verbose_name="所属商品ID")
+    item_id         = peewee.BigIntegerField(db_column="item_id", verbose_name="所属商品ID")
+    
+    
+    class Meta:
+        db_table = "app_item_tag"
 
 
 
-class GoodsComment(base_model.BaseModel):
-    comment_id      = peewee.AutoField(db_column="tag_id", verbose_name="评论ID")
+class ItemComment(base_model.BaseModel):
+    comment_id      = peewee.AutoField(db_column="comment_id", verbose_name="评论ID")
     member_id       = peewee.BigIntegerField(db_column="member_id", verbose_name="评论用户ID")
-    goods_id        = peewee.BigIntegerField(db_column="goods_id", verbose_name="所属商品ID")
+    item_id         = peewee.BigIntegerField(db_column="item_id", verbose_name="所属商品ID")
     comment_content = peewee.CharField(max_length=255, db_column="comment_content", verbose_name="评论内容")
     reply_id        = peewee.BigIntegerField(db_column="reply_id", null=True, verbose_name="回复的评论ID")
-    create_time     = peewee.DateTimeField(db_column="create_time", verbose_name="创建时间")
+    create_time     = peewee.IntegerField(db_column="create_time", verbose_name="创建时间")
+
+
+    class Meta:
+        db_table = "app_item_comment"
 
 
 
 class CommentImage(base_model.BaseModel):
-    image_id        = peewee.AutoField(db_column="tag_id", verbose_name="图片ID")
+    image_id        = peewee.AutoField(db_column="image_id", verbose_name="图片ID")
     comment_id      = peewee.BigIntegerField(db_column="comment_id", verbose_name="所属评论ID")
     image_path      = peewee.CharField(db_column="image_path", verbose_name="路径")
-    file_size       = peewee.CharField(db_column="size", verbose_name="文件大小")
+    file_size       = peewee.CharField(db_column="file_size", verbose_name="文件大小")
     resolution      = peewee.CharField(db_column="resolution", verbose_name="分辨率")
     file_type       = peewee.CharField(db_column="file_type", verbose_name="文件类型")
+
+
+    class Meta:
+        db_table = "app_comment_image"
 
 
