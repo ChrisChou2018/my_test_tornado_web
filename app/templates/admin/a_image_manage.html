@@ -1,0 +1,152 @@
+{% extends '../admin/a_layout.html' %}
+{% block css %}
+    
+{% end %}
+{% block title %}
+图片管理           
+{% end %}
+{% block page_header %}
+<ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i> Admin</a></li>
+    <li>image_manage</li>
+    <li class="active">{{item_obj.item_name}}</li>
+</ol>
+{% end %}
+
+{% block content %}
+<input type="file" accept=".jpg, .png," name="add_new_image" multiple style="display:none;" item-id="{{ item_obj.item_id }}"> 
+<div class="container">
+    <div class="row" image-type='1'>
+        <h4>商品缩略图 
+            <a type="button" class="btn btn-info add_image" >Add
+                <span class="glyphicon glyphicon-plus"></span>
+            </a>
+            <button type="button" class="btn btn-danger delete_image" type="button">Delete<span class="glyphicon glyphicon-trash"></span></button>
+        </h4>
+        <div class="col-xs-6 col-md-3 image_item">
+            <a class="thumbnail" >
+            <img src="/static/images/user-default.jpg" alt="...">
+            </a>
+        </div>
+        <div class="col-xs-6 col-md-3 image_item">
+            <a class="thumbnail">
+            <img src="/static/images/user-default.jpg" alt="...">
+            </a>
+        </div>
+        <div class="col-xs-6 col-md-3 image_item">
+            <a class="thumbnail">
+            <img src="/static/images/user-default.jpg" alt="...">
+            </a>
+        </div>
+        
+    </div>
+    <div class="row" image-type='2'>
+        <h4>商品样式图 
+            <button type="button" class="btn btn-info add_image" >Add<span class="glyphicon glyphicon-plus"></span></button>
+            <button type="button" class="btn btn-danger delete_image" type="button">Delete<span class="glyphicon glyphicon-trash"></span></button>
+        </h4>
+        <div class="col-xs-6 col-md-3 image_item">
+            <a class="thumbnail">
+            <img src="/static/images/user-default.jpg" alt="...">
+            </a>
+        </div>
+        <div class="col-xs-6 col-md-3 image_item">
+            <a class="thumbnail">
+            <img src="/static/images/user-default.jpg" alt="...">
+            </a>
+        </div>
+        <div class="col-xs-6 col-md-3 image_item">
+            <a class="thumbnail">
+            <img src="/static/images/user-default.jpg" alt="...">
+            </a>
+        </div>
+    </div>
+    <div class="row" image-type='3'>
+        <h4>图文详情图 
+            <button type="button" class="btn btn-info add_image" >Add<span class="glyphicon glyphicon-plus"></span></button>
+            <button type="button" class="btn btn-danger delete_image" type="button">Delete<span class="glyphicon glyphicon-trash"></span></button>
+        </h4>
+        <div class="col-xs-6 col-md-3 image_item">
+            <a class="thumbnail">
+            <img src="/static/images/user-default.jpg" alt="...">
+            </a>
+        </div>
+        <div class="col-xs-6 col-md-3 image_item">
+            <a class="thumbnail">
+            <img src="/static/images/user-default.jpg" alt="...">
+            </a>
+        </div>
+        <div class="col-xs-6 col-md-3 image_item">
+            <a class="thumbnail">
+            <img src="/static/images/user-default.jpg" alt="...">
+            </a>
+        </div>
+    </div>
+    <div class="row" image-type='4'>
+        <h4>商品详细介绍图 
+            <button type="button" class="btn btn-info add_image" >Add<span class="glyphicon glyphicon-plus"></span></button>
+            <button type="button" class="btn btn-danger delete_image" type="button">Delete<span class="glyphicon glyphicon-trash"></span></button>
+        </h4>
+        <div class="col-xs-6 col-md-3 image_item">
+            <a class="thumbnail">
+            <img src="/static/images/user-default.jpg" alt="...">
+            </a>
+        </div>
+        <div class="col-xs-6 col-md-3 image_item">
+            <a class="thumbnail">
+            <img src="/static/images/user-default.jpg" alt="...">
+            </a>
+        </div>
+        <div class="col-xs-6 col-md-3 image_item">
+            <a class="thumbnail">
+            <img src="/static/images/user-default.jpg" alt="...">
+            </a>
+        </div>
+    </div>
+</div>
+{% end %}
+{% block js %}
+<script>
+    $(function(){
+        $('.admin').addClass('active');
+        $('.admin .items_manage').addClass('active');
+        $('.image_item').click(function(){
+            if($(this).find('a').css('background-color') != 'rgb(95, 158, 160)'){
+                $(this).find('a').css('background-color', 'cadetblue')
+            }else{
+                $(this).find('a').css('background-color', '')
+            }  
+        });
+        $('.add_image').click(function(){
+            $('input[name=add_new_image]').trigger('click')
+            $('input[name=add_new_image]').unbind()
+            var image_type = $(this).parent().parent().attr('image-type')
+            $('input[name=add_new_image]').change(function(){
+                var file =  $(this)[0].files
+                var formData = new FormData();
+                for(var i=0;i<file.length;i++){
+                    formData.append(file[i].name,file[i])
+                }
+                formData.append('image_type', image_type)
+                formData.append('item_id', $(this).attr('item-id'))
+                formData.append('_xsrf', getCookie("_xsrf"))
+                $.ajax({
+                    type:'post',
+                    url:"/image_manage/",
+                    data:formData,
+                    dataType:'json',
+                    contentType:false,
+                    processData:false,
+                    success:function(data){
+                        if(data.status){
+                            location.reload()
+                        }
+                    }
+                })
+            })
+
+        })
+    })
+</script>
+    
+{% end %}
