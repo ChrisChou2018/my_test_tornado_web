@@ -269,13 +269,11 @@ class AdminJsAddItemHandler(handlers.JsSiteBaseHandler):
         try:
             items = items_model.Items
             form_data = self._build_form_data()
-            print(form_data)
             form_data.update({
                 "create_person":self.current_user.member_name,
                 "create_time":int(time.time()),
                 "update_time":int(time.time()),
             })
-            print(form_data)
             items.create(**form_data)
             self.write(json.dumps({'status':True}))
         except Exception as error:
@@ -285,7 +283,54 @@ class AdminJsAddItemHandler(handlers.JsSiteBaseHandler):
                     "error_msg":"服务器出错:\n{0}".format(str(error))
                 }
             ))
+
     def _list_form_keys(self):
         return ("item_name", "item_info", "item_code", "item_barcode", "price",
                 "current_price", "foreign_price", "key_word", "origin", "shelf_life",
                 "capacity", "for_people", "weight")
+
+
+
+class AdminJsDeleteItemHandler(handlers.JsSiteBaseHandler):
+    def post(self):
+        try:
+            item_id_list = self.get_arguments('item_id_list[]')
+            items = items_model.Items
+            for i in item_id_list:
+                items.delete_by_id(i)
+            self.write(json.dumps({'status':True}))
+        except Exception as error:
+            self.write(json.dumps({'status':False,'error_msg':'服务器出错：{0}'.format(str(error))}))
+
+
+class AdminJsEditItemHandler(handlers.JsSiteBaseHandler):
+    def get(self):
+        items = items_model.Items
+        try:
+            item_id = self.get_argument('item_id', None)
+            member_obj = items.get_item_by_itemid(item_id)
+            table_head = ["item_name", "item_info", "item_code", "item_barcode", "price",
+                    "current_price", "foreign_price", "key_word", "origin", "shelf_life",
+                    "capacity", "for_people", "weight"]
+            data_dict = {i:getattr(member_obj, i)  for i in table_head if i != "more"}
+            self.write(json.dumps({"status":True, "data":data_dict}))
+        except Exception as error:
+            self.write(json.dumps({"status":False, "error_msg":"服务器出错:{0}".format(str(error))}))
+    
+    def post(self):
+        try:
+            items = items_model.Items 
+            item_id = self.get_argument('item_id', None)
+            form_data = self._build_form_data()
+            new_form_data = { i:form_data[i] for i in form_data if form_data[i] }
+            if new_form_data:
+                items.update_item_by_itemid(item_id, new_form_data)
+            self.write(json.dumps({"status":True}))
+        except Exception as error:
+            self.write(json.dumps({"status":False, "error_msg":"服务器出错:{0}".format(str(error))}))
+
+        
+    def _list_form_keys(self):
+        return ["item_name", "item_info", "item_code", "item_barcode", "price",
+            "current_price", "foreign_price", "key_word", "origin", "shelf_life",
+            "capacity", "for_people", "weight"]

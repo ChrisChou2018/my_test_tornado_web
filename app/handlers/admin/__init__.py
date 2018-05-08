@@ -20,6 +20,8 @@ urls += [
     (r"/j/delete_member/?",        a_walcome.AdminJsDeleteMemberHandler),
     (r"/j/edit_member/?",          a_walcome.AdminJsEditMemberHandler),
 	(r"/j/add_item/?",			   a_walcome.AdminJsAddItemHandler),
+	(r"/j/delete_item/?",		   a_walcome.AdminJsDeleteItemHandler),
+	(r"/j/edit_item/?",			   a_walcome.AdminJsEditItemHandler),
 ]
 
 

@@ -32,14 +32,15 @@ class Items(base_model.BaseModel):
         db_table = "app_items"
 
     
-    def get_item_by_itemid(self, item_id):
+    @classmethod
+    def get_item_by_itemid(cls, item_id):
         try:
             return Items.get(Items.item_id == item_id)
         except Items.DoesNotExist:
             return None
 
-
-    def update_item(self, item_id, item_dict):
+    @classmethod
+    def update_item_by_itemid(cls, item_id, item_dict):
         Items.update(**item_dict).where(Items.item_id == item_id).execute()
 
 

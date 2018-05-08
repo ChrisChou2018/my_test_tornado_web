@@ -50,15 +50,15 @@
                 </div>
                 <div class="form-group">
                     <label for="recipient-name" class="control-label">原价:</label>
-                    <input type="text" class="form-control" id="recipient-name" name="price">
+                    <input type="number" onkeyup="value=value.replace(/[^\d]/g,'')" class="form-control" id="recipient-name" name="price">
                 </div>
                 <div class="form-group">
                     <label for="recipient-name" class="control-label">现价:</label>
-                    <input type="text" class="form-control" id="recipient-name" name="current_price">
+                    <input type="number" onkeyup="value=value  .replace(/[^\d]/g,'')" class="form-control" id="recipient-name" name="current_price">
                 </div>
                 <div class="form-group">
                     <label for="recipient-name" class="control-label">国外价格:</label>
-                    <input type="text" class="form-control" id="recipient-name" name="foreign_price">
+                    <input type="number" onkeyup="value=value.replace(/[^\d]/g,'')" class="form-control" id="recipient-name" name="foreign_price">
                 </div>
                 <div class="form-group">
                     <label for="recipient-name" class="control-label">关键字:</label>
@@ -141,9 +141,9 @@
                 {% end %}
             {% end %}
             <td>
-                <a class='edit_member' style='cursor:pointer;text-decoration:none;'><span class="glyphicon glyphicon-pencil"></span> 编辑</a> 
+                <a class='edit_item' style='cursor:pointer;text-decoration:none;'><span class="glyphicon glyphicon-pencil"></span> 编辑</a> 
                 <big>|</big> 
-                <a class='edit_member' style='cursor:pointer;text-decoration:none;'><span class="glyphicon glyphicon-picture"></span> 图片管理</a>
+                <a class='image_manage' style='cursor:pointer;text-decoration:none;'><span class="glyphicon glyphicon-picture"></span> 图片管理</a>
             </td>
             <td style='display: none'><input type='checkbox'></td>
         </tr>
@@ -159,14 +159,29 @@
     $(function(){
         $('.admin').addClass('active')
         $('.admin .items_manage').addClass('active')
-    })
-    $(".add_item_btn").click(function(){
-        $('.modal-title').text('CreateItem')
-        $('.submit_btn').unbind()
-        $('.submit_btn').click(function(){
-            add_or_edit_item(false)
+        $(".add_item_btn").click(function(){
+            $('.modal-title').text('CreateItem')
+            $('.submit_btn').unbind()
+            $('.submit_btn').click(function(){
+                add_or_edit_item(false)
+            })
         })
+        $(".choose_item").click(function(){
+            var tr =  $('.item_table tbody tr')
+            $.each(tr,function(index, item){
+                var $ltd = $(item).children().last()
+                if($ltd.css('display')=='none'){
+                    $ltd.css('display','block')
+                }else{
+                    $ltd.css('display','none')
+                }
+            })
+        })
+        $('.delete_item').click(delete_item)
+        $('.edit_item').click(get_edit_item_info)
     })
+    
+    
     var item_id = null
     function add_or_edit_item(is_edit){
         var request_url = is_edit ? '/j/edit_item/?item_id=' + item_id : '/j/add_item/'
@@ -196,6 +211,60 @@
                 }else{
                     var error_msg = value.error_msg
                     $('.return_msg_box').text(error_msg)
+                }
+            },
+            'json'
+        )
+    }
+
+
+    function delete_item(){
+        var tr =  $('.item_table tbody tr')
+        var item_id_list = []
+        $.each(tr,function(index,item){
+            var $ltd = $(item).children().last()
+            var $ftd = $(item).children().first()
+            var $check_box = $ltd.children()
+            if($ltd.css('display')=='block' && $check_box.prop('checked')){
+                item_id_list.push($ftd.text())
+            }
+        })
+        if(item_id_list.length>0){
+            $.post(
+                '/j/delete_item/',
+                {'item_id_list':item_id_list, '_xsrf':getCookie('_xsrf')},
+                function(value){
+                    if(value.status){
+                        location.reload()
+                    }else{
+                        alert(value.error_msg)
+                    }
+                },
+                'json'
+            )
+        }
+    }
+    function get_edit_item_info(){
+        $('.modal-title').text('EditItem')
+        item_id = $(this).parent().parent().children().first().text()
+        var data_dict = null
+        $.get(
+            '/j/edit_item/?item_id='+item_id,
+            function(value){
+                if(value.status){
+                    data_dict = value.data
+                    $('#exampleModal').modal('show')
+                    var $input_list = $('.item_form input')
+                    $input_list.each(function(index, item){
+                        $(item).attr('old_value', data_dict[$(item).attr('name')])
+                        $(item).val(data_dict[$(item).attr('name')])
+                    })
+                    $('.submit_btn').unbind()
+                    $('.submit_btn').click(function(){
+                        add_or_edit_item(true)
+                    })
+                }else{
+                    alert(value.error_msg)
                 }
             },
             'json'
