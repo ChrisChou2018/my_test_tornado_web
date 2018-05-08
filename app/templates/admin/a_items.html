@@ -5,7 +5,7 @@
         table-layout:auto;
         }
         td{
-        width:100%;
+        /* width:100%; */
         word-break:keep-all;
         white-space:nowrap;
         }
@@ -124,34 +124,36 @@
 
 {% block content %}
 
-<table class="table table-striped item_table" >
-    <head>
-        <tr>
-            {% for i in table_head %}
-            <th>{{i}}</th>
-            {% end %}
-        </tr>
-    </head>
-    <tbody>
-        {% for i in item_obj %}
-        <tr>
-            {% for j in table_head %}
-                {% if j != 'more' %}
-                   <td> {{ datetime.datetime.fromtimestamp(getattr(i, j)) if j=='create_time' or j=='update_time' else getattr(i, j) }} </td> 
+<div style="overflow: auto;">
+    <table class="table table-striped item_table" >
+        <head>
+            <tr>
+                {% for i in table_head %}
+                <th>{{i}}</th>
                 {% end %}
+            </tr>
+        </head>
+        <tbody>
+            {% for i in item_obj %}
+            <tr>
+                {% for j in table_head %}
+                    {% if j != 'more' %}
+                        <td> {{ datetime.datetime.fromtimestamp(getattr(i, j)) if j=='create_time' or j=='update_time' else getattr(i, j) }} </td> 
+                    {% end %}
+                {% end %}
+                <td>
+                    <a class='edit_item' style='cursor:pointer;text-decoration:none;'><span class="glyphicon glyphicon-pencil"></span> 编辑</a> 
+                    <big>|</big> 
+                    <a class='image_manage' style='cursor:pointer;text-decoration:none;'><span class="glyphicon glyphicon-picture"></span> 图片管理</a>
+                </td>
+                <td style='display: none'><input type='checkbox'></td>
+            </tr>
             {% end %}
-            <td>
-                <a class='edit_item' style='cursor:pointer;text-decoration:none;'><span class="glyphicon glyphicon-pencil"></span> 编辑</a> 
-                <big>|</big> 
-                <a class='image_manage' style='cursor:pointer;text-decoration:none;'><span class="glyphicon glyphicon-picture"></span> 图片管理</a>
-            </td>
-            <td style='display: none'><input type='checkbox'></td>
-        </tr>
-        {% end %}
-    </tbody>
-        
-</table>
-
+        </tbody>
+            
+    </table>
+            
+</div>
 
 {% end %}
 {% block js %}
@@ -179,6 +181,7 @@
         })
         $('.delete_item').click(delete_item)
         $('.edit_item').click(get_edit_item_info)
+        $('.image_manage').click()
     })
     
     
@@ -269,6 +272,10 @@
             },
             'json'
         )
+    }
+
+    function image_manage(){
+
     }
     </script>
 {% end %}

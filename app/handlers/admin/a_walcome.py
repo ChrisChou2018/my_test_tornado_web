@@ -334,3 +334,5 @@ class AdminJsEditItemHandler(handlers.JsSiteBaseHandler):
         return ["item_name", "item_info", "item_code", "item_barcode", "price",
             "current_price", "foreign_price", "key_word", "origin", "shelf_life",
             "capacity", "for_people", "weight"]
+
+

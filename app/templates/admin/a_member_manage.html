@@ -1,5 +1,15 @@
 {% extends '../admin/a_layout.html' %}
 {% block css %}
+<style>
+    table{
+    table-layout:auto;
+    }
+    td{
+    /* width:100%; */
+    word-break:keep-all;
+    white-space:nowrap;
+    }
+</style>
 {% end %}
 {% block title %}
 用户表            
@@ -76,31 +86,33 @@
 
 {% block content %}
 
-<table class="table table-striped member_table" >
-    <head>
-        <tr>
-            {% for i in table_head %}
-            <th>{{i}}</th>
-            {% end %}
-        </tr>
-    </head>
-    <tbody>
-        {% for i in member_obj %}
-        <tr>
-            {% for j in table_head %}
-                {% if j != 'more' %}
-                    <td>{{ getattr(i, j) }}</td>
+<div style="overflow: auto;">
+    <table class="table table-striped member_table" >
+        <head>
+            <tr>
+                {% for i in table_head %}
+                <th>{{i}}</th>
                 {% end %}
+            </tr>
+        </head>
+        <tbody>
+            {% for i in member_obj %}
+            <tr>
+                {% for j in table_head %}
+                    {% if j != 'more' %}
+                        <td>{{ getattr(i, j) }}</td>
+                    {% end %}
+                {% end %}
+                <td>
+                    <a class='edit_member' style='cursor:pointer;text-decoration:none;'><span class="glyphicon glyphicon-pencil"></span> 编辑</a>
+                </td> 
+               
+                <td style='display: none'><input type='checkbox'></td>
+            </tr>
             {% end %}
-            <td>
-                <a class='edit_member' style='cursor:pointer;text-decoration:none;'><span class="glyphicon glyphicon-pencil"></span> 编辑</a>
-            </td> 
-            <td style='display: none'><input type='checkbox'></td>
-        </tr>
-        {% end %}
-    </tbody>
-        
-</table>
+        </tbody>
+    </table>
+</div>
 
 <div>
     <nav aria-label="Page navigation">
