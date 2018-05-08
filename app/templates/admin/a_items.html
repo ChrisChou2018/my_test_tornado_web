@@ -18,11 +18,13 @@
 {% block page_header %}
 <ol class="breadcrumb">
     <li><a href="#"><i class="fa fa-dashboard"></i> Admin</a></li>
-    <li class="active">goods_manage</li>
+    <li class="active">items_manage</li>
 </ol>
 {% end %}
 
 {% block content_title %}
+
+
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -144,7 +146,7 @@
                 <td>
                     <a class='edit_item' style='cursor:pointer;text-decoration:none;'><span class="glyphicon glyphicon-pencil"></span> 编辑</a> 
                     <big>|</big> 
-                    <a class='image_manage' style='cursor:pointer;text-decoration:none;'><span class="glyphicon glyphicon-picture"></span> 图片管理</a>
+                    <a class='image_manage' href="/image_manage?item_id={{i.item_id}}" style='cursor:pointer;text-decoration:none;'><span class="glyphicon glyphicon-picture"></span> 图片管理</a>
                 </td>
                 <td style='display: none'><input type='checkbox'></td>
             </tr>

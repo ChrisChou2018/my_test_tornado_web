@@ -7,6 +7,7 @@ urls = [
     (r"/?",                                 a_walcome.AdminHomeHandler),
     (r"/member_manage/?",                   a_walcome.MemberManage),
 	(r"/items_manage/?",					a_walcome.AdminItemsManageHandler),
+	(r"/image_manage/?",					a_walcome.AdminImageManageHandler),
     (r"/signin/?",                          a_account.AdminSigninHandler),
     (r"/signout/?",                         a_account.AdminSignoutHandler),
     (r"/register/?",                        a_account.AdminRegisterHandler),

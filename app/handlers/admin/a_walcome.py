@@ -10,6 +10,9 @@ import string
 import datetime as dt
 import time
 import re
+from concurrent.futures import ThreadPoolExecutor
+import config_web
+import os
 # /
 class AdminHomeHandler(handlers.SiteBaseHandler):
     @decorators.admin_authenticated
@@ -336,3 +339,28 @@ class AdminJsEditItemHandler(handlers.JsSiteBaseHandler):
             "capacity", "for_people", "weight"]
 
 
+
+
+def write_file(file_path, file_obj):
+    with open(file_path, 'wb')as w:
+        w.write(file_obj.body)
+
+
+class AdminImageManageHandler(handlers.SiteBaseHandler):
+    def get(self):
+        item_id = self.get_argument('item_id')
+        items = items_model.Items
+        item_obj =  items.get_item_by_itemid(item_id)
+        self.render('admin/a_image_manage.html',**{'item_obj':item_obj})
+    
+
+    def post(self):
+        file_dict = self.request.files
+        image_type = self.get_argument('image_type')
+        item_id = self.get_argument('item_id')
+        with ThreadPoolExecutor(max_workers=10) as pool:
+            for k in file_dict:
+                file_dir = os.path.join(config_web.base_dir, 'assets/temp')
+                if not os.path.exists(file_dir):os.mkdir(file_dir)
+                file_name = os.path.join(file_dir, k)
+                pool.submit(write_file, **{'file_path':file_name, 'file_obj':file_dict[k][0]})
