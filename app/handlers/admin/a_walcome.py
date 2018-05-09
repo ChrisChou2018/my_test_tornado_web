@@ -13,6 +13,7 @@ import re
 from concurrent.futures import ThreadPoolExecutor
 import config_web
 import os
+import hashlib
 # /
 class AdminHomeHandler(handlers.SiteBaseHandler):
     @decorators.admin_authenticated
@@ -341,26 +342,76 @@ class AdminJsEditItemHandler(handlers.JsSiteBaseHandler):
 
 
 
-def write_file(file_path, file_obj):
-    with open(file_path, 'wb')as w:
-        w.write(file_obj.body)
+def write_file(file_dir, server_file_path, file_obj):
+    try:
+        thehash = hashlib.md5()
+        thehash.update(file_obj.body)
+        file_name = thehash.hexdigest()
+        file_path = os.path.join(file_dir, file_name)
+        if not os.path.exists(file_path):
+            with open(file_path, 'wb')as w:
+                w.write(file_obj.body)
+        server_file_path = os.path.join(server_file_path, file_name)
+        if 'assets' in server_file_path:
+            server_file_path = server_file_path.replace('assets', 'static')
+        data = {
+            'image_path':'/'+ server_file_path,
+            'file_size':os.path.getsize(file_path),
+            'resolution':'111',
+            'file_type':file_obj.content_type,
+        }
+        return {'status':True, 'data':data}
+    except Exception as error:
+        return {'status':False, 'error_msg':str(error)}
 
 
 class AdminImageManageHandler(handlers.SiteBaseHandler):
     def get(self):
         item_id = self.get_argument('item_id')
         items = items_model.Items
+        items_image = items_model.ItemsImage
         item_obj =  items.get_item_by_itemid(item_id)
-        self.render('admin/a_image_manage.html',**{'item_obj':item_obj})
+        items_image_obj = items_image.get_images_by_itemid(item_id)
+        image_dict = {}
+        for i in items_image_obj:
+            if i.image_type not in image_dict:
+                image_dict[i.image_type] = [{'image_path':i.image_path, 'image_id':i.image_id}]
+            else:
+                image_dict[i.image_type].append({'image_path':i.image_path, 'image_id':i.image_id})
+        self.render('admin/a_image_manage.html', **{'item_obj':item_obj,'image_dict':image_dict})
     
 
     def post(self):
-        file_dict = self.request.files
-        image_type = self.get_argument('image_type')
-        item_id = self.get_argument('item_id')
-        with ThreadPoolExecutor(max_workers=10) as pool:
-            for k in file_dict:
-                file_dir = os.path.join(config_web.base_dir, 'assets/temp')
-                if not os.path.exists(file_dir):os.mkdir(file_dir)
-                file_name = os.path.join(file_dir, k)
-                pool.submit(write_file, **{'file_path':file_name, 'file_obj':file_dict[k][0]})
+        try:
+            items_image = items_model.ItemsImage
+            file_dict = self.request.files
+            image_type = self.get_argument('image_type')
+            item_id = self.get_argument('item_id')
+            with ThreadPoolExecutor(max_workers=10) as pool:
+                for k in file_dict:
+                    server_file_path = 'assets/temp'
+                    file_dir = os.path.join(config_web.base_dir, server_file_path)
+                    if not os.path.exists(file_dir):os.mkdir(file_dir)
+                    a = pool.submit(write_file, **{'file_dir':file_dir, 'server_file_path':server_file_path, 'file_obj':file_dict[k][0]})
+                    rp = a.result()
+                    if rp['status']:
+                        data = rp['data']
+                        data.update({
+                            'image_type':image_type,
+                            'item_id':item_id,
+                        })
+                        items_image.get_or_create(**data)
+                    else:
+                        self.write(json.dumps({'status':False, 'error_msg':rp['error_msg']}))
+                        return
+            self.write(json.dumps({
+                'status':True,
+            }))
+        except Exception as error:
+            self.write(json.dumps({
+                'status':False,
+                'error_msg':str(error)
+            }))
+                    
+
+

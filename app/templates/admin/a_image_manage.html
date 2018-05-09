@@ -23,21 +23,21 @@
             </a>
             <button type="button" class="btn btn-danger delete_image" type="button">Delete<span class="glyphicon glyphicon-trash"></span></button>
         </h4>
-        <div class="col-xs-6 col-md-3 image_item">
-            <a class="thumbnail" >
-            <img src="/static/images/user-default.jpg" alt="...">
-            </a>
-        </div>
-        <div class="col-xs-6 col-md-3 image_item">
-            <a class="thumbnail">
-            <img src="/static/images/user-default.jpg" alt="...">
-            </a>
-        </div>
-        <div class="col-xs-6 col-md-3 image_item">
-            <a class="thumbnail">
-            <img src="/static/images/user-default.jpg" alt="...">
-            </a>
-        </div>
+        {% if image_dict.get(1) %}
+            {% for i in image_dict.get(1) %}
+                <div class="col-xs-6 col-md-3 image_item" image-id='{{i.get("image_id")}}'>
+                    <a class="thumbnail">
+                    <img src="{{i.get('image_path')}}" alt="...">
+                    </a>
+                </div>
+            {% end %}
+        {% else %}
+            <div class="col-xs-6 col-md-3 image_item">
+                <a class="thumbnail">
+                <img src="/static/images/user-default.jpg" alt="...">
+                </a>
+            </div>
+        {% end %}
         
     </div>
     <div class="row" image-type='2'>
@@ -45,63 +45,63 @@
             <button type="button" class="btn btn-info add_image" >Add<span class="glyphicon glyphicon-plus"></span></button>
             <button type="button" class="btn btn-danger delete_image" type="button">Delete<span class="glyphicon glyphicon-trash"></span></button>
         </h4>
-        <div class="col-xs-6 col-md-3 image_item">
-            <a class="thumbnail">
-            <img src="/static/images/user-default.jpg" alt="...">
-            </a>
-        </div>
-        <div class="col-xs-6 col-md-3 image_item">
-            <a class="thumbnail">
-            <img src="/static/images/user-default.jpg" alt="...">
-            </a>
-        </div>
-        <div class="col-xs-6 col-md-3 image_item">
-            <a class="thumbnail">
-            <img src="/static/images/user-default.jpg" alt="...">
-            </a>
-        </div>
+        {% if image_dict.get(2) %}
+            {% for i in image_dict.get(2) %}
+                <div class="col-xs-6 col-md-3 image_item" image-id='{{i.get("image_id")}}'> 
+                    <a class="thumbnail">
+                    <img src="{{i.get('image_path')}}" alt="...">
+                    </a>
+                </div>
+            {% end %}
+        {% else %}
+            <div class="col-xs-6 col-md-3 image_item">
+                <a class="thumbnail">
+                <img src="/static/images/user-default.jpg" alt="...">
+                </a>
+            </div>
+        {% end %}
     </div>
     <div class="row" image-type='3'>
         <h4>图文详情图 
             <button type="button" class="btn btn-info add_image" >Add<span class="glyphicon glyphicon-plus"></span></button>
             <button type="button" class="btn btn-danger delete_image" type="button">Delete<span class="glyphicon glyphicon-trash"></span></button>
         </h4>
-        <div class="col-xs-6 col-md-3 image_item">
-            <a class="thumbnail">
-            <img src="/static/images/user-default.jpg" alt="...">
-            </a>
-        </div>
-        <div class="col-xs-6 col-md-3 image_item">
-            <a class="thumbnail">
-            <img src="/static/images/user-default.jpg" alt="...">
-            </a>
-        </div>
-        <div class="col-xs-6 col-md-3 image_item">
-            <a class="thumbnail">
-            <img src="/static/images/user-default.jpg" alt="...">
-            </a>
-        </div>
+        {% if image_dict.get(3) %}
+            {% for i in image_dict.get(3) %}
+                <div class="col-xs-6 col-md-3 image_item" image-id='{{i.get("image_id")}}'>
+                    <a class="thumbnail">
+                    <img src="{{i.get('image_path')}}" alt="...">
+                    </a>
+                </div>
+            {% end %}
+        {% else %}
+            <div class="col-xs-6 col-md-3 image_item">
+                <a class="thumbnail">
+                <img src="/static/images/user-default.jpg" alt="...">
+                </a>
+            </div>
+        {% end %}
     </div>
     <div class="row" image-type='4'>
         <h4>商品详细介绍图 
             <button type="button" class="btn btn-info add_image" >Add<span class="glyphicon glyphicon-plus"></span></button>
             <button type="button" class="btn btn-danger delete_image" type="button">Delete<span class="glyphicon glyphicon-trash"></span></button>
         </h4>
-        <div class="col-xs-6 col-md-3 image_item">
-            <a class="thumbnail">
-            <img src="/static/images/user-default.jpg" alt="...">
-            </a>
-        </div>
-        <div class="col-xs-6 col-md-3 image_item">
-            <a class="thumbnail">
-            <img src="/static/images/user-default.jpg" alt="...">
-            </a>
-        </div>
-        <div class="col-xs-6 col-md-3 image_item">
-            <a class="thumbnail">
-            <img src="/static/images/user-default.jpg" alt="...">
-            </a>
-        </div>
+        {% if image_dict.get(4) %}
+            {% for i in image_dict.get(4) %}
+                <div class="col-xs-6 col-md-3 image_item" image-id='{{i.get("image_id")}}'>
+                    <a class="thumbnail">
+                    <img src="{{i.get('image_path')}}" alt="...">
+                    </a>
+                </div>
+            {% end %}
+        {% else %}
+            <div class="col-xs-6 col-md-3 image_item">
+                <a class="thumbnail">
+                <img src="/static/images/user-default.jpg" alt="...">
+                </a>
+            </div>
+        {% end %}
     </div>
 </div>
 {% end %}
@@ -140,6 +140,8 @@
                     success:function(data){
                         if(data.status){
                             location.reload()
+                        }else{
+                            alert(data.error_msg)
                         }
                     }
                 })
