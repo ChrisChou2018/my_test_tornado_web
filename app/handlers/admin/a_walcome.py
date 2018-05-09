@@ -354,6 +354,8 @@ class AdminJsEditItemHandler(handlers.JsSiteBaseHandler):
             item_id = self.get_argument('item_id', None)
             form_data = self._build_form_data()
             new_form_data = { i:form_data[i] for i in form_data if form_data[i] }
+            new_form_data['update_person'] = self.current_user.member_name
+            new_form_data['update_time'] = int(time.time())
             if new_form_data:
                 items.update_item_by_itemid(item_id, new_form_data)
             self.write(json.dumps({"status":True}))
