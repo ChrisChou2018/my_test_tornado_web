@@ -13,6 +13,7 @@ import re
 from concurrent.futures import ThreadPoolExecutor
 import config_web
 import os
+import hashlib
 # /
 class AdminHomeHandler(handlers.SiteBaseHandler):
     @decorators.admin_authenticated
@@ -254,13 +255,39 @@ class AdminItemsManageHandler(handlers.SiteBaseHandler):
         except:
             current_page = 1
         items = items_model.Items
-        item_obj = items.select().order_by(-items.item_id)
+        try:
+            value = self.get_argument('search_value')
+        except:
+            value=None
+        if value:
+            filter_args = '&search_value={0}'.format(value)
+            search_value = (items.item_name == value)
+        else:
+            filter_args = None
+            search_value = None
+        if not search_value:
+            item_obj = items.select().order_by(-items.item_id).paginate(int(current_page), 15)
+            item_obj_count = items.select().count()
+        else:
+            item_obj = items.select().where(search_value).order_by(-items.item_id).paginate(int(current_page), 15)
+            item_obj_count = items.select().where(search_value).count()
+        if '?' in self.request.uri:
+            url, arg = self.request.uri.split('?')
+        else:
+            url = self.request.uri
         table_head = ["item_id", "item_name", "item_info", "item_code", "item_barcode", 
                     "price", 'current_price', 'foreign_price', "comment_count", 
                     "hot_value", "buy_count", "key_word", "origin", "shelf_life", 
                     "capacity", "for_people", "weight", "create_person", "create_time", 
                     "update_person", "update_time", "more"]
-        self.render('admin/a_items.html', **{"item_obj":item_obj, "table_head":table_head})
+        self.render('admin/a_items.html', **{"item_obj":item_obj, 
+                                            "item_obj_count":item_obj_count,
+                                            "table_head":table_head,
+                                            'current_page':current_page,
+                                            'filter_args':filter_args,
+                                            'url':url,
+                                            'search_value':value,
+                                            })
 
 
 
@@ -306,6 +333,7 @@ class AdminJsDeleteItemHandler(handlers.JsSiteBaseHandler):
             self.write(json.dumps({'status':False,'error_msg':'服务器出错：{0}'.format(str(error))}))
 
 
+
 class AdminJsEditItemHandler(handlers.JsSiteBaseHandler):
     def get(self):
         items = items_model.Items
@@ -326,6 +354,8 @@ class AdminJsEditItemHandler(handlers.JsSiteBaseHandler):
             item_id = self.get_argument('item_id', None)
             form_data = self._build_form_data()
             new_form_data = { i:form_data[i] for i in form_data if form_data[i] }
+            new_form_data['update_person'] = self.current_user.member_name
+            new_form_data['update_time'] = int(time.time())
             if new_form_data:
                 items.update_item_by_itemid(item_id, new_form_data)
             self.write(json.dumps({"status":True}))
@@ -340,27 +370,88 @@ class AdminJsEditItemHandler(handlers.JsSiteBaseHandler):
 
 
 
+def write_file(file_dir, server_file_path, file_obj):
+    try:
+        thehash = hashlib.md5()
+        thehash.update(file_obj.body)
+        file_name = thehash.hexdigest()
+        file_path = os.path.join(file_dir, file_name)
+        if not os.path.exists(file_path):
+            with open(file_path, 'wb')as w:
+                w.write(file_obj.body)
+        server_file_path = os.path.join(server_file_path, file_name)
+        if 'assets' in server_file_path:
+            server_file_path = server_file_path.replace('assets', 'static')
+        data = {
+            'image_path':'/'+ server_file_path,
+            'file_size':os.path.getsize(file_path),
+            'resolution':'111',
+            'file_type':file_obj.content_type,
+        }
+        return {'status':True, 'data':data}
+    except Exception as error:
+        return {'status':False, 'error_msg':str(error)}
 
-def write_file(file_path, file_obj):
-    with open(file_path, 'wb')as w:
-        w.write(file_obj.body)
 
 
 class AdminImageManageHandler(handlers.SiteBaseHandler):
     def get(self):
         item_id = self.get_argument('item_id')
         items = items_model.Items
+        items_image = items_model.ItemsImage
         item_obj =  items.get_item_by_itemid(item_id)
-        self.render('admin/a_image_manage.html',**{'item_obj':item_obj})
+        items_image_obj = items_image.get_images_by_itemid(item_id)
+        image_dict = {}
+        for i in items_image_obj:
+            if i.image_type not in image_dict:
+                image_dict[i.image_type] = [{'image_path':i.image_path, 'image_id':i.image_id}]
+            else:
+                image_dict[i.image_type].append({'image_path':i.image_path, 'image_id':i.image_id})
+        self.render('admin/a_image_manage.html', **{'item_obj':item_obj,'image_dict':image_dict})
     
 
     def post(self):
-        file_dict = self.request.files
-        image_type = self.get_argument('image_type')
-        item_id = self.get_argument('item_id')
-        with ThreadPoolExecutor(max_workers=10) as pool:
-            for k in file_dict:
-                file_dir = os.path.join(config_web.base_dir, 'assets/temp')
-                if not os.path.exists(file_dir):os.mkdir(file_dir)
-                file_name = os.path.join(file_dir, k)
-                pool.submit(write_file, **{'file_path':file_name, 'file_obj':file_dict[k][0]})
+        try:
+            items_image = items_model.ItemsImage
+            file_dict = self.request.files
+            print(len(file_dict))
+            image_type = self.get_argument('image_type')
+            item_id = self.get_argument('item_id')
+            with ThreadPoolExecutor(max_workers=10) as pool:
+                for k in file_dict:
+                    server_file_path = 'assets/temp'
+                    file_dir = os.path.join(config_web.base_dir, server_file_path)
+                    if not os.path.exists(file_dir):os.mkdir(file_dir)
+                    a = pool.submit(write_file, **{'file_dir':file_dir, 'server_file_path':server_file_path, 'file_obj':file_dict[k][0]})
+                    rp = a.result()
+                    if rp['status']:
+                        data = rp['data']
+                        data.update({
+                            'image_type':image_type,
+                            'item_id':item_id,
+                        })
+                        items_image.get_or_create(**data)
+                    else:
+                        self.write(json.dumps({'status':False, 'error_msg':rp['error_msg']}))
+                        return
+            self.write(json.dumps({
+                'status':True,
+            }))
+        except Exception as error:
+            self.write(json.dumps({
+                'status':False,
+                'error_msg':str(error)
+            }))
+                    
+
+
+class AdminJsDeleteImageHandler(handlers.JsSiteBaseHandler):
+    def post(self):
+        try:
+            items_image = items_model.ItemsImage
+            image_id_list = self.get_arguments('image_id_list[]')
+            for i in image_id_list:
+                items_image.delete_by_id(i)
+            self.write(json.dumps({'status':True}))
+        except Exception as error:
+            self.write(json.dumps({'status':False,'error_msg':'服务器出错：{0}'.format(str(error))}))

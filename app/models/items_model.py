@@ -66,6 +66,14 @@ class ItemsImage(base_model.BaseModel):
         db_table = "app_items_image"
 
 
+
+    @classmethod
+    def get_images_by_itemid(cls, item_id):
+        try:
+            return ItemsImage.select().where(ItemsImage.item_id == item_id)
+        except Items.DoesNotExist:
+            return None
+
 class ItemTag(base_model.BaseModel):
     tag_id          = peewee.AutoField(db_column="tag_id", verbose_name="标签ID")
     tag_name        = peewee.CharField(db_column="tag_name", verbose_name="标签名")

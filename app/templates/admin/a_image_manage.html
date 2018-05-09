@@ -23,21 +23,21 @@
             </a>
             <button type="button" class="btn btn-danger delete_image" type="button">Delete<span class="glyphicon glyphicon-trash"></span></button>
         </h4>
-        <div class="col-xs-6 col-md-3 image_item">
-            <a class="thumbnail" >
-            <img src="/static/images/user-default.jpg" alt="...">
-            </a>
-        </div>
-        <div class="col-xs-6 col-md-3 image_item">
-            <a class="thumbnail">
-            <img src="/static/images/user-default.jpg" alt="...">
-            </a>
-        </div>
-        <div class="col-xs-6 col-md-3 image_item">
-            <a class="thumbnail">
-            <img src="/static/images/user-default.jpg" alt="...">
-            </a>
-        </div>
+        {% if image_dict.get(1) %}
+            {% for i in image_dict.get(1) %}
+                <div class="col-xs-6 col-md-3 image_item" image-id='{{i.get("image_id")}}'>
+                    <a class="thumbnail">
+                    <img src="{{i.get('image_path')}}" alt="..." style="width: 253px;height: 253px;">
+                    </a>
+                </div>
+            {% end %}
+        {% else %}
+            <div class="col-xs-6 col-md-3 image_item">
+                <a class="thumbnail">
+                <img src="/static/images/user-default.jpg" alt="..." style="width: 253px;height: 253px;">
+                </a>
+            </div>
+        {% end %}
         
     </div>
     <div class="row" image-type='2'>
@@ -45,63 +45,63 @@
             <button type="button" class="btn btn-info add_image" >Add<span class="glyphicon glyphicon-plus"></span></button>
             <button type="button" class="btn btn-danger delete_image" type="button">Delete<span class="glyphicon glyphicon-trash"></span></button>
         </h4>
-        <div class="col-xs-6 col-md-3 image_item">
-            <a class="thumbnail">
-            <img src="/static/images/user-default.jpg" alt="...">
-            </a>
-        </div>
-        <div class="col-xs-6 col-md-3 image_item">
-            <a class="thumbnail">
-            <img src="/static/images/user-default.jpg" alt="...">
-            </a>
-        </div>
-        <div class="col-xs-6 col-md-3 image_item">
-            <a class="thumbnail">
-            <img src="/static/images/user-default.jpg" alt="...">
-            </a>
-        </div>
+        {% if image_dict.get(2) %}
+            {% for i in image_dict.get(2) %}
+                <div class="col-xs-6 col-md-3 image_item" image-id='{{i.get("image_id")}}'> 
+                    <a class="thumbnail">
+                    <img src="{{i.get('image_path')}}" alt="..." style="width: 253px;height: 253px;">
+                    </a>
+                </div>
+            {% end %}
+        {% else %}
+            <div class="col-xs-6 col-md-3 image_item">
+                <a class="thumbnail">
+                <img src="/static/images/user-default.jpg" alt="..." style="width: 253px;height: 253px;">
+                </a>
+            </div>
+        {% end %}
     </div>
     <div class="row" image-type='3'>
         <h4>图文详情图 
             <button type="button" class="btn btn-info add_image" >Add<span class="glyphicon glyphicon-plus"></span></button>
             <button type="button" class="btn btn-danger delete_image" type="button">Delete<span class="glyphicon glyphicon-trash"></span></button>
         </h4>
-        <div class="col-xs-6 col-md-3 image_item">
-            <a class="thumbnail">
-            <img src="/static/images/user-default.jpg" alt="...">
-            </a>
-        </div>
-        <div class="col-xs-6 col-md-3 image_item">
-            <a class="thumbnail">
-            <img src="/static/images/user-default.jpg" alt="...">
-            </a>
-        </div>
-        <div class="col-xs-6 col-md-3 image_item">
-            <a class="thumbnail">
-            <img src="/static/images/user-default.jpg" alt="...">
-            </a>
-        </div>
+        {% if image_dict.get(3) %}
+            {% for i in image_dict.get(3) %}
+                <div class="col-xs-6 col-md-3 image_item" image-id='{{i.get("image_id")}}'>
+                    <a class="thumbnail">
+                    <img src="{{i.get('image_path')}}" alt="..." style="width: 253px;height: 253px;">
+                    </a>
+                </div>
+            {% end %}
+        {% else %}
+            <div class="col-xs-6 col-md-3 image_item">
+                <a class="thumbnail">
+                <img src="/static/images/user-default.jpg" alt="..." style="width: 253px;height: 253px;">
+                </a>
+            </div>
+        {% end %}
     </div>
     <div class="row" image-type='4'>
         <h4>商品详细介绍图 
             <button type="button" class="btn btn-info add_image" >Add<span class="glyphicon glyphicon-plus"></span></button>
             <button type="button" class="btn btn-danger delete_image" type="button">Delete<span class="glyphicon glyphicon-trash"></span></button>
         </h4>
-        <div class="col-xs-6 col-md-3 image_item">
-            <a class="thumbnail">
-            <img src="/static/images/user-default.jpg" alt="...">
-            </a>
-        </div>
-        <div class="col-xs-6 col-md-3 image_item">
-            <a class="thumbnail">
-            <img src="/static/images/user-default.jpg" alt="...">
-            </a>
-        </div>
-        <div class="col-xs-6 col-md-3 image_item">
-            <a class="thumbnail">
-            <img src="/static/images/user-default.jpg" alt="...">
-            </a>
-        </div>
+        {% if image_dict.get(4) %}
+            {% for i in image_dict.get(4) %}
+                <div class="col-xs-6 col-md-3 image_item" image-id='{{i.get("image_id")}}'>
+                    <a class="thumbnail">
+                    <img src="{{i.get('image_path')}}" alt="..." style="width: 253px;height: 253px;">
+                    </a>
+                </div>
+            {% end %}
+        {% else %}
+            <div class="col-xs-6 col-md-3 image_item">
+                <a class="thumbnail">
+                <img src="/static/images/user-default.jpg" alt="..." style="width: 253px;height: 253px;">
+                </a>
+            </div>
+        {% end %}
     </div>
 </div>
 {% end %}
@@ -110,6 +110,8 @@
     $(function(){
         $('.admin').addClass('active');
         $('.admin .items_manage').addClass('active');
+
+        // 图片单机事件
         $('.image_item').click(function(){
             if($(this).find('a').css('background-color') != 'rgb(95, 158, 160)'){
                 $(this).find('a').css('background-color', 'cadetblue')
@@ -117,6 +119,8 @@
                 $(this).find('a').css('background-color', '')
             }  
         });
+
+        // 添加图片事件
         $('.add_image').click(function(){
             $('input[name=add_new_image]').trigger('click')
             $('input[name=add_new_image]').unbind()
@@ -140,12 +144,45 @@
                     success:function(data){
                         if(data.status){
                             location.reload()
+                        }else{
+                            alert(data.error_msg)
                         }
                     }
                 })
             })
 
         })
+        
+
+        //删除图片事件
+        $('.delete_image').click(function(){
+            var image_item_list = $(this).parent().siblings()
+            var image_id_list = []
+            $.each(image_item_list, function(index, item){
+                if($(item).find('a').css('background-color') == 'rgb(95, 158, 160)'){
+                    if($(item).attr('image-id')){
+                        image_id_list.push($(item).attr('image-id'))
+                    }
+                }
+
+            })
+            if(image_id_list.length>0){
+                $.post(
+                    '/j/delete_image/',
+                    {'image_id_list':image_id_list, '_xsrf':getCookie("_xsrf")},
+                    function(value){
+                        if(value.status){
+                            location.reload()
+                        }else{
+                            alert(value.error_msg)
+                        }
+                    },
+                    'json'
+                )
+            }
+        })
+
+
     })
 </script>
     
