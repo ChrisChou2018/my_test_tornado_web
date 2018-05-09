@@ -255,13 +255,39 @@ class AdminItemsManageHandler(handlers.SiteBaseHandler):
         except:
             current_page = 1
         items = items_model.Items
-        item_obj = items.select().order_by(-items.item_id)
+        try:
+            value = self.get_argument('search_value')
+        except:
+            value=None
+        if value:
+            filter_args = '&search_value={0}'.format(value)
+            search_value = (items.item_name == value)
+        else:
+            filter_args = None
+            search_value = None
+        if not search_value:
+            item_obj = items.select().order_by(-items.item_id).paginate(int(current_page), 15)
+            item_obj_count = items.select().count()
+        else:
+            item_obj = items.select().where(search_value).order_by(-items.item_id).paginate(int(current_page), 15)
+            item_obj_count = items.select().where(search_value).count()
+        if '?' in self.request.uri:
+            url, arg = self.request.uri.split('?')
+        else:
+            url = self.request.uri
         table_head = ["item_id", "item_name", "item_info", "item_code", "item_barcode", 
                     "price", 'current_price', 'foreign_price', "comment_count", 
                     "hot_value", "buy_count", "key_word", "origin", "shelf_life", 
                     "capacity", "for_people", "weight", "create_person", "create_time", 
                     "update_person", "update_time", "more"]
-        self.render('admin/a_items.html', **{"item_obj":item_obj, "table_head":table_head})
+        self.render('admin/a_items.html', **{"item_obj":item_obj, 
+                                            "item_obj_count":item_obj_count,
+                                            "table_head":table_head,
+                                            'current_page':current_page,
+                                            'filter_args':filter_args,
+                                            'url':url,
+                                            'search_value':value,
+                                            })
 
 
 
@@ -307,6 +333,7 @@ class AdminJsDeleteItemHandler(handlers.JsSiteBaseHandler):
             self.write(json.dumps({'status':False,'error_msg':'服务器出错：{0}'.format(str(error))}))
 
 
+
 class AdminJsEditItemHandler(handlers.JsSiteBaseHandler):
     def get(self):
         items = items_model.Items
@@ -341,7 +368,6 @@ class AdminJsEditItemHandler(handlers.JsSiteBaseHandler):
 
 
 
-
 def write_file(file_dir, server_file_path, file_obj):
     try:
         thehash = hashlib.md5()
@@ -365,6 +391,7 @@ def write_file(file_dir, server_file_path, file_obj):
         return {'status':False, 'error_msg':str(error)}
 
 
+
 class AdminImageManageHandler(handlers.SiteBaseHandler):
     def get(self):
         item_id = self.get_argument('item_id')
@@ -385,6 +412,7 @@ class AdminImageManageHandler(handlers.SiteBaseHandler):
         try:
             items_image = items_model.ItemsImage
             file_dict = self.request.files
+            print(len(file_dict))
             image_type = self.get_argument('image_type')
             item_id = self.get_argument('item_id')
             with ThreadPoolExecutor(max_workers=10) as pool:
@@ -415,3 +443,13 @@ class AdminImageManageHandler(handlers.SiteBaseHandler):
                     
 
 
+class AdminJsDeleteImageHandler(handlers.JsSiteBaseHandler):
+    def post(self):
+        try:
+            items_image = items_model.ItemsImage
+            image_id_list = self.get_arguments('image_id_list[]')
+            for i in image_id_list:
+                items_image.delete_by_id(i)
+            self.write(json.dumps({'status':True}))
+        except Exception as error:
+            self.write(json.dumps({'status':False,'error_msg':'服务器出错：{0}'.format(str(error))}))

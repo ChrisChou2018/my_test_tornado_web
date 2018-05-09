@@ -12,7 +12,6 @@ urls = [
     (r"/signout/?",                         a_account.AdminSignoutHandler),
     (r"/register/?",                        a_account.AdminRegisterHandler),
     (r"/change_password/?",                 a_account.AdminChangePasswordHandler),
-	
 ]
 
 urls += [
@@ -23,6 +22,7 @@ urls += [
 	(r"/j/add_item/?",			   a_walcome.AdminJsAddItemHandler),
 	(r"/j/delete_item/?",		   a_walcome.AdminJsDeleteItemHandler),
 	(r"/j/edit_item/?",			   a_walcome.AdminJsEditItemHandler),
+	(r"/j/delete_image/?",		   a_walcome.AdminJsDeleteImageHandler),
 ]
 
 
