@@ -20,8 +20,8 @@ class MemberManage(handlers.SiteBaseHandler):
         filter_args = None
         if value:
             filter_args = '&search_value={0}'.format(value)
-            search_value = ((member_model.Member.member_name == value) | \
-                            (member_model.Member.email == value))
+            search_value = ((member_model.Member.member_name == value)\
+                            | (member_model.Member.email == value))
             member_obj = member_model.Member.get_member_obj(current_page, search_value)
             member_obj_count = member_model.Member.get_member_obj_count(search_value)
         else:
