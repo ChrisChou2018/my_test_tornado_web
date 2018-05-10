@@ -78,6 +78,7 @@ class ItemsImage(base_model.BaseModel):
     file_size       = peewee.CharField(db_column="file_size", verbose_name="文件大小")
     resolution      = peewee.CharField(db_column="resolution", verbose_name="分辨率")
     file_type       = peewee.CharField(db_column="file_type", verbose_name="文件类型")
+    status          = peewee.CharField(db_column="status", default="normal", verbose_name="状态")
     
     
     class Meta:
@@ -86,11 +87,16 @@ class ItemsImage(base_model.BaseModel):
 
 
     @classmethod
-    def get_images_by_itemid(cls, item_id):
+    def get_images_by_itemid(cls, item_id, search_value = None):
         try:
-            return ItemsImage.select().where(ItemsImage.item_id == item_id)
+            image_obj = ItemsImage.select().where((ItemsImage.item_id == item_id) & (ItemsImage.status == "normal"))
+            return image_obj
         except Items.DoesNotExist:
             return None
+    
+    @classmethod
+    def update_image_by_image_id(cls, image_id, item_dict):
+        ItemsImage.update(**item_dict).where(ItemsImage.image_id == image_id).execute()
     
     
 
