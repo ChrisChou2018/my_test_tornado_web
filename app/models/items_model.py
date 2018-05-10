@@ -91,6 +91,8 @@ class ItemsImage(base_model.BaseModel):
             return ItemsImage.select().where(ItemsImage.item_id == item_id)
         except Items.DoesNotExist:
             return None
+    
+    
 
 class ItemTag(base_model.BaseModel):
     tag_id          = peewee.AutoField(db_column="tag_id", verbose_name="标签ID")

@@ -179,8 +179,16 @@ class AdminImageManageHandler(handlers.SiteBaseHandler):
 class AdminJsDeleteImageHandler(handlers.JsSiteBaseHandler):
     def post(self):
         try:
+            # import uuid
+            # server_file_path = 'assets/temp'
             image_id_list = self.get_arguments('image_id_list[]')
             for i in image_id_list:
+                # image_obj = items_model.ItemsImage.get_by_id(i)
+                # image_name = image_obj.image_path.rsplit('/', 1)[1]
+                # file_base_path = os.path.join(config_web.base_dir, server_file_path)
+                # file_path = os.path.join(file_base_path, image_name)
+                # new_file_name = os.path.join(file_base_path, uuid.uuid4().hex)
+                # if os.path.exists(file_path):os.rename(file_path, new_file_name)
                 items_model.ItemsImage.delete_by_id(i)
             self.write(json.dumps({'status':True}))
         except Exception as error:
