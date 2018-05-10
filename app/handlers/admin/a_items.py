@@ -6,7 +6,7 @@ import config_web
 import time
 from concurrent.futures import ThreadPoolExecutor
 import os
-import hashlib
+import uuid
 
 
 class AdminItemsManageHandler(handlers.SiteBaseHandler):
@@ -111,9 +111,7 @@ class AdminJsEditItemHandler(handlers.JsSiteBaseHandler):
 
 def write_file(file_dir, server_file_path, file_obj):
     try:
-        thehash = hashlib.md5()
-        thehash.update(file_obj.body)
-        file_name = thehash.hexdigest()
+        file_name = uuid.uuid4().hex
         file_path = os.path.join(file_dir, file_name)
         if not os.path.exists(file_path):
             with open(file_path, 'wb')as w:
@@ -179,16 +177,15 @@ class AdminImageManageHandler(handlers.SiteBaseHandler):
 class AdminJsDeleteImageHandler(handlers.JsSiteBaseHandler):
     def post(self):
         try:
-            # import uuid
-            # server_file_path = 'assets/temp'
+            server_file_path = 'assets/temp'
             image_id_list = self.get_arguments('image_id_list[]')
             for i in image_id_list:
-                # image_obj = items_model.ItemsImage.get_by_id(i)
-                # image_name = image_obj.image_path.rsplit('/', 1)[1]
-                # file_base_path = os.path.join(config_web.base_dir, server_file_path)
-                # file_path = os.path.join(file_base_path, image_name)
-                # new_file_name = os.path.join(file_base_path, uuid.uuid4().hex)
-                # if os.path.exists(file_path):os.rename(file_path, new_file_name)
+                image_obj = items_model.ItemsImage.get_by_id(i)
+                image_name = image_obj.image_path.rsplit('/', 1)[1]
+                file_base_path = os.path.join(config_web.base_dir, server_file_path)
+                file_path = os.path.join(file_base_path, image_name)
+                new_file_name = os.path.join(file_base_path, uuid.uuid4().hex)
+                if os.path.exists(file_path):os.rename(file_path, new_file_name)
                 items_model.ItemsImage.delete_by_id(i)
             self.write(json.dumps({'status':True}))
         except Exception as error:
