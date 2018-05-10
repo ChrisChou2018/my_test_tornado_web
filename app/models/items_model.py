@@ -43,6 +43,24 @@ class Items(base_model.BaseModel):
     def update_item_by_itemid(cls, item_id, item_dict):
         Items.update(**item_dict).where(Items.item_id == item_id).execute()
 
+    
+    @classmethod
+    def get_items_obj(cls, current_page, search_value=None):
+        if search_value:
+            item_obj = Items.select().where(search_value).order_by(-Items.item_id).paginate(int(current_page), 15)
+        else:
+            item_obj = Items.select().order_by(-Items.item_id).paginate(int(current_page), 15)
+        
+        return item_obj
+    
+    @classmethod
+    def get_items_obj_count(cls, search_value=None):
+        if search_value:
+            item_obj_count = Items.select().where(search_value).count()
+        else:
+            item_obj_count = Items.select().count()
+        
+        return item_obj_count
 
 
 class ItemsImage(base_model.BaseModel):

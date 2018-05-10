@@ -267,13 +267,25 @@ class Member(base_model.BaseModel):
             (Member.telephone.in_(telephones))&(Member.status!=99))
         ]
 
-    # @classmethod
-    # def insert_members(cls, members):
-    #     Member.insert_many(members).execute()
+    @classmethod
+    def get_member_obj(cls, current_page, search_value=None):
+        if search_value:
+            member_obj = Member.select().where(search_value).order_by(-Member.member_id).paginate(int(current_page), 15)
+        else:
+            member_obj = Member.select().order_by(-Member.member_id).paginate(int(current_page), 15)
+        return member_obj
+    
+    @classmethod
+    def get_member_obj_count(cls, search_value=None):
+        if search_value:
+            member_obj_count = Member.select().where(search_value).count()
+        else:
+            member_obj_count = Member.select().count()
+        return member_obj_count
 
-
-def update_member_by_member_id(member_id, update_dict):
-    Member.update(**update_dict).where(Member.member_id == member_id).execute()
+    @classmethod
+    def update_member_by_member_id(cls, member_id, update_dict):
+        Member.update(**update_dict).where(Member.member_id == member_id).execute()
 
 
 def format_member(member):
