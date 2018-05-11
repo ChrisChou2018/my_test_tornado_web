@@ -13,6 +13,7 @@ class AdminItemsManageHandler(handlers.SiteBaseHandler):
     """
     商品表页面
     """
+    @decorators.admin_authenticated
     def get(self):
         current_page = self.get_argument('page',1)
         value = self.get_argument('search_value', None)
