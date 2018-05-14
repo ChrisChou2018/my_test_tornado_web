@@ -125,11 +125,17 @@
 {% end %}
 
 {% block content %}
+{% set table_head =  ["item_id", "item_name", "item_info", "item_code", "item_barcode", 
+                "price", 'current_price', 'foreign_price', "comment_count", 
+                "hot_value", "buy_count", "key_word", "origin", "shelf_life", 
+                "capacity", "for_people", "weight", "create_person", "create_time", 
+                "update_person", "update_time", "more"] %}
 
 <div style="overflow: auto;">
     <table class="table table-striped item_table" >
         <head>
             <tr>
+            
                 {% for i in table_head %}
                 <th>{{i}}</th>
                 {% end %}
@@ -168,7 +174,7 @@
 {% block js %}
     <script>
     $(function(){
-        $('.admin').addClass('active')
+        $('.admin').addClass('active menu-open')
         $('.admin .items_manage').addClass('active')
         $(".add_item_btn").click(function(){
             $('.modal-title').text('CreateItem')

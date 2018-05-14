@@ -43,6 +43,24 @@ class Items(base_model.BaseModel):
     def update_item_by_itemid(cls, item_id, item_dict):
         Items.update(**item_dict).where(Items.item_id == item_id).execute()
 
+    
+    @classmethod
+    def get_items_obj(cls, current_page, search_value=None):
+        if search_value:
+            item_obj = Items.select().where(search_value).order_by(-Items.item_id).paginate(int(current_page), 15)
+        else:
+            item_obj = Items.select().order_by(-Items.item_id).paginate(int(current_page), 15)
+        
+        return item_obj
+    
+    @classmethod
+    def get_items_obj_count(cls, search_value=None):
+        if search_value:
+            item_obj_count = Items.select().where(search_value).count()
+        else:
+            item_obj_count = Items.select().count()
+        
+        return item_obj_count
 
 
 class ItemsImage(base_model.BaseModel):
@@ -60,6 +78,7 @@ class ItemsImage(base_model.BaseModel):
     file_size       = peewee.CharField(db_column="file_size", verbose_name="文件大小")
     resolution      = peewee.CharField(db_column="resolution", verbose_name="分辨率")
     file_type       = peewee.CharField(db_column="file_type", verbose_name="文件类型")
+    status          = peewee.CharField(db_column="status", default="normal", verbose_name="状态")
     
     
     class Meta:
@@ -68,11 +87,18 @@ class ItemsImage(base_model.BaseModel):
 
 
     @classmethod
-    def get_images_by_itemid(cls, item_id):
+    def get_images_by_itemid(cls, item_id, search_value = None):
         try:
-            return ItemsImage.select().where(ItemsImage.item_id == item_id)
+            image_obj = ItemsImage.select().where((ItemsImage.item_id == item_id) & (ItemsImage.status == "normal"))
+            return image_obj
         except Items.DoesNotExist:
             return None
+    
+    @classmethod
+    def update_image_by_image_id(cls, image_id, item_dict):
+        ItemsImage.update(**item_dict).where(ItemsImage.image_id == image_id).execute()
+    
+    
 
 class ItemTag(base_model.BaseModel):
     tag_id          = peewee.AutoField(db_column="tag_id", verbose_name="标签ID")

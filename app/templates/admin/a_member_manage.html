@@ -85,6 +85,8 @@
 {% end %}
 
 {% block content %}
+{% set table_head = ['member_id', 'member_name', 'email', 'role', 'more'] %}
+
 
 <div style="overflow: auto;">
     <table class="table table-striped member_table" >
@@ -128,7 +130,7 @@
 {% block js %}
     <script>
         $(function(){
-            $('.admin').addClass('active')
+            $('.admin').addClass('active menu-open  ')
             $('.admin .member_manage').addClass('active')
             // init_table()
             $('.add_member_btn').click(function(){

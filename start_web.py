@@ -14,7 +14,6 @@ from tornado.options import define, options
 from app.libs.url_include import url_wrapper, include
 # from app.handlers.admin import ui_modules as UiModules
 # from app.handlers import api as api_admin
-from app.handlers import admin as admin_urls
 from app import models
 from app.handlers import admin
 
@@ -49,7 +48,7 @@ app = BaseApplication(
     [],
     **config_web.settings
     )
-app.add_handlers(config_web.settings["admin_domain"], admin_urls.urls)
+app.add_handlers(config_web.settings["admin_domain"], admin.urls)
 
 
 def main():
