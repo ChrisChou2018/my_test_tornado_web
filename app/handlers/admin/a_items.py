@@ -9,6 +9,7 @@ import os
 import uuid
 
 
+# /items_manage
 class AdminItemsManageHandler(handlers.SiteBaseHandler):
     """
     商品表页面
@@ -27,7 +28,7 @@ class AdminItemsManageHandler(handlers.SiteBaseHandler):
             item_obj = items_model.Items.get_items_obj(current_page)
             item_obj_count = items_model.Items.get_items_obj_count()
         if '?' in self.request.uri:
-            url, arg = self.request.uri.split('?')
+            url = self.request.uri.split('?')[0]
         else:
             url = self.request.uri
         
@@ -39,6 +40,7 @@ class AdminItemsManageHandler(handlers.SiteBaseHandler):
                                           search_value=value,)
 
 
+# /j/add_item/
 class AdminJsAddItemHandler(handlers.JsSiteBaseHandler):
     """
     添加商品
@@ -63,6 +65,7 @@ class AdminJsAddItemHandler(handlers.JsSiteBaseHandler):
                 "capacity", "for_people", "weight")
 
 
+# /j/delete_item/
 class AdminJsDeleteItemHandler(handlers.JsSiteBaseHandler):
     def post(self):
         try:
@@ -75,6 +78,7 @@ class AdminJsDeleteItemHandler(handlers.JsSiteBaseHandler):
                         'error_msg':'服务器出错：{0}'.format(str(error))}))
 
 
+# /j/edit_item/
 class AdminJsEditItemHandler(handlers.JsSiteBaseHandler):
     def get(self):
         try:
@@ -131,6 +135,7 @@ def write_file(file_dir, server_file_path, file_obj):
         return {'status':False, 'error_msg':str(error)}
 
 
+# /image_manage/
 class AdminImageManageHandler(handlers.SiteBaseHandler):
     def get(self):
         item_id = self.get_argument('item_id')
@@ -173,8 +178,9 @@ class AdminImageManageHandler(handlers.SiteBaseHandler):
             self.write(json.dumps({'status':True}))
         except Exception as error:
             self.write(json.dumps({'status':False, 'error_msg':str(error)}))
-                    
 
+
+# /j/delete_image/
 class AdminJsDeleteImageHandler(handlers.JsSiteBaseHandler):
     def post(self):
         try:

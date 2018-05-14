@@ -20,7 +20,7 @@ class MemberManage(handlers.SiteBaseHandler):
         filter_args = None
         if value:
             filter_args = '&search_value={0}'.format(value)
-            search_value = ((member_model.Member.member_name == value)\
+            search_value = ((member_model.Member.member_name == value) \
                             | (member_model.Member.email == value))
             member_obj = member_model.Member.get_member_obj(current_page, search_value)
             member_obj_count = member_model.Member.get_member_obj_count(search_value)
@@ -28,7 +28,7 @@ class MemberManage(handlers.SiteBaseHandler):
             member_obj = member_model.Member.get_member_obj(current_page)
             member_obj_count = member_model.Member.get_member_obj_count()
         if '?' in self.request.uri:
-            url, arg = self.request.uri.split('?')
+            url = self.request.uri.split('?')[0]
         else:
             url = self.request.uri
         self.render("admin/a_member_manage.html", member_obj = member_obj,
@@ -94,6 +94,7 @@ class RegisterForm(object):
             return return_data
 
 
+# /j/register_member/
 class AdminJsRegisterMemberHandler(handlers.JsSiteBaseHandler):
     """
     注册用户接口
@@ -132,10 +133,12 @@ class AdminJsRegisterMemberHandler(handlers.JsSiteBaseHandler):
                             'create_time':dt.datetime.now()})
         member.create(**clear_data)
         self.write(json.dumps({'status':True}))
+
     def _list_form_keys(self):
         return ("member_name", "email", "password", "password2")
 
 
+# /j/delete_member/
 class AdminJsDeleteMemberHandler(handlers.JsSiteBaseHandler):
     """
     删除用户接口
@@ -153,6 +156,7 @@ class AdminJsDeleteMemberHandler(handlers.JsSiteBaseHandler):
             self.write(json.dumps({'status':False,'error_msg':'出错'}))
 
 
+# /j/edit_member/
 class AdminJsEditMemberHandler(handlers.JsSiteBaseHandler):
     """
     编辑用户接口
@@ -213,5 +217,6 @@ class AdminJsEditMemberHandler(handlers.JsSiteBaseHandler):
             self.write(json.dumps({'status':True}))
         except Exception as error:
             self.write(json.dumps({'status':False, 'error_msg':'服务器错误{0}'.format(error)}))
+            
     def _list_form_keys(self):
         return ("member_name", "email", "password", "password2")
