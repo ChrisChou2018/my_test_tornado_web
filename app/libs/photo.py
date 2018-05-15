@@ -41,7 +41,7 @@ def convert_photo(photo_id, base_static_path, photo_type="photo",
             spec["type"], photo_id[:2]
         )
         if not os.path.exists(d_path_target):
-            os.makedirs(d_path_target, 0775)
+            os.makedirs(d_path_target)
 
         cmd_params = ""
         if spec.has_key("is_square") and spec["is_square"]:
