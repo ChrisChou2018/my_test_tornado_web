@@ -14,7 +14,7 @@
 {% end %}
 
 {% block content %}
-<input type="file" accept=".jpg, .png," name="add_new_image" multiple style="display:none;" item-id="{{ item_obj.item_id }}"> 
+<input type="file" accept=".jpg" name="add_new_image" multiple style="display:none;" item-id="{{ item_obj.item_id }}"> 
 <div class="container">
     <div class="row" image-type='1'>
         <h4>商品缩略图 
@@ -144,6 +144,7 @@
                     contentType:false,
                     processData:false,
                     success:function(data){
+                        console.log(data)
                         if(data.status){
                             location.reload()
                         }else{
