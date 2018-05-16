@@ -66,7 +66,7 @@ settings_debug = {
     "www_domain": "wwwlocal.ubskin.net",
     "api_domain": "apilocal.ubskin.net",
     "stat_domain": "statlocal.ubskin.net",
-    "admin_domain": "adminlocal.ubskin.net",
+    "admin_domain": "admin-local.ubskin.net",
     # "static_domain": "http://slocal.ubskin.net:8080/",
     "m_domain_path": "http://mlocal.ubskin.net:8080/",
     "static_domain": "http://s.ubskin.net/",
