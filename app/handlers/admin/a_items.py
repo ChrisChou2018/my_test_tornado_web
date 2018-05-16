@@ -155,28 +155,34 @@ class AdminImageManageHandler(handlers.SiteBaseHandler):
                     'item_id':item_id,
                 })
                 try:
-                    items_model.ItemsImage.get_or_create(**data)
-                    self.write(json.dumps({'status':True}))
+                    items_model.ItemsImage.create(**data)
                 except Exception as error:
                     self.write(json.dumps({'status':False, 'error_msg':str(error)}))
+                    break
             else:
                 self.write(json.dumps({'status':False, 'error_msg':"服务器出错：图片上传失败"}))
                 return
+        else:
+            self.write(json.dumps({'status':True}))
         
 
 
 # /j/delete_image/
 class AdminJsDeleteImageHandler(handlers.JsSiteBaseHandler):
     def post(self):
-        server_file_path = 'assets/temp'
+        server_file_path = 'assets/photos'
         image_id_list = self.get_arguments('image_id_list[]')
+        image_type = items_model.ItemsImage.type_choces
+        image_type = dict(image_type)
         try:
             for i in image_id_list:
                 image_obj = items_model.ItemsImage.get_by_id(i)
                 image_name = image_obj.image_path.rsplit('/', 1)[1]
-                file_base_path = os.path.join(config_web.base_dir, server_file_path)
+                file_base_path = os.path.join(config_web.base_dir,
+                                              server_file_path,
+                                              image_type.get(image_obj.image_type))
                 file_path = os.path.join(file_base_path, image_name)
-                new_file_name = os.path.join(file_base_path, uuid.uuid4().hex)
+                new_file_name = os.path.join(file_base_path, uuid.uuid4().hex + '.jpg')
                 if os.path.exists(file_path):os.rename(file_path, new_file_name)
                 items_model.ItemsImage.update_image_by_image_id(i, {'status':'deleted'})
             self.write(json.dumps({'status':True}))
