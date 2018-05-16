@@ -112,9 +112,9 @@ class AdminJsDeleteMemberHandler(handlers.JsSiteBaseHandler):
     """
     @decorators.js_authenticated
     def post(self):
+        member_id_list = self.get_arguments('member_id_list[]')
+        member = member_model.Member
         try:
-            member_id_list = self.get_arguments('member_id_list[]')
-            member = member_model.Member
             for i in member_id_list:
                 obj = member.delete().where(member.member_id==i)
                 obj.execute()
@@ -136,8 +136,8 @@ class AdminJsEditMemberHandler(handlers.JsSiteBaseHandler):
             'status':True,
         }
         member = member_model.Member
+        member_id = self.get_argument('member_id', None)
         try:
-            member_id = self.get_argument('member_id', None)
             member_obj = member.get(member.member_id==member_id)
             return_data['data'] = {'member_id':member_id,
                                 'member_name':member_obj.member_name,

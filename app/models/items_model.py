@@ -67,11 +67,11 @@ class ItemsImage(base_model.BaseModel):
     image_id       = peewee.AutoField(db_column="image_id", primary_key=True, verbose_name="图片ID")
     item_id        = peewee.BigIntegerField(db_column="item_id", verbose_name="所属商品ID")
     type_choces    = (
-        (0, "首页图片"),
-        (1, "商品缩略图"),
-        (2, "商品样式图"),
-        (3, "图文详情图"),
-        (4, "商品详细介绍图"),
+        (0, "title"),
+        (1, "thumbicon"),
+        (2, "item_title"),
+        (3, "item_info"),
+        (4, "item"),
     )
     image_type      = peewee.IntegerField(db_column="image_type", choices=type_choces, verbose_name="图片类型")
     image_path      = peewee.CharField(db_column="image_path", verbose_name="路径")
