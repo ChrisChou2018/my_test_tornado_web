@@ -163,7 +163,7 @@ class Member(base_model.BaseModel):
             return None
 
     @classmethod
-    def get_member_by_member_name(cls, member_name):
+    def get_member_by_name(cls, member_name):
         try:
             return Member.get(Member.member_name == member_name)
         except Member.DoesNotExist:

@@ -71,7 +71,7 @@ settings_debug = {
     "m_domain_path": "http://mlocal.ubskin.net:8080/",
     "static_domain": "http://s.ubskin.net/",
     "redis_on": True if os.getenv("REDIS_ON") == "True" else False,
-}
+}   
 
 settings_testing = {
     "m_domain": "mtest.ubskin.net",

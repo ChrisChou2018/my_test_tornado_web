@@ -7,7 +7,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 import os
 import uuid
-from app.libs import new_photo
+from app.libs import photo
 
 
 # /items_manage
@@ -33,12 +33,12 @@ class AdminItemsManageHandler(handlers.SiteBaseHandler):
         else:
             url = self.request.uri
         
-        self.render('admin/a_items.html', item_obj=item_obj, 
-                                          item_obj_count=item_obj_count,
-                                          current_page=current_page,
-                                          filter_args=filter_args,
-                                          url=url,
-                                          search_value=value,)
+        self.render('admin/a_items.html', item_obj = item_obj, 
+                                          item_obj_count = item_obj_count,
+                                          current_page = current_page,
+                                          filter_args = filter_args,
+                                          url = url,
+                                          search_value = value,)
 
 
 # /j/add_item/
@@ -61,9 +61,10 @@ class AdminJsAddItemHandler(handlers.JsSiteBaseHandler):
             "error_msg":"服务器出错:\n{0}".format(str(error))}))
 
     def _list_form_keys(self):
-        return ("item_name", "item_info", "item_code", "item_barcode", "price",
-                "current_price", "foreign_price", "key_word", "origin", "shelf_life",
-                "capacity", "for_people", "weight")
+        return ["item_name", "item_info", "item_code",
+                "item_barcode", "price", "current_price",
+                "foreign_price", "key_word", "origin",
+                "shelf_life", "capacity", "for_people", "weight"]
 
 
 # /j/delete_item/
@@ -76,7 +77,7 @@ class AdminJsDeleteItemHandler(handlers.JsSiteBaseHandler):
             self.write(json.dumps({'status':True}))
         except Exception as error:
             self.write(json.dumps({'status':False,
-                        'error_msg':'服务器出错：{0}'.format(str(error))}))
+                                   'error_msg':'服务器出错：{0}'.format(str(error))}))
 
 
 # /j/edit_item/
@@ -85,14 +86,15 @@ class AdminJsEditItemHandler(handlers.JsSiteBaseHandler):
         item_id = self.get_argument('item_id', None)
         try:
             member_obj = items_model.Items.get_item_by_itemid(item_id)
-            field = ["item_name", "item_info", "item_code", "item_barcode", "price",
-                    "current_price", "foreign_price", "key_word", "origin", "shelf_life",
-                    "capacity", "for_people", "weight"]
-            data_dict = {i:getattr(member_obj, i)  for i in field if i != "more"}
+            field = ["item_name", "item_info", "item_code",
+                     "item_barcode", "price", "current_price",
+                     "foreign_price", "key_word", "origin",
+                     "shelf_life", "capacity", "for_people", "weight"]
+            data_dict = {i:getattr(member_obj, i) for i in field if i != "more"}
             self.write(json.dumps({"status":True, "data":data_dict}))
         except Exception as error:
             self.write(json.dumps({"status":False,
-                        "error_msg":"服务器出错:{0}".format(str(error))}))
+                                   "error_msg":"服务器出错:{0}".format(str(error))}))
         
         
     
@@ -112,9 +114,10 @@ class AdminJsEditItemHandler(handlers.JsSiteBaseHandler):
 
         
     def _list_form_keys(self):
-        return ["item_name", "item_info", "item_code", "item_barcode", "price",
-            "current_price", "foreign_price", "key_word", "origin", "shelf_life",
-            "capacity", "for_people", "weight"]
+        return ["item_name", "item_info", "item_code",
+                "item_barcode", "price", "current_price",
+                "foreign_price", "key_word", "origin",
+                "shelf_life", "capacity", "for_people", "weight"]
 
 
 
@@ -128,11 +131,13 @@ class AdminImageManageHandler(handlers.SiteBaseHandler):
         image_dict = {}
         for i in items_image_obj:
             if i.image_type not in image_dict:
-                image_dict[i.image_type] = [{'image_path':i.image_path, 'image_id':i.image_id}]
+                image_dict[i.image_type] = [{'image_path':i.image_path,
+                                             'image_id':i.image_id}]
             else:
                 image_dict[i.image_type].append({'image_path':i.image_path,
-                                                'image_id':i.image_id})
-        self.render('admin/a_image_manage.html', item_obj = item_obj, image_dict = image_dict)
+                                                 'image_id':i.image_id})
+        self.render('admin/a_image_manage.html', item_obj = item_obj,
+                                                 image_dict = image_dict)
     
     def post(self):
         file_dict = self.request.files
@@ -142,10 +147,10 @@ class AdminImageManageHandler(handlers.SiteBaseHandler):
         item_id = self.get_argument('item_id')
         # with ThreadPoolExecutor(max_workers=10) as pool:
         for k in file_dict:
-            server_file_path = 'assets/photos'
-            file_dir = os.path.join(config_web.base_dir, server_file_path)
+            server_file_path = '/static/photos'
+            file_dir = os.path.join(config_web.settings_common['static_path'], 'photos')
             if not os.path.exists(file_dir):os.mkdir(file_dir)
-            data = new_photo.save_upload_photo(file_dict[k][0],
+            data = photo.save_upload_photo(file_dict[k][0],
                                             file_dir,
                                             server_file_path,
                                             image_type_dict.get(int(image_type)))
@@ -157,10 +162,12 @@ class AdminImageManageHandler(handlers.SiteBaseHandler):
                 try:
                     items_model.ItemsImage.create(**data)
                 except Exception as error:
-                    self.write(json.dumps({'status':False, 'error_msg':str(error)}))
+                    self.write(json.dumps({'status':False,
+                                           'error_msg':str(error)}))
                     break
             else:
-                self.write(json.dumps({'status':False, 'error_msg':"服务器出错：图片上传失败"}))
+                self.write(json.dumps({'status':False,
+                                       'error_msg':"服务器出错：上传失败"}))
                 return
         else:
             self.write(json.dumps({'status':True}))
@@ -170,7 +177,6 @@ class AdminImageManageHandler(handlers.SiteBaseHandler):
 # /j/delete_image/
 class AdminJsDeleteImageHandler(handlers.JsSiteBaseHandler):
     def post(self):
-        server_file_path = 'assets/photos'
         image_id_list = self.get_arguments('image_id_list[]')
         image_type = items_model.ItemsImage.type_choces
         image_type = dict(image_type)
@@ -178,8 +184,8 @@ class AdminJsDeleteImageHandler(handlers.JsSiteBaseHandler):
             for i in image_id_list:
                 image_obj = items_model.ItemsImage.get_by_id(i)
                 image_name = image_obj.image_path.rsplit('/', 1)[1]
-                file_base_path = os.path.join(config_web.base_dir,
-                                              server_file_path,
+                file_base_path = os.path.join(config_web.settings_common['static_path'],
+                                              'photos',
                                               image_type.get(image_obj.image_type))
                 file_path = os.path.join(file_base_path, image_name)
                 new_file_name = os.path.join(file_base_path, uuid.uuid4().hex + '.jpg')
