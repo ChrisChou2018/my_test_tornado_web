@@ -177,7 +177,6 @@ class AdminImageManageHandler(handlers.SiteBaseHandler):
 # /j/delete_image/
 class AdminJsDeleteImageHandler(handlers.JsSiteBaseHandler):
     def post(self):
-        server_file_path = 'assets/photos'
         image_id_list = self.get_arguments('image_id_list[]')
         image_type = items_model.ItemsImage.type_choces
         image_type = dict(image_type)
@@ -185,8 +184,8 @@ class AdminJsDeleteImageHandler(handlers.JsSiteBaseHandler):
             for i in image_id_list:
                 image_obj = items_model.ItemsImage.get_by_id(i)
                 image_name = image_obj.image_path.rsplit('/', 1)[1]
-                file_base_path = os.path.join(config_web.base_dir,
-                                              server_file_path,
+                file_base_path = os.path.join(config_web.settings_common['static_path'],
+                                              'photos',
                                               image_type.get(image_obj.image_type))
                 file_path = os.path.join(file_base_path, image_name)
                 new_file_name = os.path.join(file_base_path, uuid.uuid4().hex + '.jpg')
