@@ -32,11 +32,11 @@ class MemberManage(handlers.SiteBaseHandler):
         else:
             url = self.request.uri
         self.render("admin/a_member_manage.html", member_obj = member_obj,
-                                                member_obj_count = member_obj_count,
-                                                current_page = current_page,
-                                                filter_args = filter_args,
-                                                url = url,
-                                                search_value = value)
+                                                  member_obj_count = member_obj_count,
+                                                  current_page = current_page,
+                                                  filter_args = filter_args,
+                                                  url = url,
+                                                  search_value = value)
 
 
 
@@ -62,7 +62,7 @@ class AdminJsRegisterMemberHandler(handlers.JsSiteBaseHandler):
             return
         clear_data = return_data.get('clear_data')
         member_obj_by_email = member.get_member_by_email(clear_data.get('email'))
-        member_obj_by_name = member.get_member_by_member_name(clear_data.get('member_name'))
+        member_obj_by_name = member.get_member_by_name(clear_data.get('member_name'))
         if member_obj_by_email:
             return_data['error_msg']['has_member_error'] = '邮箱已经被注册'
             return_data['status'] = False
@@ -79,10 +79,10 @@ class AdminJsRegisterMemberHandler(handlers.JsSiteBaseHandler):
         haspwd = bcrypt.hashpw((pass_word+random_salt_key).encode(), bcrypt.gensalt())
         clear_data['hash_pwd'] = haspwd
         clear_data.update({'sessions':json.dumps(list()),
-                            'status':'1',
-                            'role':'admin',
-                            'salt_key':random_salt_key,
-                            'create_time':dt.datetime.now()})
+                           'status':'1',
+                           'role':'admin',
+                           'salt_key':random_salt_key,
+                           'create_time':dt.datetime.now()})
         member.create(**clear_data)
         self.write(json.dumps({'status':True}))
 
@@ -104,6 +104,7 @@ class AdminJsRegisterMemberHandler(handlers.JsSiteBaseHandler):
         if len(form_data['member_name']) > 15:
             form_errors['member_name'] = '用户名长度不超过15'
         return form_errors
+
 
 # /j/delete_member/
 class AdminJsDeleteMemberHandler(handlers.JsSiteBaseHandler):
@@ -170,7 +171,7 @@ class AdminJsEditMemberHandler(handlers.JsSiteBaseHandler):
                 return_data['error_msg']['has_member_error'] = '邮箱已经被注册'
                 return_data['status'] = False
         if clear_data.get('member_name'):
-            member_obj_by_name = member.get_member_by_member_name(clear_data.get('member_name'))
+            member_obj_by_name = member.get_member_by_name(clear_data.get('member_name'))
             if member_obj_by_name:
                 return_data['error_msg']['has_member_error'] = '用户名已经存在'
                 return_data['status'] = False
@@ -190,7 +191,8 @@ class AdminJsEditMemberHandler(handlers.JsSiteBaseHandler):
             member.update_member_by_member_id(member_id, clear_data)
             self.write(json.dumps({'status':True}))
         except Exception as error:
-            self.write(json.dumps({'status':False, 'error_msg':{'server_error':'服务器错误{0}'.format(error)}}))
+            self.write(json.dumps({'status':False,
+                                   'error_msg':{'server_error':'服务器错误{0}'.format(error)}}))
 
     def _list_form_keys(self):
         return ("member_name", "email", "password", "password2")

@@ -65,9 +65,8 @@ class AdminSigninHandler(handlers.SiteBaseHandler):
         return ("login_name", "password")
 
     def _render(self, form_data=None, form_errors=None):
-        self.render("admin/a_signin.html", form_data=form_data,
-            form_errors=form_errors
-        )
+        self.render("admin/a_signin.html", form_data = form_data,
+                                           form_errors = form_errors)
 
 # /signout/
 class AdminSignoutHandler(handlers.SiteBaseHandler):
@@ -100,8 +99,9 @@ class AdminRegisterHandler(handlers.SiteBaseHandler):
             self._render(form_data, form_errors)
             return
         clear_data = form_data
-        member_obj_by_email, member_obj_by_name = (member.get_member_by_email(clear_data.get('email')), 
-                                                member.get_member_by_member_name(clear_data.get('member_name')))
+        member_obj_by_email = member.get_member_by_email(clear_data.get('email'))
+        member_obj_by_name = member.get_member_by_name(clear_data.get('member_name'))
+                                                
         if member_obj_by_email:
             return_data['error_msg']['has_member_error'] = '邮箱已经被注册'
         elif member_obj_by_name:
@@ -170,7 +170,8 @@ class AdminChangePasswordHandler(handlers.SiteBaseHandler):
             for i in range(8)
         )
         if bcrypt.hashpw((old_haspwd + salt_key).encode('utf8'), 
-                        self.current_user.hash_pwd.encode('utf8')) == self.current_user.hash_pwd.encode('utf8'):
+                        self.current_user.hash_pwd.encode('utf8')) \
+                        == self.current_user.hash_pwd.encode('utf8'):
             hashd = bcrypt.hashpw((new_haspwd + new_salt_key).encode('utf8'), bcrypt.gensalt())
             member_model.Member.update_pwd(self.current_user.member_id, hashd)
             query = (member_model.Member
