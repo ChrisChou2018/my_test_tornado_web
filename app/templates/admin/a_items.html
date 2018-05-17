@@ -1,0 +1,296 @@
+{% extends '../admin/a_layout.html' %}
+{% block css %}
+    <style>
+        table{
+        table-layout:auto;
+        }
+        td{
+        /* width:100%; */
+        word-break:keep-all;
+        white-space:nowrap;
+        }
+    </style>
+{% end %}
+
+{% block title %}
+商品表            
+{% end %}
+{% block page_header %}
+<ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i> Admin</a></li>
+    <li class="active">items_manage</li>
+</ol>
+{% end %}
+
+{% block content_title %}
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="exampleModalLabel">CreateItem</h4>
+        </div>
+        <div class="modal-body">
+            <form method="post" action="" class="item_form">
+                <div class="form-group">
+                    <label for="recipient-name" class="control-label">商品名称:</label>
+                    <input type="text" class="form-control" id="recipient-name" name="item_name">
+                </div>
+                <div class="form-group">
+                    <label for="recipient-name" class="control-label">商品信息:</label>
+                    <input type="text" class="form-control" id="recipient-name" name="item_info">
+                </div>
+                <div class="form-group">
+                    <label for="recipient-name" class="control-label">商品编码:</label>
+                    <input type="text" class="form-control" id="recipient-name" name="item_code">
+                </div>
+                <div class="form-group">
+                    <label for="recipient-name" class="control-label">商品条码:</label>
+                    <input type="text" class="form-control" id="recipient-name" name="item_barcode">
+                </div>
+                <div class="form-group">
+                    <label for="recipient-name" class="control-label">原价:</label>
+                    <input type="number" onkeyup="value=value.replace(/[^\d]/g,'')" class="form-control" id="recipient-name" name="price">
+                </div>
+                <div class="form-group">
+                    <label for="recipient-name" class="control-label">现价:</label>
+                    <input type="number" onkeyup="value=value  .replace(/[^\d]/g,'')" class="form-control" id="recipient-name" name="current_price">
+                </div>
+                <div class="form-group">
+                    <label for="recipient-name" class="control-label">国外价格:</label>
+                    <input type="number" onkeyup="value=value.replace(/[^\d]/g,'')" class="form-control" id="recipient-name" name="foreign_price">
+                </div>
+                <div class="form-group">
+                    <label for="recipient-name" class="control-label">关键字:</label>
+                    <input type="text" class="form-control" id="recipient-name" name="key_word">
+                </div>
+                <div class="form-group">
+                    <label for="recipient-name" class="control-label">产地:</label>
+                    <input type="text" class="form-control" id="recipient-name" name="origin">
+                </div>
+                <div class="form-group">
+                    <label for="recipient-name" class="control-label">保质期:</label>
+                    <input type="text" class="form-control" id="recipient-name" name="shelf_life">
+                </div>
+                <div class="form-group">
+                    <label for="recipient-name" class="control-label">容量:</label>
+                    <input type="text" class="form-control" id="recipient-name" name="capacity">
+                </div>
+                <div class="form-group">
+                    <label for="recipient-name" class="control-label">适用人群:</label>
+                    <input type="text" class="form-control" id="recipient-name" name="for_people">
+                </div>
+                <div class="form-group">
+                    <label for="recipient-name" class="control-label">重量:</label>
+                    <input type="text" class="form-control" id="recipient-name" name="weight">
+                </div>
+
+            </form>
+            <div class="return_msg_box"></div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary submit_btn" >Submit</button>
+        </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div "row">
+            <div class="col-md-8">
+                <form action="" method="GET" class="search_input">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search for..." name="search_value" value="{{search_value if search_value else '' }}">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default search_input_btn" type="submit">Search</button>
+                    </span>
+                  </div><!-- /input-group -->
+                </form>
+            </div>
+            <div class="col-md-4">
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <button type="button" class="btn btn-info add_item_btn" type="button" data-toggle="modal" data-target="#exampleModal" >AddItem <span class="glyphicon glyphicon-plus"></span></button>
+        <button type="button" class="btn btn-default choose_item" type="button">Choose<span class="glyphicon glyphicon-saved"></span></button>
+        <button type="button" class="btn btn-danger delete_item" type="button">Delete<span class="glyphicon glyphicon-trash"></span></button>
+    </div>
+</div>
+{% end %}
+
+{% block content %}
+{% set table_head =  ["item_id", "item_name", "item_info", "item_code", "item_barcode", 
+                "price", 'current_price', 'foreign_price', "comment_count", 
+                "hot_value", "buy_count", "key_word", "origin", "shelf_life", 
+                "capacity", "for_people", "weight", "create_person", "create_time", 
+                "update_person", "update_time", "more"] %}
+
+<div style="overflow: auto;">
+    <table class="table table-striped item_table" >
+        <head>
+            <tr>
+            
+                {% for i in table_head %}
+                <th>{{i}}</th>
+                {% end %}
+            </tr>
+        </head>
+        <tbody>
+            {% for i in item_obj %}
+            <tr>
+                {% for j in table_head %}
+                    {% if j != 'more' %}
+                        <td> {{ datetime.datetime.fromtimestamp(getattr(i, j)) if j=='create_time' or j=='update_time' else getattr(i, j) }} </td> 
+                    {% end %}
+                {% end %}
+                <td>
+                    <a class='edit_item' style='cursor:pointer;text-decoration:none;'><span class="glyphicon glyphicon-pencil"></span> 编辑</a> 
+                    <big>|</big> 
+                    <a class='image_manage' href="/image_manage?item_id={{i.item_id}}" style='cursor:pointer;text-decoration:none;'><span class="glyphicon glyphicon-picture"></span> 图片管理</a>
+                </td>
+                <td style='display: none'><input type='checkbox'></td>
+            </tr>
+            {% end %}
+        </tbody>
+            
+    </table>  
+</div>
+
+<div>
+    <nav aria-label="Page navigation">
+        <ul class="pagination page_box">
+            {% module Pagingfunc(current_page, item_obj_count, filter_args, url) %}
+        </ul>
+    </nav>
+</div>
+
+{% end %}
+{% block js %}
+    <script>
+    $(function(){
+        $('.admin').addClass('active menu-open')
+        $('.admin .items_manage').addClass('active')
+        $(".add_item_btn").click(function(){
+            $('.modal-title').text('CreateItem')
+            $('.submit_btn').unbind()
+            $('.submit_btn').click(function(){
+                add_or_edit_item(false)
+            })
+        })
+        $(".choose_item").click(function(){
+            var tr =  $('.item_table tbody tr')
+            $.each(tr,function(index, item){
+                var $ltd = $(item).children().last()
+                if($ltd.css('display')=='none'){
+                    $ltd.css('display','block')
+                }else{
+                    $ltd.css('display','none')
+                }
+            })
+        })
+        $('.delete_item').click(delete_item)
+        $('.edit_item').click(get_edit_item_info)
+        $('.image_manage').click()
+    })
+    
+    
+    var item_id = null
+    function add_or_edit_item(is_edit){
+        var request_url = is_edit ? '/j/edit_item/?item_id=' + item_id : '/j/add_item/'
+        var $input_list = $('.item_form input')
+        var data_dict = {}
+        $input_list.each(function(index,item){
+            var input_value = $(item).val().trim()
+            if(is_edit){
+                var input_old_value = $(item).attr('old_value')
+                if(input_value != input_old_value){
+                    data_dict[$(item).attr('name')]=input_value
+                }
+            }else{
+                data_dict[$(item).attr('name')]=input_value
+            }
+                
+        })
+        data_dict['_xsrf'] = getCookie("_xsrf")
+        console.log(data_dict)
+        $.post(
+            request_url,
+            data_dict,
+            function(value){
+                if(value.status){
+                    $('#exampleModal').modal('hide')
+                    location.reload()
+                }else{
+                    var error_msg = value.error_msg
+                    $('.return_msg_box').text(error_msg)
+                }
+            },
+            'json'
+        )
+    }
+
+
+    function delete_item(){
+        var tr =  $('.item_table tbody tr')
+        var item_id_list = []
+        $.each(tr,function(index,item){
+            var $ltd = $(item).children().last()
+            var $ftd = $(item).children().first()
+            var $check_box = $ltd.children()
+            if($ltd.css('display')=='block' && $check_box.prop('checked')){
+                item_id_list.push($ftd.text())
+            }
+        })
+        if(item_id_list.length>0){
+            $.post(
+                '/j/delete_item/',
+                {'item_id_list':item_id_list, '_xsrf':getCookie('_xsrf')},
+                function(value){
+                    if(value.status){
+                        location.reload()
+                    }else{
+                        alert(value.error_msg)
+                    }
+                },
+                'json'
+            )
+        }
+    }
+    function get_edit_item_info(){
+        $('.modal-title').text('EditItem')
+        item_id = $(this).parent().parent().children().first().text()
+        var data_dict = null
+        $.get(
+            '/j/edit_item/?item_id='+item_id,
+            function(value){
+                if(value.status){
+                    data_dict = value.data
+                    $('#exampleModal').modal('show')
+                    var $input_list = $('.item_form input')
+                    $input_list.each(function(index, item){
+                        $(item).attr('old_value', data_dict[$(item).attr('name')])
+                        $(item).val(data_dict[$(item).attr('name')])
+                    })
+                    $('.submit_btn').unbind()
+                    $('.submit_btn').click(function(){
+                        add_or_edit_item(true)
+                    })
+                }else{
+                    alert(value.error_msg)
+                }
+            },
+            'json'
+        )
+    }
+
+    function image_manage(){
+
+    }
+    </script>
+{% end %}

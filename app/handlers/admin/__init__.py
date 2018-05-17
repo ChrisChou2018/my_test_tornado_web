@@ -1,11 +1,15 @@
 from app.handlers.admin import a_account
 from app.handlers.admin import a_walcome
+from app.handlers.admin import a_member
+from app.handlers.admin import a_items
 import tornado.web
 from tornado import escape
 
 urls = [
     (r"/?",                                 a_walcome.AdminHomeHandler),
-    (r"/member_manage/?",                   a_walcome.MemberManage),
+    (r"/member_manage/?",                   a_member.MemberManage),
+	(r"/items_manage/?",					a_items.AdminItemsManageHandler),
+	(r"/image_manage/?",					a_items.AdminImageManageHandler),
     (r"/signin/?",                          a_account.AdminSigninHandler),
     (r"/signout/?",                         a_account.AdminSignoutHandler),
     (r"/register/?",                        a_account.AdminRegisterHandler),
@@ -14,9 +18,13 @@ urls = [
 
 urls += [
     # (r"/j/member_info/?",          a_walcome.AdminJsMemberInfoHandler),
-    (r"/j/register_member/?",      a_walcome.AdminJsRegisterMemberHandler),
-    (r"/j/delete_member/?",        a_walcome.AdminJsDeleteMemberHandler),
-    (r"/j/edit_member/?",          a_walcome.AdminJsEditMemberHandler),
+    (r"/j/register_member/?",      a_member.AdminJsRegisterMemberHandler),
+    (r"/j/delete_member/?",        a_member.AdminJsDeleteMemberHandler),
+    (r"/j/edit_member/?",          a_member.AdminJsEditMemberHandler),
+	(r"/j/add_item/?",			   a_items.AdminJsAddItemHandler),
+	(r"/j/delete_item/?",		   a_items.AdminJsDeleteItemHandler),
+	(r"/j/edit_item/?",			   a_items.AdminJsEditItemHandler),
+	(r"/j/delete_image/?",		   a_items.AdminJsDeleteImageHandler),
 ]
 
 
@@ -74,4 +82,5 @@ class Pagingfunc(tornado.web.UIModule):
 			nex = "<li><a href='%s?page=%s%s' class='page_btn' style='cursor:pointer;text-decoration:none;'>下一页<span aria-hidden='true'>&raquo;</span></a></li>" % (self.url, self.current_page + 1, self.filter_args)
 		html_list.append(nex)
 		return ''.join(html_list)
-        
+
+  
