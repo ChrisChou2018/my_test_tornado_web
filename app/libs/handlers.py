@@ -246,7 +246,7 @@ class MobileBaseHandler(SiteBaseHandler):
 class JsWwwBaseHandler(WwwBaseHandler):
     def initialize(self):
         super(JsWwwBaseHandler, self).initialize()
-        self.data = {"result": "error"}
+        self.data = {"result":"error"}
 
     def _build_form_data(self):
         form_data = dict()

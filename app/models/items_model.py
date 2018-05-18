@@ -33,6 +33,10 @@ class Items(base_model.BaseModel):
     class Meta:
         db_table = "app_items"
 
+
+    @classmethod
+    def create_item(cls, datas):
+        cls.create(**datas)
     
     @classmethod
     def get_item_by_itemid(cls, item_id):
@@ -47,7 +51,7 @@ class Items(base_model.BaseModel):
 
     
     @classmethod
-    def get_items_obj(cls, current_page, search_value=None):
+    def get_list_items(cls, current_page, search_value=None):
         if search_value:
             item_obj = Items.select().where(search_value).order_by(-Items.item_id).paginate(int(current_page), 15)
         else:
@@ -56,7 +60,7 @@ class Items(base_model.BaseModel):
         return item_obj
     
     @classmethod
-    def get_items_obj_count(cls, search_value=None):
+    def get_items_count(cls, search_value=None):
         if search_value:
             item_obj_count = Items.select().where(search_value).count()
         else:
@@ -87,6 +91,9 @@ class ItemsImage(base_model.BaseModel):
         db_table = "app_items_image"
 
 
+    @classmethod
+    def create_item_image(cls, datas):
+        cls.create(**datas)
 
     @classmethod
     def get_images_by_itemid(cls, item_id, search_value = None):

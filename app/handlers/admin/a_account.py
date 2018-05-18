@@ -12,12 +12,6 @@ from app.libs import handlers
 from app.models import member_model
 
 
-
-
-
-
-
-
 # /signin/
 class AdminSigninHandler(handlers.SiteBaseHandler):
     def get(self):
@@ -29,7 +23,6 @@ class AdminSigninHandler(handlers.SiteBaseHandler):
         if form_errors:
             self._render(form_data, form_errors)
             return
-
         # Update the storage of password.
         member_obj = member_model.Member.get_member_by_login(form_data["login_name"])
         if not member_obj:
@@ -72,8 +65,12 @@ class AdminSigninHandler(handlers.SiteBaseHandler):
         return ("login_name", "password")
 
     def _render(self, form_data=None, form_errors=None):
-        self.render("admin/a_signin.html", form_data = form_data,
-                                           form_errors = form_errors)
+        self.render(
+            "admin/a_signin.html",
+            form_data = form_data,
+            orm_errors = form_error
+        )
+
 
 # /signout/
 class AdminSignoutHandler(handlers.SiteBaseHandler):
@@ -81,8 +78,6 @@ class AdminSignoutHandler(handlers.SiteBaseHandler):
     def get(self):
         self.clear_cookie(self.settings["cookie_key_sess"])
         self.redirect("/signin")
-
-
 
 
 # /register/
@@ -117,16 +112,19 @@ class AdminRegisterHandler(handlers.SiteBaseHandler):
             self._render(form_data, return_data['error_msg'])
             return
         pass_word = clear_data['password']
-        random_salt_key = ''.join(random.choice(string.ascii_lowercase + string.digits) \
+        random_salt_key = ''.join(
+            random.choice(string.ascii_lowercase + string.digits) \
             for i in range(8)
         )
         haspwd = bcrypt.hashpw((pass_word+random_salt_key).encode(), bcrypt.gensalt())
         clear_data['hash_pwd'] = haspwd
-        clear_data.update({'sessions':json.dumps(list()),
-                            'status':'1',
-                            'role':'admin',
-                            'salt_key':random_salt_key,
-                            'create_time':dt.datetime.now()})
+        clear_data.update(
+            {'sessions':json.dumps(list()),
+            'status':'1',
+            'role':'admin',
+            'salt_key':random_salt_key,
+            'create_time':dt.datetime.now()}
+        )
         member.create(**clear_data)
         return self.render("admin/a_register_success.html")
     
@@ -134,7 +132,9 @@ class AdminRegisterHandler(handlers.SiteBaseHandler):
         return ("member_name", "email", "password", "password2")
 
     def _render(self, form_data=None, form_errors=None):
-        self.render("admin/a_register.html", form_data=form_data,
+        self.render(
+            "admin/a_register.html",
+            form_data=form_data,
             form_errors=form_errors
         )
     
@@ -173,14 +173,21 @@ class AdminChangePasswordHandler(handlers.SiteBaseHandler):
         old_haspwd = clear_data['password']
         salt_key = self.current_user.salt_key
         new_haspwd = clear_data['password2']
-        new_salt_key = ''.join(random.choice(string.ascii_lowercase + string.digits) \
+        new_salt_key = ''.join(
+            random.choice(string.ascii_lowercase + string.digits) \
             for i in range(8)
         )
         if bcrypt.hashpw((old_haspwd + salt_key).encode('utf8'), 
                         self.current_user.hash_pwd.encode('utf8')) \
                         == self.current_user.hash_pwd.encode('utf8'):
-            hashd = bcrypt.hashpw((new_haspwd + new_salt_key).encode('utf8'), bcrypt.gensalt())
-            member_model.Member.update_pwd(self.current_user.member_id, hashd)
+            hashd = bcrypt.hashpw(
+                (new_haspwd + new_salt_key).encode('utf8'),
+                bcrypt.gensalt()
+            )
+            member_model.Member.update_pwd(
+                self.current_user.member_id,
+                hashd
+            )
             query = (member_model.Member
                 .update({'salt_key':new_salt_key})
                 .where(member_model.Member.member_id == self.current_user.member_id))
@@ -191,10 +198,8 @@ class AdminChangePasswordHandler(handlers.SiteBaseHandler):
             self._render({}, form_errors)
             return
         
-    
     def _list_form_keys(self):
         return ("password", "password2")
-
 
     def _render(self, form_data=None, form_errors=None):
         self.render("admin/a_change_password.html", form_data=form_data,

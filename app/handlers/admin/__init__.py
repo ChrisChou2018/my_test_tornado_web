@@ -7,7 +7,7 @@ from tornado import escape
 
 urls = [
     (r"/?",                                 a_walcome.AdminHomeHandler),
-    (r"/member_manage/?",                   a_member.MemberManage),
+    (r"/member_manage/?",                   a_member.AdminMemberManageHandler),
 	(r"/items_manage/?",					a_items.AdminItemsManageHandler),
 	(r"/image_manage/?",					a_items.AdminImageManageHandler),
     (r"/signin/?",                          a_account.AdminSigninHandler),
@@ -24,6 +24,7 @@ urls += [
 	(r"/j/add_item/?",			   a_items.AdminJsAddItemHandler),
 	(r"/j/delete_item/?",		   a_items.AdminJsDeleteItemHandler),
 	(r"/j/edit_item/?",			   a_items.AdminJsEditItemHandler),
+	(r"/j/add_image/?",			   a_items.AdminJsAddImageHandler),
 	(r"/j/delete_image/?",		   a_items.AdminJsDeleteImageHandler),
 ]
 

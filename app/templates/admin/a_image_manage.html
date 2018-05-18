@@ -138,17 +138,16 @@
                 formData.append('_xsrf', getCookie("_xsrf"))
                 $.ajax({
                     type:'post',
-                    url:"/image_manage/",
+                    url:"/j/add_image/",
                     data:formData,
                     dataType:'json',
                     contentType:false,
                     processData:false,
                     success:function(data){
-                        console.log(data)
-                        if(data.status){
+                        if(data.result == 'success'){
                             location.reload()
                         }else{
-                            alert(data.error_msg)
+                            alert(data.message)
                         }
                     }
                 })
@@ -177,10 +176,10 @@
                         '/j/delete_image/',
                         {'image_id_list':image_id_list, '_xsrf':getCookie("_xsrf")},
                         function(value){
-                            if(value.status){
+                            if(value.result == 'success'){
                                 location.reload()
                             }else{
-                                alert(value.error_msg)
+                                alert(value.message)
                             }
                         },
                         'json'

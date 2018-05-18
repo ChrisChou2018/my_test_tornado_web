@@ -63,13 +63,13 @@ settings_common = {
 }
 
 settings_debug = {
-    "m_domain": "mlocal.ubskin.net",
-    "www_domain": "wwwlocal.ubskin.net",
-    "api_domain": "apilocal.ubskin.net",
-    "stat_domain": "statlocal.ubskin.net",
-    "admin_domain": "adminlocal.ubskin.net",
+    "m_domain": "m-local.ubskin.net",
+    "www_domain": "www-local.ubskin.net",
+    "api_domain": "api-local.ubskin.net",
+    "stat_domain": "stat-local.ubskin.net",
+    "admin_domain": "admin-local.ubskin.net",
     # "static_domain": "http://slocal.ubskin.net:8080/",
-    "m_domain_path": "http://mlocal.ubskin.net:8080/",
+    "m_domain_path": "http://m-local.ubskin.net:8080/",
     "static_domain": "http://s.ubskin.net/",
     "redis_on": True if os.getenv("REDIS_ON") == "True" else False,
 }   

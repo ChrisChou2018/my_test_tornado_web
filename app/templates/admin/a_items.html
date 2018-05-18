@@ -218,16 +218,15 @@
                 
         })
         data_dict['_xsrf'] = getCookie("_xsrf")
-        console.log(data_dict)
         $.post(
             request_url,
             data_dict,
             function(value){
-                if(value.status){
+                if(value.result == 'success'){
                     $('#exampleModal').modal('hide')
                     location.reload()
                 }else{
-                    var error_msg = value.error_msg
+                    var error_msg = value.message
                     $('.return_msg_box').text(error_msg)
                 }
             },
@@ -252,10 +251,10 @@
                 '/j/delete_item/',
                 {'item_id_list':item_id_list, '_xsrf':getCookie('_xsrf')},
                 function(value){
-                    if(value.status){
+                    if(value.result == 'success'){
                         location.reload()
                     }else{
-                        alert(value.error_msg)
+                        alert(value.message)
                     }
                 },
                 'json'
@@ -269,7 +268,7 @@
         $.get(
             '/j/edit_item/?item_id='+item_id,
             function(value){
-                if(value.status){
+                if(value.result == 'success'){
                     data_dict = value.data
                     $('#exampleModal').modal('show')
                     var $input_list = $('.item_form input')
@@ -282,7 +281,7 @@
                         add_or_edit_item(true)
                     })
                 }else{
-                    alert(value.error_msg)
+                    alert(value.message)
                 }
             },
             'json'

@@ -176,10 +176,10 @@
                     '/j/delete_member/',
                     {'member_id_list':member_id_list, '_xsrf':getCookie('_xsrf')},
                     function(value){
-                        if(value.status){
+                        if(value.result == 'success'){
                             location.reload()
                         }else{
-                            alert(value.error_msg)
+                            alert(value.message)
                         }
                     },
                     'json'
@@ -196,7 +196,7 @@
             $.get(
                 '/j/edit_member/?member_id='+member_id,
                 function(value){
-                    if(value.status){
+                    if(value.result == 'success'){
                         data_dict = value.data
                         $('#exampleModal').modal('show')
                         var $input_list = $('.member_form input')
@@ -240,16 +240,11 @@
                 post_url,
                 data_dict,
                 function(value){
-                    if(value.status){
+                    if(value.result == 'success'){
                         $('#exampleModal').modal('hide')
                         location.reload()
                     }else{
-                        var error_msg_dict = value.error_msg
-                        var msg_list = []
-                        $.each(error_msg_dict,function(index,item){
-                            msg_list.push(item)
-                        })
-                        $('.return_msg_box').text(msg_list[0])
+                        $('.return_msg_box').text(value.message)
                     }
                 },
                 'json'
