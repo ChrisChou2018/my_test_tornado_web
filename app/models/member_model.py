@@ -170,6 +170,13 @@ class Member(base_model.BaseModel):
             return Member.get(Member.member_name == member_name)
         except Member.DoesNotExist:
             return None
+    
+    @classmethod
+    def get_member_by_id(cls, member_id):
+        try:
+            return Member.get(Member.member_id == member_id)
+        except Member.DoesNotExist:
+            return None
 
     # admin
     @classmethod

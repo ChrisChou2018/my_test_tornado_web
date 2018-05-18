@@ -134,10 +134,11 @@ class AdminJsEditMemberHandler(handlers.JsSiteBaseHandler):
     def get(self):
         member = member_model.Member
         member_id = self.get_argument('member_id', None)
-        member_obj = member.get(member.member_id==member_id)
+        member_obj = member.get_member_by_id(member_id)
         self.data['data'] = {'member_id':member_id,
             'member_name':member_obj.member_name,
             'email':member_obj.email}
+        self.data['result'] = 'success'
         self.write(self.data)
 
     def post(self):
