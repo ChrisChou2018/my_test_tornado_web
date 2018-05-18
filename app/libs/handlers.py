@@ -2,15 +2,14 @@
 # -*- coding: utf-8 -*-
 
 import json
+
 import tornado.web
 import tornado.log
 
 import config_web
 import app.libs.data as lib_data
 # import app.libs.picture as lib_picture
-
 import app.models.base_model as base_model
-
 from app.models.member_model import Member
 import app.libs.common as lib_common
 

@@ -1,13 +1,13 @@
+import os
+import uuid
+import json
+import time
+
 from app.libs import decorators
 from app.libs import handlers
 from app.models import items_model
-import json
-import config_web
-import time
-from concurrent.futures import ThreadPoolExecutor
-import os
-import uuid
 from app.libs import photo
+import config_web
 
 
 # /items_manage

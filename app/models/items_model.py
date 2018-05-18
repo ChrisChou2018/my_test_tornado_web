@@ -1,5 +1,7 @@
-from app.models import base_model
+
 import peewee
+
+from app.models import base_model
 
 
 

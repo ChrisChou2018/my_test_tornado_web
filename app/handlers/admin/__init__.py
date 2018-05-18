@@ -84,3 +84,7 @@ class Pagingfunc(tornado.web.UIModule):
 		return ''.join(html_list)
 
   
+
+ui_modules = {
+    "Pagingfunc": Pagingfunc,
+}

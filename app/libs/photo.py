@@ -1,7 +1,9 @@
-from PIL import Image
 import os
 import subprocess
 import uuid
+
+from PIL import Image
+
 from app.models import items_model
 # photo_specs = [
 #     {"type": "thumb", "width": 180, "height": 180, "quality": 86},
