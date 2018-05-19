@@ -35,7 +35,7 @@ class Pagingfunc(tornado.web.UIModule):
 	用于生成html页面分页按钮的类
 	"""
 	
-	def render(self, current_page, all_count, filter_args, url=None):
+	def render(self, current_page, all_count, filter_args, uri=None):
 		try:
 			self.current_page = int(current_page)
 		except:
@@ -46,7 +46,7 @@ class Pagingfunc(tornado.web.UIModule):
 			a = a + 1
 		self.show_page = 10
 		self.all_page = a
-		self.url = url if url != None else 'index'
+		self.uri = uri if uri != None else '/'
 		self.filter_args = filter_args if filter_args != None else ''
 		html_list = []
 		half = int((self.show_page - 1) / 2)
@@ -69,18 +69,18 @@ class Pagingfunc(tornado.web.UIModule):
 		if self.current_page <= 1:
 			previous = "<li><a href='#' style='cursor:pointer;text-decoration:none;'>上一页<span aria-hidden='true'>&laquo;</span></a></li>"
 		else:
-			previous = "<li><a href='%s?page=%s%s' class='page_btn'  style='cursor:pointer;text-decoration:none;'>上一页<span aria-hidden='true'>&laquo;</span></a></li>" % (self.url, self.current_page - 1, self.filter_args)
+			previous = "<li><a href='%s?page=%s%s' class='page_btn'  style='cursor:pointer;text-decoration:none;'>上一页<span aria-hidden='true'>&laquo;</span></a></li>" % (self.uri, self.current_page - 1, self.filter_args)
 		html_list.append(previous)
 		for i in range(start, stop + 1):
 			if self.current_page == i:
-				temp = """<li><a href='%s?page=%s%s' class='page_btn' style='background-color:yellowgreen;cursor:pointer;text-decoration:none;'>%s</a></li>""" % (self.url, i, self.filter_args, i)
+				temp = """<li><a href='%s?page=%s%s' class='page_btn' style='background-color:yellowgreen;cursor:pointer;text-decoration:none;'>%s</a></li>""" % (self.uri, i, self.filter_args, i)
 			else:
-				temp = "<li><a href='%s?page=%s%s' class='page_btn' style='cursor:pointer;text-decoration:none;'>%s</a></li>" % (self.url, i, self.filter_args, i)
+				temp = "<li><a href='%s?page=%s%s' class='page_btn' style='cursor:pointer;text-decoration:none;'>%s</a></li>" % (self.uri, i, self.filter_args, i)
 			html_list.append(temp)
 		if self.current_page >= self.all_page:
 			nex = "<li><a href='#' style='cursor:pointer;text-decoration:none;'>下一页<span aria-hidden='true'>&raquo;</span></a></li>"
 		else:
-			nex = "<li><a href='%s?page=%s%s' class='page_btn' style='cursor:pointer;text-decoration:none;'>下一页<span aria-hidden='true'>&raquo;</span></a></li>" % (self.url, self.current_page + 1, self.filter_args)
+			nex = "<li><a href='%s?page=%s%s' class='page_btn' style='cursor:pointer;text-decoration:none;'>下一页<span aria-hidden='true'>&raquo;</span></a></li>" % (self.uri, self.current_page + 1, self.filter_args)
 		html_list.append(nex)
 		return ''.join(html_list)
 

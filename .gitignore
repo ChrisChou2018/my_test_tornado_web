@@ -67,3 +67,5 @@ conf/supervisor.conf
 conf/vhost_dev.conf
 
 config_local.py
+assets/css/admin/datepicker3.css
+assets/css/admin/daterangepicker-bs3.css

@@ -5,7 +5,6 @@ import sys
 import logging
 
 import uuid
-import xlrd
 
 import config_web
 import app.models as models

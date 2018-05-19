@@ -24,7 +24,8 @@ class AdminSigninHandler(handlers.SiteBaseHandler):
             self._render(form_data, form_errors)
             return
         # Update the storage of password.
-        member_obj = member_model.Member.get_member_by_login(form_data["login_name"])
+        login_name = form_data["login_name"]
+        member_obj = member_model.Member.get_member_by_login(login_name)
         if not member_obj:
             form_errors["form"] = "用户名/密码不匹配"
             self._render(form_data, form_errors)
@@ -68,7 +69,7 @@ class AdminSigninHandler(handlers.SiteBaseHandler):
         self.render(
             "admin/a_signin.html",
             form_data = form_data,
-            orm_errors = form_error
+            form_errors = form_errors
         )
 
 

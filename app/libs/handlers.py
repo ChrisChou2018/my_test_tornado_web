@@ -89,7 +89,7 @@ class SiteBaseHandler(DbBaseHandler):
     def next_url(self):
         next_url = self.get_argument("next", None)
         return next_url or "/"
-
+    
     @property
     def start(self):
         start = self.get_argument("start", "0")
@@ -129,6 +129,12 @@ class SiteBaseHandler(DbBaseHandler):
 
         member = Member.get_user_by_sess(member_id, session_id)
         return member
+    
+    def get_uri(self):
+        if '?' in self.request.uri:
+            uri = self.request.uri.split('?')[0]
+        else:
+            uri = self.request.uri
 
 
 class WwwBaseHandler(DbBaseHandler):

@@ -23,8 +23,6 @@
 {% end %}
 
 {% block content_title %}
-
-
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -86,7 +84,6 @@
                     <label for="recipient-name" class="control-label">重量:</label>
                     <input type="text" class="form-control" id="recipient-name" name="weight">
                 </div>
-
             </form>
             <div class="return_msg_box"></div>
         </div>
@@ -135,7 +132,6 @@
     <table class="table table-striped item_table" >
         <head>
             <tr>
-            
                 {% for i in table_head %}
                 <th>{{i}}</th>
                 {% end %}
@@ -165,7 +161,7 @@
 <div>
     <nav aria-label="Page navigation">
         <ul class="pagination page_box">
-            {% module Pagingfunc(current_page, item_obj_count, filter_args, url) %}
+            {% module Pagingfunc(current_page, item_obj_count, filter_args, uri) %}
         </ul>
     </nav>
 </div>

@@ -28,17 +28,14 @@ class AdminItemsManageHandler(handlers.SiteBaseHandler):
         else:
             item_list = items_model.Items.get_list_items(current_page)
             item_count = items_model.Items.get_items_count()
-        if '?' in self.request.uri:
-            url = self.request.uri.split('?')[0]
-        else:
-            url = self.request.uri
+        uri = self.get_uri()
         self.render(
             'admin/a_items.html',
             item_obj = item_list, 
             item_obj_count = item_count,
             current_page = current_page,
             filter_args = filter_args,
-            url = url,
+            uri = uri,
             search_value = value
         )
 

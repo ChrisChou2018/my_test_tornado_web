@@ -20,10 +20,7 @@ from app.handlers import admin
 define("port", default=9900)
 define("debug", default=True)
 define("smode", default="debug")
-
-
 tornado.options.parse_command_line()
-
 ui_modules = dict()
 ui_modules.update(admin.ui_modules)
 config_web.settings["ui_modules"] = ui_modules
@@ -47,14 +44,12 @@ class BaseApplication(tornado.web.Application):
 app = BaseApplication(
     [],
     **config_web.settings
-    )
+)
 app.add_handlers(config_web.settings["admin_domain"], admin.urls)
-
 
 def main():
     app.listen(options.port, address="127.0.0.1", xheaders=True)
     tornado.ioloop.IOLoop.instance().start()
-
 
 if __name__ == "__main__":
     main()

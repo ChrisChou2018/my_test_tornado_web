@@ -30,17 +30,14 @@ class AdminMemberManageHandler(handlers.SiteBaseHandler):
         else:
             member_obj = member_model.Member.get_member_obj(current_page)
             member_obj_count = member_model.Member.get_member_obj_count()
-        if '?' in self.request.uri:
-            url = self.request.uri.split('?')[0]
-        else:
-            url = self.request.uri
+        uri = self.get_uri()
         self.render(
             "admin/a_member_manage.html", 
             member_obj = member_obj,
             member_obj_count = member_obj_count,
             current_page = current_page,
             filter_args = filter_args,
-            url = url,
+            uri = uri,
             search_value = value
         )
 
