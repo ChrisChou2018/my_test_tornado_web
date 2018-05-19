@@ -201,7 +201,9 @@ class AdminJsDeleteImageHandler(handlers.JsSiteBaseHandler):
             )
             file_path = os.path.join(file_base_path, image_name)
             new_file_name = os.path.join(file_base_path, uuid.uuid4().hex + '.jpg')
-            if os.path.exists(file_path):os.rename(file_path, new_file_name)
+            if os.path.exists(file_path):
+                os.rename(file_path, new_file_name)
             items_model.ItemsImage.update_image_by_image_id(i, {'status': 'deleted'})
+            
         self.data['result'] = 'success'
         self.write(self.data)
