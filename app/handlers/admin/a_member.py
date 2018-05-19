@@ -56,6 +56,7 @@ class AdminJsRegisterMemberHandler(handlers.JsSiteBaseHandler):
             self.data["message"] = message
             self.write(self.data)
             return
+
         member_obj_by_email = member.get_member_by_email(form_data.get('email'))
         member_obj_by_name = member.get_member_by_name(form_data.get('member_name'))
         if member_obj_by_email:
@@ -65,24 +66,25 @@ class AdminJsRegisterMemberHandler(handlers.JsSiteBaseHandler):
         if self.data.get('message'):
             self.write(self.data)
             return
+
         pass_word = form_data['password']
         random_salt_key = ''.join(
             random.choice(string.ascii_lowercase + string.digits) \
             for i in range(8)
         )
         haspwd = bcrypt.hashpw(
-            (pass_word+random_salt_key).encode(),
+            (pass_word + random_salt_key).encode(),
             bcrypt.gensalt()
         )
         form_data['hash_pwd'] = haspwd
         form_data.update(
-            {'sessions':json.dumps(list()),
-            'status':'1',
-            'role':'admin',
-            'salt_key':random_salt_key,
-            'create_time':dt.datetime.now()}
+            {'sessions': json.dumps(list()),
+            'status': '1',
+            'role': 'admin',
+            'salt_key': random_salt_key,
+            'create_time': dt.datetime.now()}
         )
-        member.create(**form_data)
+        member_model.Member.create_member(form_data)
         self.data['result'] = 'success'
         self.write(self.data)
 
@@ -132,9 +134,11 @@ class AdminJsEditMemberHandler(handlers.JsSiteBaseHandler):
         member = member_model.Member
         member_id = self.get_argument('member_id', None)
         member_obj = member.get_member_by_id(member_id)
-        self.data['data'] = {'member_id':member_id,
-            'member_name':member_obj.member_name,
-            'email':member_obj.email}
+        self.data['data'] = {
+            'member_id': member_id,
+            'member_name': member_obj.member_name,
+            'email': member_obj.email
+        }
         self.data['result'] = 'success'
         self.write(self.data)
 
@@ -162,7 +166,8 @@ class AdminJsEditMemberHandler(handlers.JsSiteBaseHandler):
         if clear_data.get('password'):
             pass_word = clear_data.pop('password')
             clear_data.pop('password2')
-            random_salt_key = ''.join(random.choice(string.ascii_lowercase + string.digits) \
+            random_salt_key = ''.join(
+                random.choice(string.ascii_lowercase + string.digits) \
                 for i in range(8)
             )
             haspwd = bcrypt.hashpw((pass_word+random_salt_key).encode(), bcrypt.gensalt())

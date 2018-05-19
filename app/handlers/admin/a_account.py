@@ -23,13 +23,14 @@ class AdminSigninHandler(handlers.SiteBaseHandler):
         if form_errors:
             self._render(form_data, form_errors)
             return
-        # Update the storage of password.
+
         login_name = form_data["login_name"]
         member_obj = member_model.Member.get_member_by_login(login_name)
         if not member_obj:
             form_errors["form"] = "用户名/密码不匹配"
             self._render(form_data, form_errors)
             return
+    
         pass_word = form_data["password"]
         salt_key = str(member_obj.salt_key)
         member_hashpw = str(member_obj.hash_pwd)
@@ -42,10 +43,12 @@ class AdminSigninHandler(handlers.SiteBaseHandler):
             form_errors["form"] = "用户名/密码不匹配"
             self._render(form_data, form_errors)
             return
-        sess_key = ''.join(random.choice(string.ascii_lowercase + string.digits) \
+
+        sess_key = ''.join(
+            random.choice(string.ascii_lowercase + string.digits) \
             for i in range(10)
         )
-        session = {"id":sess_key, "time":int(time.time())}
+        session = {"id": sess_key, "time": int(time.time())}
         try:
             sessions = json.loads(member_obj.sessions)
         except:
@@ -91,9 +94,9 @@ class AdminRegisterHandler(handlers.SiteBaseHandler):
     
     def post(self):
         return_data = {
-            'clear_data':None,
-            'error_msg':{},
-            'status':True,
+            'clear_data': None,
+            'error_msg': {},
+            'status': True,
         }
         member = member_model.Member
         form_data =  self._build_form_data()
@@ -101,10 +104,10 @@ class AdminRegisterHandler(handlers.SiteBaseHandler):
         if form_errors:
             self._render(form_data, form_errors)
             return
+
         clear_data = form_data
         member_obj_by_email = member.get_member_by_email(clear_data.get('email'))
-        member_obj_by_name = member.get_member_by_name(clear_data.get('member_name'))
-                                                
+        member_obj_by_name = member.get_member_by_name(clear_data.get('member_name'))                  
         if member_obj_by_email:
             return_data['error_msg']['has_member_error'] = '邮箱已经被注册'
         elif member_obj_by_name:
@@ -112,6 +115,7 @@ class AdminRegisterHandler(handlers.SiteBaseHandler):
         if return_data['error_msg']:
             self._render(form_data, return_data['error_msg'])
             return
+
         pass_word = clear_data['password']
         random_salt_key = ''.join(
             random.choice(string.ascii_lowercase + string.digits) \
@@ -119,13 +123,13 @@ class AdminRegisterHandler(handlers.SiteBaseHandler):
         )
         haspwd = bcrypt.hashpw((pass_word+random_salt_key).encode(), bcrypt.gensalt())
         clear_data['hash_pwd'] = haspwd
-        clear_data.update(
-            {'sessions':json.dumps(list()),
-            'status':'1',
-            'role':'admin',
-            'salt_key':random_salt_key,
-            'create_time':dt.datetime.now()}
-        )
+        clear_data.update({
+            'sessions': json.dumps(list()),
+            'status': '1',
+            'role': 'admin',
+            'salt_key': random_salt_key,
+            'create_time': dt.datetime.now()
+        })
         member.create(**clear_data)
         return self.render("admin/a_register_success.html")
     
@@ -170,17 +174,18 @@ class AdminChangePasswordHandler(handlers.SiteBaseHandler):
         if form_errors:
             self._render(form_data, form_errors)
             return
+            
         clear_data = form_data
-        old_haspwd = clear_data['password']
+        old_pwd = clear_data['password']
         salt_key = self.current_user.salt_key
         new_haspwd = clear_data['password2']
         new_salt_key = ''.join(
             random.choice(string.ascii_lowercase + string.digits) \
             for i in range(8)
         )
-        if bcrypt.hashpw((old_haspwd + salt_key).encode('utf8'), 
-                        self.current_user.hash_pwd.encode('utf8')) \
-                        == self.current_user.hash_pwd.encode('utf8'):
+        old_pwd_salt = (old_pwd + salt_key).encode('utf8')
+        current_hashpwd = self.current_user.hash_pwd.encode('utf8')
+        if bcrypt.hashpw(old_pwd_salt, current_hashpwd) == current_hashpwd:
             hashd = bcrypt.hashpw(
                 (new_haspwd + new_salt_key).encode('utf8'),
                 bcrypt.gensalt()
@@ -189,13 +194,12 @@ class AdminChangePasswordHandler(handlers.SiteBaseHandler):
                 self.current_user.member_id,
                 hashd
             )
-            query = (member_model.Member
-                .update({'salt_key':new_salt_key})
-                .where(member_model.Member.member_id == self.current_user.member_id))
+            query = member_model.Member.update({'salt_key':new_salt_key}).\
+            where(member_model.Member.member_id == self.current_user.member_id)
             query.execute()
             self.redirect('/signout/')
         else:
-            form_errors.update({'password':'密码错误'})
+            form_errors.update({'password': '密码错误'})
             self._render({}, form_errors)
             return
         
@@ -203,7 +207,9 @@ class AdminChangePasswordHandler(handlers.SiteBaseHandler):
         return ("password", "password2")
 
     def _render(self, form_data=None, form_errors=None):
-        self.render("admin/a_change_password.html", form_data=form_data,
+        self.render(
+            "admin/a_change_password.html",
+            form_data=form_data,
             form_errors=form_errors
         )
 

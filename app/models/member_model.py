@@ -60,6 +60,10 @@ class Member(base_model.BaseModel):
 
     def is_vip_valid(self):
         return self.vip_avail_at > time.time()
+    
+    @classmethod
+    def create_member(cls, data):
+        cls.create(**data)
 
     @classmethod
     def get_member_by_login(cls, email):

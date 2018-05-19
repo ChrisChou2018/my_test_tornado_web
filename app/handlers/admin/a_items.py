@@ -52,22 +52,26 @@ class AdminJsAddItemHandler(handlers.JsSiteBaseHandler):
             self.data['message'] = message
             self.write(self.data)
             return
-        new_form_data = { key:form_data[key] for key in form_data if form_data[key] }
+        new_form_data = { key: form_data[key] \
+            for key in form_data if form_data[key] }
         if new_form_data:
             new_form_data.update({
-                "create_person":self.current_user.member_name,
-                "create_time":int(time.time()),
-                "update_time":int(time.time()),
+                "create_person": self.current_user.member_name,
+                "create_time": int(time.time()),
+                "update_time": int(time.time()),
             })
             items_model.Items.create_item(new_form_data)
             self.data['result'] = 'success'
             self.write(self.data)
 
     def _list_form_keys(self):
-        return ["item_name", "item_info", "item_code",
+        return [
+            "item_name", "item_info", "item_code",
             "item_barcode", "price", "current_price",
             "foreign_price", "key_word", "origin",
-            "shelf_life", "capacity", "for_people", "weight"]
+            "shelf_life", "capacity", "for_people",
+            "weight"
+        ]
     
     def _validate_form_data(self, form_data):
         message = None
@@ -91,10 +95,13 @@ class AdminJsEditItemHandler(handlers.JsSiteBaseHandler):
     def get(self):
         item_id = self.get_argument('item_id', None)
         member_obj = items_model.Items.get_item_by_itemid(item_id)
-        field = ["item_name", "item_info", "item_code",
+        field = [
+            "item_name", "item_info", "item_code",
             "item_barcode", "price", "current_price",
             "foreign_price", "key_word", "origin",
-            "shelf_life", "capacity", "for_people", "weight"]
+            "shelf_life", "capacity", "for_people",
+            "weight"
+        ]
         data_dict = {i:getattr(member_obj, i) for i in field if i != "more"}
         self.data['result'] = 'success'
         self.data['data'] = data_dict
@@ -112,10 +119,13 @@ class AdminJsEditItemHandler(handlers.JsSiteBaseHandler):
                 self.write(self.data)
 
     def _list_form_keys(self):
-        return ["item_name", "item_info", "item_code",
+        return [
+            "item_name", "item_info", "item_code",
             "item_barcode", "price", "current_price",
             "foreign_price", "key_word", "origin",
-            "shelf_life", "capacity", "for_people", "weight"]
+            "shelf_life", "capacity", "for_people",
+            "weight"
+        ]
     
 
 # /image_manage/
@@ -127,12 +137,12 @@ class AdminImageManageHandler(handlers.SiteBaseHandler):
         image_dict = {}
         for i in items_image_list:
             if i.image_type not in image_dict:
-                image_dict[i.image_type] = [{'image_path':i.image_path,
-                    'image_id':i.image_id}]
+                image_dict[i.image_type] = [
+                    {'image_path': i.image_path, 'image_id': i.image_id}
+                ]
             else:
                 image_dict[i.image_type].append(
-                    {'image_path':i.image_path,
-                    'image_id':i.image_id}
+                    {'image_path': i.image_path, 'image_id': i.image_id}
                 )
         self.render('admin/a_image_manage.html',
             item_obj = item,
@@ -163,8 +173,7 @@ class AdminJsAddImageHandler(handlers.JsSiteBaseHandler):
             )
             if data:
                 data.update(
-                    {'image_type':image_type,
-                    'item_id':item_id}
+                    {'image_type': image_type, 'item_id': item_id}
                 )
                 items_model.ItemsImage.create_item_image(data)
             else:
@@ -175,7 +184,6 @@ class AdminJsAddImageHandler(handlers.JsSiteBaseHandler):
             self.data['result'] = 'success'
             self.write(self.data)
         
-
 
 # /j/delete_image/
 class AdminJsDeleteImageHandler(handlers.JsSiteBaseHandler):
@@ -194,6 +202,6 @@ class AdminJsDeleteImageHandler(handlers.JsSiteBaseHandler):
             file_path = os.path.join(file_base_path, image_name)
             new_file_name = os.path.join(file_base_path, uuid.uuid4().hex + '.jpg')
             if os.path.exists(file_path):os.rename(file_path, new_file_name)
-            items_model.ItemsImage.update_image_by_image_id(i, {'status':'deleted'})
+            items_model.ItemsImage.update_image_by_image_id(i, {'status': 'deleted'})
         self.data['result'] = 'success'
         self.write(self.data)
