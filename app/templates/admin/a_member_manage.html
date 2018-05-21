@@ -98,7 +98,7 @@
             </tr>
         </head>
         <tbody>
-            {% for i in member_obj %}
+            {% for i in member_list %}
             <tr>
                 {% for j in table_head %}
                     {% if j != 'more' %}
@@ -119,7 +119,7 @@
 <div>
     <nav aria-label="Page navigation">
         <ul class="pagination page_box">
-            {% module Pagingfunc(current_page, member_obj_count, filter_args, uri) %}
+            {% module Pagingfunc(current_page, member_count, filter_args, uri) %}
         </ul>
     </nav>
 </div>

@@ -25,16 +25,16 @@ class AdminMemberManageHandler(handlers.SiteBaseHandler):
             filter_args = '&search_value={0}'.format(value)
             search_value = ((member_model.Member.member_name == value) \
                             | (member_model.Member.telephone == value))
-            member_obj = member_model.Member.get_member_obj(current_page, search_value)
-            member_obj_count = member_model.Member.get_member_obj_count(search_value)
+            member_list = member_model.Member.get_member_list(current_page, search_value)
+            member_count = member_model.Member.get_member_count(search_value)
         else:
-            member_obj = member_model.Member.get_member_obj(current_page)
-            member_obj_count = member_model.Member.get_member_obj_count()
+            member_list = member_model.Member.get_member_list(current_page)
+            member_count = member_model.Member.get_member_count()
         uri = self.get_uri()
         self.render(
             "admin/a_member_manage.html", 
-            member_obj = member_obj,
-            member_obj_count = member_obj_count,
+            member_list = member_list,
+            member_count = member_count,
             current_page = current_page,
             filter_args = filter_args,
             uri = uri,
