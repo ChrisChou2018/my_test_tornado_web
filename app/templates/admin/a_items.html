@@ -34,55 +34,64 @@
             <form method="post" action="" class="item_form">
                 <div class="form-group">
                     <label for="recipient-name" class="control-label">商品名称:</label>
-                    <input type="text" class="form-control" id="recipient-name" name="item_name">
+                    <input type="text" class="form-control" name="item_name">
                 </div>
                 <div class="form-group">
                     <label for="recipient-name" class="control-label">商品信息:</label>
-                    <input type="text" class="form-control" id="recipient-name" name="item_info">
+                    <input type="text" class="form-control" name="item_info">
                 </div>
                 <div class="form-group">
                     <label for="recipient-name" class="control-label">商品编码:</label>
-                    <input type="text" class="form-control" id="recipient-name" name="item_code">
+                    <input type="text" class="form-control" name="item_code">
                 </div>
                 <div class="form-group">
                     <label for="recipient-name" class="control-label">商品条码:</label>
-                    <input type="text" class="form-control" id="recipient-name" name="item_barcode">
+                    <input type="text" class="form-control" name="item_barcode">
                 </div>
                 <div class="form-group">
                     <label for="recipient-name" class="control-label">原价:</label>
-                    <input type="number" onkeyup="value=value.replace(/[^\d]/g,'')" class="form-control" id="recipient-name" name="price">
+                    <input type="number" onkeyup="value=value.replace(/[^\d]/g,'')" class="form-control" name="price">
                 </div>
                 <div class="form-group">
                     <label for="recipient-name" class="control-label">现价:</label>
-                    <input type="number" onkeyup="value=value  .replace(/[^\d]/g,'')" class="form-control" id="recipient-name" name="current_price">
+                    <input type="number" onkeyup="value=value  .replace(/[^\d]/g,'')" class="form-control" name="current_price">
                 </div>
                 <div class="form-group">
                     <label for="recipient-name" class="control-label">国外价格:</label>
-                    <input type="number" onkeyup="value=value.replace(/[^\d]/g,'')" class="form-control" id="recipient-name" name="foreign_price">
+                    <input type="number" onkeyup="value=value.replace(/[^\d]/g,'')" class="form-control" name="foreign_price">
                 </div>
                 <div class="form-group">
                     <label for="recipient-name" class="control-label">关键字:</label>
-                    <input type="text" class="form-control" id="recipient-name" name="key_word">
+                    <input type="text" class="form-control" name="key_word">
                 </div>
                 <div class="form-group">
                     <label for="recipient-name" class="control-label">产地:</label>
-                    <input type="text" class="form-control" id="recipient-name" name="origin">
+                    <input type="text" class="form-control" name="origin">
                 </div>
                 <div class="form-group">
                     <label for="recipient-name" class="control-label">保质期:</label>
-                    <input type="text" class="form-control" id="recipient-name" name="shelf_life">
+                    <input type="text" class="form-control" name="shelf_life">
                 </div>
                 <div class="form-group">
                     <label for="recipient-name" class="control-label">容量:</label>
-                    <input type="text" class="form-control" id="recipient-name" name="capacity">
+                    <input type="text" class="form-control" name="capacity">
+                </div>
+                <div class="form-group">
+                    <label for="recipient-name" class="control-label">规格类型:</label>
+                    <select name="specifications_type_id" class="form-control">
+                        <option value="" selected>选择规格</option>
+                        {% for i in specifications_type_dict %}
+                        <option value="{{i}}">{{specifications_type_dict[i]}}</option>
+                        {% end %}
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="recipient-name" class="control-label">适用人群:</label>
-                    <input type="text" class="form-control" id="recipient-name" name="for_people">
+                    <input type="text" class="form-control" name="for_people">
                 </div>
                 <div class="form-group">
                     <label for="recipient-name" class="control-label">重量:</label>
-                    <input type="text" class="form-control" id="recipient-name" name="weight">
+                    <input type="text" class="form-control" name="weight">
                 </div>
             </form>
             <div class="return_msg_box"></div>
@@ -125,7 +134,7 @@
 {% set table_head =  ["item_id", "item_name", "item_info", "item_code", "item_barcode", 
                 "price", 'current_price', 'foreign_price', "comment_count", 
                 "hot_value", "buy_count", "key_word", "origin", "shelf_life", 
-                "capacity", "for_people", "weight", "create_person", "create_time", 
+                "capacity", "specifications_type_id", "for_people", "weight", "create_person", "create_time", 
                 "update_person", "update_time", "more"] %}
 
 <div style="overflow: auto;">
@@ -200,6 +209,7 @@
     function add_or_edit_item(is_edit){
         var request_url = is_edit ? '/j/edit_item/?item_id=' + item_id : '/j/add_item/'
         var $input_list = $('.item_form input')
+        var $select_list = $('.item_form select')
         var data_dict = {}
         $input_list.each(function(index,item){
             var input_value = $(item).val().trim()
@@ -213,7 +223,19 @@
             }
                 
         })
+        $select_list.each(function(index, item){
+            var select_value = $(item).val()
+            if(is_edit){
+                var select_old_value = $(item).attr('old_value')
+                if(select_value != select_old_value){
+                    data_dict[$(item).attr('name')]=select_value
+                }
+            }else{
+                data_dict[$(item).attr('name')]=select_value
+            }
+        })
         data_dict['_xsrf'] = getCookie("_xsrf")
+        console.log(data_dict)
         $.post(
             request_url,
             data_dict,
@@ -268,7 +290,12 @@
                     data_dict = value.data
                     $('#exampleModal').modal('show')
                     var $input_list = $('.item_form input')
+                    var $select_list = $('.item_form select')
                     $input_list.each(function(index, item){
+                        $(item).attr('old_value', data_dict[$(item).attr('name')])
+                        $(item).val(data_dict[$(item).attr('name')])
+                    })
+                    $select_list.each(function(index, item){
                         $(item).attr('old_value', data_dict[$(item).attr('name')])
                         $(item).val(data_dict[$(item).attr('name')])
                     })

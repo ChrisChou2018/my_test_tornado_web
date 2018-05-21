@@ -4,30 +4,39 @@ import peewee
 from app.models import base_model
 
 
-
 class Items(base_model.BaseModel):
-    item_id         = peewee.AutoField(db_column="item_id", primary_key=True, verbose_name='商品ID')
-    item_name       = peewee.CharField(db_column="item_name", verbose_name='商品名称')
-    item_info       = peewee.CharField(db_column="item_info", default='', verbose_name='商品信息')
-    item_code       = peewee.CharField(db_column="item_code", default="", verbose_name="商品编码")
-    item_barcode    = peewee.CharField(db_column="item_barcode", default="", verbose_name="商品条码")
-    price           = peewee.FloatField(db_column="price", default=0, verbose_name="商品原价")
-    current_price   = peewee.FloatField(db_column='current_price', default=0, verbose_name="商品现价")
-    foreign_price   = peewee.FloatField(db_column='foreign_price', default=0, verbose_name="国外价格")
-    comment_count   = peewee.IntegerField(db_column="comment_count", default=0, verbose_name="评论数量")
-    hot_value       = peewee.IntegerField(db_column="hot_value", default=0, verbose_name="热度值")
-    buy_count       = peewee.IntegerField(db_column="buy_count", default=0, verbose_name="被购买次数")
-    key_word        = peewee.CharField(db_column="key_word", default="", verbose_name="搜索关键字")
-    origin          = peewee.CharField(db_column="origin", default="",  verbose_name="生产地")
-    shelf_life      = peewee.CharField(db_column="shelf_life", default="", verbose_name="保质期")
-    capacity        = peewee.CharField(db_column="capacity", default="", verbose_name="容量")
-    for_people      = peewee.CharField(db_column="for_people", default="", verbose_name="适用人群")
-    weight          = peewee.CharField(db_column="weight", default="", verbose_name="重量")
-    create_person   = peewee.CharField(db_column="create_person", verbose_name="创建人")
-    create_time     = peewee.IntegerField(db_column="create_time", verbose_name="创建时间")
-    update_person   = peewee.CharField(db_column="update_person", default="", verbose_name="更新人")
-    update_time     = peewee.IntegerField(db_column="update_time", verbose_name="更新时间")
-    
+    item_id                     = peewee.AutoField(db_column="item_id", primary_key=True, verbose_name='商品ID')
+    item_name                   = peewee.CharField(db_column="item_name", verbose_name='商品名称')
+    item_info                   = peewee.CharField(db_column="item_info", default='', verbose_name='商品信息')
+    item_code                   = peewee.CharField(db_column="item_code", default="", verbose_name="商品编码")
+    item_barcode                = peewee.CharField(db_column="item_barcode", default="", verbose_name="商品条码")
+    price                       = peewee.FloatField(db_column="price", default=0, verbose_name="商品原价")
+    current_price               = peewee.FloatField(db_column='current_price', default=0, verbose_name="商品现价")
+    foreign_price               = peewee.FloatField(db_column='foreign_price', default=0, verbose_name="国外价格")
+    comment_count               = peewee.IntegerField(db_column="comment_count", default=0, verbose_name="评论数量")
+    hot_value                   = peewee.IntegerField(db_column="hot_value", default=0, verbose_name="热度值")
+    buy_count                   = peewee.IntegerField(db_column="buy_count", default=0, verbose_name="被购买次数")
+    key_word                    = peewee.CharField(db_column="key_word", default="", verbose_name="搜索关键字")
+    origin                      = peewee.CharField(db_column="origin", default="",  verbose_name="生产地")
+    shelf_life                  = peewee.CharField(db_column="shelf_life", default="", verbose_name="保质期")
+    capacity                    = peewee.CharField(db_column="capacity", default="", verbose_name="容量")
+    specifications_type_choices = (
+        (0, '瓶'),
+        (1, '包'),
+        (2, '套'),
+        (3, '片'),
+        (4, '支'),
+        (5, '袋'),
+        (6, '对'),
+        (7, '盒')
+    )
+    specifications_type_id      = peewee.SmallIntegerField(db_column="specifications_type_id", choices=specifications_type_choices, null=True, verbose_name="规格类型")
+    for_people                  = peewee.CharField(db_column="for_people", default="", verbose_name="适用人群")
+    weight                      = peewee.CharField(db_column="weight", default="", verbose_name="重量")
+    create_person               = peewee.CharField(db_column="create_person", verbose_name="创建人")
+    create_time                 = peewee.IntegerField(db_column="create_time", verbose_name="创建时间")
+    update_person               = peewee.CharField(db_column="update_person", default="", verbose_name="更新人")
+    update_time                 = peewee.IntegerField(db_column="update_time", verbose_name="更新时间")
     
     
     class Meta:
@@ -49,7 +58,6 @@ class Items(base_model.BaseModel):
     def update_item_by_itemid(cls, item_id, item_dict):
         Items.update(**item_dict).where(Items.item_id == item_id).execute()
 
-    
     @classmethod
     def get_list_items(cls, current_page, search_value=None):
         if search_value:
@@ -107,7 +115,6 @@ class ItemsImage(base_model.BaseModel):
     def update_image_by_image_id(cls, image_id, item_dict):
         ItemsImage.update(**item_dict).where(ItemsImage.image_id == image_id).execute()
     
-    
 
 class ItemTag(base_model.BaseModel):
     tag_id          = peewee.AutoField(db_column="tag_id", verbose_name="标签ID")
@@ -117,7 +124,6 @@ class ItemTag(base_model.BaseModel):
     
     class Meta:
         db_table = "app_item_tag"
-
 
 
 class ItemComment(base_model.BaseModel):
@@ -131,7 +137,6 @@ class ItemComment(base_model.BaseModel):
 
     class Meta:
         db_table = "app_item_comment"
-
 
 
 class CommentImage(base_model.BaseModel):

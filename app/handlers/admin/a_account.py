@@ -107,7 +107,7 @@ class AdminRegisterHandler(handlers.SiteBaseHandler):
 
         clear_data = form_data
         member_obj_by_email = member.get_member_by_email(clear_data.get('email'))
-        member_obj_by_name = member.get_member_by_name(clear_data.get('member_name'))                  
+        member_obj_by_name = member.get_member_by_name(clear_data.get('member_name'))
         if member_obj_by_email:
             return_data['error_msg']['has_member_error'] = '邮箱已经被注册'
         elif member_obj_by_name:
@@ -121,7 +121,10 @@ class AdminRegisterHandler(handlers.SiteBaseHandler):
             random.choice(string.ascii_lowercase + string.digits) \
             for i in range(8)
         )
-        haspwd = bcrypt.hashpw((pass_word+random_salt_key).encode(), bcrypt.gensalt())
+        haspwd = bcrypt.hashpw(
+            (pass_word+random_salt_key).encode(),
+            bcrypt.gensalt()
+        )
         clear_data['hash_pwd'] = haspwd
         clear_data.update({
             'sessions': json.dumps(list()),

@@ -77,13 +77,13 @@ class AdminJsRegisterMemberHandler(handlers.JsSiteBaseHandler):
             bcrypt.gensalt()
         )
         form_data['hash_pwd'] = haspwd
-        form_data.update(
-            {'sessions': json.dumps(list()),
+        form_data.update({
+            'sessions': json.dumps(list()),
             'status': '1',
             'role': 'admin',
             'salt_key': random_salt_key,
-            'create_time': dt.datetime.now()}
-        )
+            'create_time': dt.datetime.now()
+        })
         member_model.Member.create_member(form_data)
         self.data['result'] = 'success'
         self.write(self.data)

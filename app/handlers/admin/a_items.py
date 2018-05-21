@@ -29,6 +29,8 @@ class AdminItemsManageHandler(handlers.SiteBaseHandler):
             item_list = items_model.Items.get_list_items(current_page)
             item_count = items_model.Items.get_items_count()
         uri = self.get_uri()
+        specifications_type_dict = dict(items_model.Items. \
+            specifications_type_choices)
         self.render(
             'admin/a_items.html',
             item_obj = item_list, 
@@ -36,7 +38,8 @@ class AdminItemsManageHandler(handlers.SiteBaseHandler):
             current_page = current_page,
             filter_args = filter_args,
             uri = uri,
-            search_value = value
+            search_value = value,
+            specifications_type_dict = specifications_type_dict
         )
 
 
@@ -69,8 +72,8 @@ class AdminJsAddItemHandler(handlers.JsSiteBaseHandler):
             "item_name", "item_info", "item_code",
             "item_barcode", "price", "current_price",
             "foreign_price", "key_word", "origin",
-            "shelf_life", "capacity", "for_people",
-            "weight"
+            "shelf_life", "capacity", "specifications_type_id",
+            "for_people", "weight"
         ]
     
     def _validate_form_data(self, form_data):
@@ -99,8 +102,8 @@ class AdminJsEditItemHandler(handlers.JsSiteBaseHandler):
             "item_name", "item_info", "item_code",
             "item_barcode", "price", "current_price",
             "foreign_price", "key_word", "origin",
-            "shelf_life", "capacity", "for_people",
-            "weight"
+            "shelf_life", "capacity", "specifications_type_id",
+            "for_people", "weight"
         ]
         data_dict = {i:getattr(member_obj, i) for i in field if i != "more"}
         self.data['result'] = 'success'
@@ -123,8 +126,8 @@ class AdminJsEditItemHandler(handlers.JsSiteBaseHandler):
             "item_name", "item_info", "item_code",
             "item_barcode", "price", "current_price",
             "foreign_price", "key_word", "origin",
-            "shelf_life", "capacity", "for_people",
-            "weight"
+            "shelf_life", "capacity", "specifications_type_id",
+            "for_people", "weight"
         ]
     
 
