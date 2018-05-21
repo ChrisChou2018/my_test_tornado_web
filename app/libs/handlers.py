@@ -135,6 +135,7 @@ class SiteBaseHandler(DbBaseHandler):
             uri = self.request.uri.split('?')[0]
         else:
             uri = self.request.uri
+        return uri
 
 
 class WwwBaseHandler(DbBaseHandler):

@@ -170,7 +170,10 @@ class AdminJsEditMemberHandler(handlers.JsSiteBaseHandler):
                 random.choice(string.ascii_lowercase + string.digits) \
                 for i in range(8)
             )
-            haspwd = bcrypt.hashpw((pass_word+random_salt_key).encode(), bcrypt.gensalt())
+            haspwd = bcrypt.hashpw(
+                (pass_word+random_salt_key).encode(),
+                bcrypt.gensalt()
+            )
             clear_data['hash_pwd'] = haspwd
             clear_data.update({'salt_key':random_salt_key,})
         member.update_member_by_member_id(member_id, clear_data)

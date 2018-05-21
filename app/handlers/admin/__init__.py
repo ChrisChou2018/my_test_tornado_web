@@ -46,7 +46,7 @@ class Pagingfunc(tornado.web.UIModule):
 			a = a + 1
 		self.show_page = 10
 		self.all_page = a
-		self.uri = uri if uri != None else '/'
+		self.uri = uri if uri is not None else '/'
 		self.filter_args = filter_args if filter_args != None else ''
 		html_list = []
 		half = int((self.show_page - 1) / 2)
