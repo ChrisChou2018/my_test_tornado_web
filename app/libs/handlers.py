@@ -2,15 +2,14 @@
 # -*- coding: utf-8 -*-
 
 import json
+
 import tornado.web
 import tornado.log
 
 import config_web
 import app.libs.data as lib_data
 # import app.libs.picture as lib_picture
-
 import app.models.base_model as base_model
-
 from app.models.member_model import Member
 import app.libs.common as lib_common
 
@@ -90,7 +89,7 @@ class SiteBaseHandler(DbBaseHandler):
     def next_url(self):
         next_url = self.get_argument("next", None)
         return next_url or "/"
-
+    
     @property
     def start(self):
         start = self.get_argument("start", "0")
@@ -124,12 +123,19 @@ class SiteBaseHandler(DbBaseHandler):
             return None
 
         try:
-            member_id, session_id = cookie_data.split(":")
+            telephone, session_id = cookie_data.split(":")
         except:
             return None
 
-        member = Member.get_user_by_sess(member_id, session_id)
+        member = Member.get_user_by_sess(telephone, session_id)
         return member
+    
+    def get_uri(self):
+        if '?' in self.request.uri:
+            uri = self.request.uri.split('?')[0]
+        else:
+            uri = self.request.uri
+        return uri
 
 
 class WwwBaseHandler(DbBaseHandler):
@@ -247,7 +253,7 @@ class MobileBaseHandler(SiteBaseHandler):
 class JsWwwBaseHandler(WwwBaseHandler):
     def initialize(self):
         super(JsWwwBaseHandler, self).initialize()
-        self.data = {"result": "error"}
+        self.data = {"result":"error"}
 
     def _build_form_data(self):
         form_data = dict()

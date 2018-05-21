@@ -5,6 +5,11 @@ import math
 
 
 def calc_distance(lng1, lat1, lng2, lat2):
+    """
+    math.redians将角度转为弧度
+    math.sin计算弧度的正弦值
+    math.cos计算弧度的余弦值
+    """
     lng1, lat1, lng2, lat2 = map(math.radians, [lng1, lat1, lng2, lat2])
 
     dlng = lng2 - lng1

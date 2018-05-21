@@ -1,7 +1,9 @@
-from PIL import Image
 import os
 import subprocess
 import uuid
+
+from PIL import Image
+
 from app.models import items_model
 # photo_specs = [
 #     {"type": "thumb", "width": 180, "height": 180, "quality": 86},
@@ -41,26 +43,22 @@ def convert_photo(photo_id, base_static_path, photo_type):
         if spec.get("is_crop") and spec["is_crop"]:
             width = spec["width"]
             height = spec["height"]
-            new_image_obj = image_obj.crop((width,
-                                            height,
-                                            width,
-                                            height))
+            new_image_obj = image_obj.crop(
+                (width, height, width, height)
+            )
         else:
             width = spec["width"]
             height = spec["height"]
-            new_image_obj = image_obj.resize((width,
-                                              height,))
+            new_image_obj = image_obj.resize(
+                (width, height)
+            )
     convert_photo_path = os.path.join(d_path_target, photo_id + ".jpg")
-    try:
-        new_image_obj.save(convert_photo_path)
-        return {"file_size":os.path.getsize(convert_photo_path),
-                "resolution":"{0}*{1}".format(width, height),
-                'file_type':'jpg'}
-    except Exception:
-        return None
+    new_image_obj.save(convert_photo_path)
+    return {"file_size":os.path.getsize(convert_photo_path),
+            "resolution":"{0}*{1}".format(width, height),
+            'file_type':'jpg'}
 
-def save_upload_photo(photo_file, base_static_path, server_file_path,
-                                                    photo_type):
+def save_upload_photo(photo_file, base_static_path, server_file_path, photo_type):
     photo_id = uuid.uuid4().hex
     d_path_raw = os.path.join(base_static_path, "raw")
     f_path_raw = os.path.join(d_path_raw, photo_id + ".jpg")
@@ -69,13 +67,14 @@ def save_upload_photo(photo_file, base_static_path, server_file_path,
     with open(f_path_raw, "wb") as f:
         f.write(photo_file["body"])
     data = convert_photo(photo_id, base_static_path, photo_type)
-    if data is not None:
-        data.update({"image_path" : os.path.join(server_file_path,
-                                                 photo_type,
-                                                 photo_id + '.jpg')})
-        return data
-    else:
-        return None
+    image_path = os.path.join(
+        server_file_path,
+        photo_type,
+        photo_id + '.jpg'
+    )
+    data.update({"image_path" : image_path})
+    return data
+   
 
 
 # def remove_photo(photo_id, base_static_path, photo_type="photo"):

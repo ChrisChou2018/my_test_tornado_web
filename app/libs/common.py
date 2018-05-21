@@ -10,11 +10,13 @@ import random
 import xml.etree.ElementTree as ET
 import xml.dom.minidom
 import re
+import datetime as dt
+import time
+
 # import app.models.util_model as util_model
 import config_web
 import app.libs.data as lib_data
-import datetime as dt
-import time
+
 
 def random_str(r_len=32):
     seed = "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ"

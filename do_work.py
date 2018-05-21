@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 import os
 import sys
-import uuid
 import logging
+
+import uuid
+
 import config_web
-import xlrd
 import app.models as models
 
 def main():
