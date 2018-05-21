@@ -33,37 +33,37 @@
   </div>
 
   <div class="register-box-body">
-    <p class="login-box-msg">Register a new membership</p>
+    <p class="login-box-msg">注册</p>
 
     <form action="" method="post">
         {% module xsrf_form_html() %}
       <div class="form-group has-feedback">
-        <input type="text" class="form-control" placeholder="Full name" name="f_member_name" value="{{ form_data['member_name'] if form_data and form_data.get('member_name') else '' }}">
+        <input type="text" class="form-control" placeholder="用户名" name="f_member_name" value="{{ form_data['member_name'] if form_data and form_data.get('member_name') else '' }}">
         {% if form_errors and form_errors.get('member_name') %}<div class="form-hint-error">{{ form_errors["member_name"] }}</div>{% end %}
         <span class="glyphicon glyphicon-user form-control-feedback"></span>
       </div>
       <div class="form-group has-feedback">
-        <input type="email" class="form-control" placeholder="Email" name="f_email" value="{{ form_data['email'] if form_data and form_data.get('email') else '' }}">
-        {% if form_errors and form_errors.get('email') %}<div class="form-hint-error">{{ form_errors["email"] }}</div>{% end %}
+        <input type="text" class="form-control" placeholder="手机号码" name="f_telephone" value="{{ form_data['telephone'] if form_data and form_data.get('telephone') else '' }}">
+        {% if form_errors and form_errors.get('telephone') %}<div class="form-hint-error">{{ form_errors["telephone"] }}</div>{% end %}
         {% if form_errors and form_errors.get('has_member_error') %}<div class="form-hint-error">{{ form_errors["has_member_error"] }}</div>{% end %}
         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
       </div>
       <div class="form-group has-feedback">
-        <input type="password" class="form-control" placeholder="Password" name="f_password" value="{{ form_data['password'] if form_data and form_data.get('password') else '' }}">
+        <input type="password" class="form-control" placeholder="密码" name="f_password" value="{{ form_data['password'] if form_data and form_data.get('password') else '' }}">
         {% if form_errors and form_errors.get('password') %}<div class="form-hint-error">{{ form_errors["password"] }}</div>{% end %}
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
       </div>
       <div class="form-group has-feedback">
-        <input type="password" class="form-control" placeholder="Retype password" name="f_password2" value="{{ form_data['password2'] if form_data and form_data.get('password2') else '' }}">
+        <input type="password" class="form-control" placeholder="确认密码" name="f_password2" value="{{ form_data['password2'] if form_data and form_data.get('password2') else '' }}">
         <span class="glyphicon glyphicon-log-in form-control-feedback"></span>
       </div>
       <div class="row">
         <div class="col-xs-8">
-          
+            <a onclick="history.back()">后退</a>
         </div>
         <!-- /.col -->
         <div class="col-xs-4">
-          <button type="submit" class="btn btn-primary btn-block btn-flat">Register</button>
+          <button type="submit" class="btn btn-primary btn-block btn-flat">注册</button>
         </div>
         <!-- /.col -->
       </div>

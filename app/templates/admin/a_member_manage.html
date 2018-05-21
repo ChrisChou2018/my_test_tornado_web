@@ -32,19 +32,19 @@
         <div class="modal-body">
             <form method="post" action="" class="member_form">
                 <div class="form-group">
-                    <label for="recipient-name" class="control-label">Name:</label>
+                    <label for="recipient-name" class="control-label">用户名:</label>
                     <input type="text" class="form-control" id="recipient-name" name="member_name">
                 </div>
                 <div class="form-group">
-                    <label for="recipient-name" class="control-label">Email:</label>
-                    <input type="text" class="form-control" id="recipient-name" name="email">
+                    <label for="recipient-name" class="control-label">手机号:</label>
+                    <input type="text" class="form-control" id="recipient-name" name="telephone">
                 </div>
                 <div class="form-group">
-                    <label for="recipient-name" class="control-label">Password:</label>
+                    <label for="recipient-name" class="control-label">密码:</label>
                     <input type="password" class="form-control" id="recipient-name" name="password">
                 </div>
                 <div class="form-group">
-                    <label for="recipient-name" class="control-label">RetypePassword:</label>
+                    <label for="recipient-name" class="control-label">确认密码:</label>
                     <input type="password" class="form-control" id="recipient-name" name="password2">
                 </div>
             </form>
@@ -64,7 +64,7 @@
             <div class="col-md-8">
                 <form action="" method="GET" class="search_input">
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search for..." name="search_value" value="{{ search_value if search_value else '' }}">
+                    <input type="text" class="form-control" placeholder="搜索手机号或着用户名" name="search_value" value="{{ search_value if search_value else '' }}">
                     <span class="input-group-btn">
                         <button class="btn btn-default search_input_btn" type="submit">Search</button>
                     </span>
@@ -77,15 +77,15 @@
         </div>
     </div>
     <div class="col-md-4">
-        <button type="button" class="btn btn-info add_member_btn" type="button" data-toggle="modal" data-target="#exampleModal" >AddUser <span class="glyphicon glyphicon-plus"></span></button>
-        <button type="button" class="btn btn-default choose_member" type="button">Choose<span class="glyphicon glyphicon-saved"></span></button>
-        <button type="button" class="btn btn-danger delete_member" type="button">Delete<span class="glyphicon glyphicon-trash"></span></button>
+        <button type="button" class="btn btn-info add_member_btn" type="button" data-toggle="modal" data-target="#exampleModal" >添加用户 <span class="glyphicon glyphicon-plus"></span></button>
+        <button type="button" class="btn btn-default choose_member" type="button">选择<span class="glyphicon glyphicon-saved"></span></button>
+        <button type="button" class="btn btn-danger delete_member" type="button">删除<span class="glyphicon glyphicon-trash"></span></button>
     </div>
 </div>
 {% end %}
 
 {% block content %}
-{% set table_head = ['member_id', 'member_name', 'email', 'role', 'more'] %}
+{% set table_head = ['member_id', 'member_name', 'telephone', 'role', 'more'] %}
 
 
 <div style="overflow: auto;">

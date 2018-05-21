@@ -15,19 +15,19 @@ import app.libs.common as lib_common
 
 
 class Member(base_model.BaseModel):
-    member_id = peewee.AutoField(db_column="MemberId", primary_key=True)
+    member_id = peewee.AutoField(db_column="member_id", primary_key=True)
     # login_name = peewee.CharField(db_column="LoginName")
-    member_name = peewee.CharField(db_column="MemberName")
+    member_name = peewee.CharField(db_column="member_name")
     # password = peewee.CharField(db_column="LpassWord")
-    hash_pwd = peewee.CharField(db_column="HashPwd", default="")
+    hash_pwd = peewee.CharField(db_column="hash_pwd", default="")
     # member_lvl = peewee.CharField(db_column="MemberLvl")
     # member_score = peewee.CharField(db_column="MemberScore")
-    # telephone = peewee.CharField(db_column="Telephone")
-    email = peewee.CharField(db_column="Email")
+    telephone = peewee.CharField(db_column="telephone")
+    # email = peewee.CharField(db_column="email")
     # pay_password = peewee.CharField(db_column="PayPassword")
-    status = peewee.CharField(db_column="Status")
-    create_time = peewee.DateTimeField(db_column="CreateTime")
-    salt_key = peewee.CharField(db_column="SaltKey")
+    status = peewee.CharField(db_column="status")
+    create_time = peewee.DateTimeField(db_column="create_time")
+    salt_key = peewee.CharField(db_column="salt_key")
     # qq_openid = peewee.CharField(db_column="qq_openid")
     # update_time = peewee.DateTimeField(db_column="UpdateTime")
     # wb_openid = peewee.CharField(db_column="wb_openid")
@@ -66,19 +66,20 @@ class Member(base_model.BaseModel):
         cls.create(**data)
 
     @classmethod
-    def get_member_by_login(cls, email):
+    def get_member_by_login(cls, member_name):
         try:
-            return Member.get((Member.member_name == email) | (Member.email == email))
+            return Member.get((Member.member_name == member_name) | \
+                (Member.telephone == member_name))
         except Member.DoesNotExist:
             return None
 
     @classmethod
-    def get_user_by_sess(self, email, session_id):
+    def get_user_by_sess(self, telephone, session_id):
         member = None
         sessions = None
 
         try:
-            member = Member.get(Member.email == email)
+            member = Member.get(Member.telephone == telephone)
             sessions = json.loads(member.sessions)
         except:
             return None
@@ -100,12 +101,6 @@ class Member(base_model.BaseModel):
         except Member.DoesNotExist:
             return None
 
-    @classmethod
-    def get_member_by_email(cls, email):
-        try:
-            return Member.get(Member.email == email)
-        except Member.DoesNotExist:
-            return None
 
     @classmethod
     def get_member_by_telephone(cls, telephone):

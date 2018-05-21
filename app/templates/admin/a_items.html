@@ -110,7 +110,7 @@
             <div class="col-md-8">
                 <form action="" method="GET" class="search_input">
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search for..." name="search_value" value="{{search_value if search_value else '' }}">
+                    <input type="text" class="form-control" placeholder="搜索商品名称" name="search_value" value="{{search_value if search_value else '' }}">
                     <span class="input-group-btn">
                         <button class="btn btn-default search_input_btn" type="submit">Search</button>
                     </span>
@@ -123,9 +123,9 @@
         </div>
     </div>
     <div class="col-md-4">
-        <button type="button" class="btn btn-info add_item_btn" type="button" data-toggle="modal" data-target="#exampleModal" >AddItem <span class="glyphicon glyphicon-plus"></span></button>
-        <button type="button" class="btn btn-default choose_item" type="button">Choose<span class="glyphicon glyphicon-saved"></span></button>
-        <button type="button" class="btn btn-danger delete_item" type="button">Delete<span class="glyphicon glyphicon-trash"></span></button>
+        <button type="button" class="btn btn-info add_item_btn" type="button" data-toggle="modal" data-target="#exampleModal" >添加商品 <span class="glyphicon glyphicon-plus"></span></button>
+        <button type="button" class="btn btn-default choose_item" type="button">选择<span class="glyphicon glyphicon-saved"></span></button>
+        <button type="button" class="btn btn-danger delete_item" type="button">删除<span class="glyphicon glyphicon-trash"></span></button>
     </div>
 </div>
 {% end %}
@@ -235,7 +235,6 @@
             }
         })
         data_dict['_xsrf'] = getCookie("_xsrf")
-        console.log(data_dict)
         $.post(
             request_url,
             data_dict,

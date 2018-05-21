@@ -123,11 +123,11 @@ class SiteBaseHandler(DbBaseHandler):
             return None
 
         try:
-            member_id, session_id = cookie_data.split(":")
+            telephone, session_id = cookie_data.split(":")
         except:
             return None
 
-        member = Member.get_user_by_sess(member_id, session_id)
+        member = Member.get_user_by_sess(telephone, session_id)
         return member
     
     def get_uri(self):

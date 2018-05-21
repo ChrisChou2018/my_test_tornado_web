@@ -61,7 +61,7 @@ class AdminSigninHandler(handlers.SiteBaseHandler):
         member_obj.sessions = json.dumps(sessions)
         member_obj.save()
         self.set_cookie(self.settings["cookie_key_sess"],
-            member_obj.email+":"+sess_key
+            member_obj.telephone+":"+sess_key
         )
         self.redirect("/")
 
@@ -101,22 +101,22 @@ class AdminRegisterHandler(handlers.SiteBaseHandler):
         member = member_model.Member
         form_data =  self._build_form_data()
         form_errors = self._validate_form_data(form_data)
+        print(form_data)
         if form_errors:
             self._render(form_data, form_errors)
             return
 
-        clear_data = form_data
-        member_obj_by_email = member.get_member_by_email(clear_data.get('email'))
-        member_obj_by_name = member.get_member_by_name(clear_data.get('member_name'))
-        if member_obj_by_email:
-            return_data['error_msg']['has_member_error'] = '邮箱已经被注册'
+        member_obj_by_telephone = member.get_member_by_telephone(form_data.get('telephone'))
+        member_obj_by_name = member.get_member_by_name(form_data.get('member_name'))
+        if member_obj_by_telephone:
+            return_data['error_msg']['has_member_error'] = '手机号已经被注册'
         elif member_obj_by_name:
             return_data['error_msg']['has_member_error'] = '用户名已经存在'
         if return_data['error_msg']:
             self._render(form_data, return_data['error_msg'])
             return
 
-        pass_word = clear_data['password']
+        pass_word = form_data['password']
         random_salt_key = ''.join(
             random.choice(string.ascii_lowercase + string.digits) \
             for i in range(8)
@@ -125,19 +125,19 @@ class AdminRegisterHandler(handlers.SiteBaseHandler):
             (pass_word+random_salt_key).encode(),
             bcrypt.gensalt()
         )
-        clear_data['hash_pwd'] = haspwd
-        clear_data.update({
+        form_data['hash_pwd'] = haspwd
+        form_data.update({
             'sessions': json.dumps(list()),
             'status': '1',
             'role': 'admin',
             'salt_key': random_salt_key,
             'create_time': dt.datetime.now()
         })
-        member.create(**clear_data)
+        member.create(**form_data)
         return self.render("admin/a_register_success.html")
     
     def _list_form_keys(self):
-        return ("member_name", "email", "password", "password2")
+        return ("member_name", "telephone", "password", "password2")
 
     def _render(self, form_data=None, form_errors=None):
         self.render(
@@ -148,14 +148,15 @@ class AdminRegisterHandler(handlers.SiteBaseHandler):
     
     def _validate_form_data(self, form_data):
         form_errors = dict()
-        email = r"^(\w)+(\.\w+)*@(\w)+((\.\w{2,3}){1,3})$"
+        telephone = r"^1[3|4|5|8][0-9]\d{4,8}$"
         for key in self._list_form_keys():
             if not form_data[key]:
                 form_errors[key] = "不能为空"
+                return form_errors
         if form_data['password'] != form_data['password2']:
             form_errors['password'] = "两次密码不一致"
-        if not re.match(email, form_data['email']):
-            form_errors['email'] = '邮箱格式不正确'
+        if not re.match(telephone, form_data['telephone']):
+            form_errors['telephone'] = '手机号不存在'
         if len(form_data['password']) > 30:
             form_errors['password'] = '密码长度不超过30'
         if len(form_data['member_name']) > 15:

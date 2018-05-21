@@ -33,7 +33,7 @@
   </div>
   <!-- /.login-logo -->
   <div class="login-box-body">
-    <p class="login-box-msg">Sign in to start your session</p>
+    <p class="login-box-msg">登陆管理页面</p>
 
     <form action="" method="post">
       {% module xsrf_form_html() %}
@@ -41,22 +41,22 @@
         <div class="alert alert-danger">{{ form_errors["form"] }}</div>
       {% end %}
       <div class="form-group has-feedback">
-        <input type="text" name="f_login_name" placeholder="Email OR PhoneNum" class="form-control" id="exampleInputLoginName" value="{{ form_data['login_name'] if form_data and form_data.get('login_name') else '' }}">
+        <input type="text" name="f_login_name" placeholder="输入用户名或者手机号" class="form-control" id="exampleInputLoginName" value="{{ form_data['login_name'] if form_data and form_data.get('login_name') else '' }}">
         {% if form_errors and form_errors.get('login_name') %}<div class="form-hint-error">账号名{{ form_errors["login_name"] }}</div>{% end %}
         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
       </div>
       <div class="form-group has-feedback">
-        <input type="password" name="f_password" placeholder="Password" class="form-control" id="exampleInputPassword">
+        <input type="password" name="f_password" placeholder="密码" class="form-control" id="exampleInputPassword">
         {% if form_errors and form_errors.get('password') %}<div class="form-hint-error">登录密码{{ form_errors["password"] }}</div>{% end %}
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
       </div>
       <div class="row">
         <div class="col-xs-8">
-          <a href="/register">Register Now</a>
+          <a href="/register">我要注册</a>
         </div>
         <!-- /.col -->
         <div class="col-xs-4">
-          <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
+          <button type="submit" class="btn btn-primary btn-block btn-flat">登陆</button>
         </div>
         <!-- /.col -->
       </div>

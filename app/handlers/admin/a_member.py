@@ -24,7 +24,7 @@ class AdminMemberManageHandler(handlers.SiteBaseHandler):
         if value:
             filter_args = '&search_value={0}'.format(value)
             search_value = ((member_model.Member.member_name == value) \
-                            | (member_model.Member.email == value))
+                            | (member_model.Member.telephone == value))
             member_obj = member_model.Member.get_member_obj(current_page, search_value)
             member_obj_count = member_model.Member.get_member_obj_count(search_value)
         else:
@@ -57,10 +57,10 @@ class AdminJsRegisterMemberHandler(handlers.JsSiteBaseHandler):
             self.write(self.data)
             return
 
-        member_obj_by_email = member.get_member_by_email(form_data.get('email'))
+        member_obj_by_telephone = member.get_member_by_telephone(form_data.get('telephone'))
         member_obj_by_name = member.get_member_by_name(form_data.get('member_name'))
-        if member_obj_by_email:
-            self.data['message'] = '邮箱已经被注册'
+        if member_obj_by_telephone:
+            self.data['message'] = '手机号码已经被注册'
         elif member_obj_by_name:
             self.data['message'] = '用户名已经存在'
         if self.data.get('message'):
@@ -89,18 +89,18 @@ class AdminJsRegisterMemberHandler(handlers.JsSiteBaseHandler):
         self.write(self.data)
 
     def _list_form_keys(self):
-        return ("member_name", "email", "password", "password2")
+        return ("member_name", "telephone", "password", "password2")
 
     def _validate_form_data(self, form_data):
         message = None
-        email = r"^(\w)+(\.\w+)*@(\w)+((\.\w{2,3}){1,3})$"
+        telephone = r"^1[3|4|5|8][0-9]\d{4,8}$"
         for key in self._list_form_keys():
             if not form_data[key]:
                 message = "不能为空"
         if form_data['password'] != form_data['password2']:
             message = "两次密码不一致"
-        if not re.match(email, form_data['email']):
-            message = '邮箱格式不正确'
+        if not re.match(telephone, form_data['telephone']):
+            message = '手机号码不存在'
         if len(form_data['password']) > 30:
             message = '密码长度不超过30'
         if len(form_data['member_name']) > 15:
@@ -137,7 +137,7 @@ class AdminJsEditMemberHandler(handlers.JsSiteBaseHandler):
         self.data['data'] = {
             'member_id': member_id,
             'member_name': member_obj.member_name,
-            'email': member_obj.email
+            'telephone': member_obj.telephone
         }
         self.data['result'] = 'success'
         self.write(self.data)
@@ -152,10 +152,10 @@ class AdminJsEditMemberHandler(handlers.JsSiteBaseHandler):
             self.write(self.data)
             return
         clear_data = { key:form_data[key] for key in form_data if form_data[key] }
-        if clear_data.get('email'):
-            member_obj_by_email = member.get_member_by_email(clear_data.get('email'))
-            if member_obj_by_email:
-                self.data['message'] = '邮箱已经被注册'
+        if clear_data.get('telephone'):
+            member_obj_by_telephone = member.get_member_by_telephone(clear_data.get('telephone'))
+            if member_obj_by_telephone:
+                self.data['message'] = '手机号已经被注册'
         if clear_data.get('member_name'):
             member_obj_by_name = member.get_member_by_name(clear_data.get('member_name'))
             if member_obj_by_name:
@@ -175,21 +175,21 @@ class AdminJsEditMemberHandler(handlers.JsSiteBaseHandler):
                 bcrypt.gensalt()
             )
             clear_data['hash_pwd'] = haspwd
-            clear_data.update({'salt_key':random_salt_key,})
+            clear_data.update({'salt_key':random_salt_key})
         member.update_member_by_member_id(member_id, clear_data)
         self.data['result'] = 'success'
         self.write(self.data)
         
     def _list_form_keys(self):
-        return ("member_name", "email", "password", "password2")
+        return ("member_name", "telephone", "password", "password2")
 
     def _validate_form_data(self, form_data):
         message = None
-        email = r"^(\w)+(\.\w+)*@(\w)+((\.\w{2,3}){1,3})$"
+        telephone = r"^1[3|4|5|8][0-9]\d{4,8}$"
         if  form_data['password'] and form_data['password'] != form_data['password2']:
             message = "两次密码不一致"
-        if form_data['email'] and not re.match(email, form_data['email']):
-            message = '邮箱格式不正确'
+        if form_data['telephone'] and not re.match(telephone, form_data['telephone']):
+            message = '手机号码不存在'
         if form_data['password'] and len(form_data['password']) > 30:
             message = '密码长度不超过30'
         if form_data['member_name'] and len(form_data['member_name']) > 15:
