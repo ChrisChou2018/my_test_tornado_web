@@ -167,7 +167,8 @@ class AdminJsAddImageHandler(handlers.JsSiteBaseHandler):
                 config_web.settings_common['static_path'],
                 'photos'
             )
-            if not os.path.exists(file_dir):os.mkdir(file_dir)
+            if not os.path.exists(file_dir):
+                os.makedirs(file_dir)
             data = photo.save_upload_photo(
                 file_dict[k][0],
                 file_dir,

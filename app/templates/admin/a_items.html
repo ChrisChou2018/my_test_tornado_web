@@ -17,8 +17,7 @@
 {% end %}
 {% block page_header %}
 <ol class="breadcrumb">
-    <li><a href="#"><i class="fa fa-dashboard"></i> Admin</a></li>
-    <li class="active">items_manage</li>
+    <li><a href="#"><i class="fa fa-dashboard"></i> 商品管理</a></li>
 </ol>
 {% end %}
 
@@ -28,7 +27,7 @@
         <div class="modal-content">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="exampleModalLabel">CreateItem</h4>
+            <h4 class="modal-title" id="exampleModalLabel">创建商品</h4>
         </div>
         <div class="modal-body">
             <form method="post" action="" class="item_form">
@@ -179,10 +178,9 @@
 {% block js %}
     <script>
     $(function(){
-        $('.admin').addClass('active menu-open')
-        $('.admin .items_manage').addClass('active')
+        $('.items_manage').addClass('active')
         $(".add_item_btn").click(function(){
-            $('.modal-title').text('CreateItem')
+            $('.modal-title').text('创建商品')
             $('.submit_btn').unbind()
             $('.submit_btn').click(function(){
                 add_or_edit_item(false)
@@ -279,7 +277,7 @@
         }
     }
     function get_edit_item_info(){
-        $('.modal-title').text('EditItem')
+        $('.modal-title').text('编辑商品')
         item_id = $(this).parent().parent().children().first().text()
         var data_dict = null
         $.get(
