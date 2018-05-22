@@ -4,6 +4,10 @@
         table{
         table-layout:auto;
         }
+        th{
+            word-break:keep-all;
+            white-space:nowrap;
+        }
         td{
         /* width:100%; */
         word-break:keep-all;
@@ -22,86 +26,6 @@
 {% end %}
 
 {% block content_title %}
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="exampleModalLabel">创建商品</h4>
-        </div>
-        <div class="modal-body">
-            <form method="post" action="" class="item_form">
-                <div class="form-group">
-                    <label for="recipient-name" class="control-label">商品名称:</label>
-                    <input type="text" class="form-control" name="item_name">
-                </div>
-                <div class="form-group">
-                    <label for="recipient-name" class="control-label">商品信息:</label>
-                    <input type="text" class="form-control" name="item_info">
-                </div>
-                <div class="form-group">
-                    <label for="recipient-name" class="control-label">商品编码:</label>
-                    <input type="text" class="form-control" name="item_code">
-                </div>
-                <div class="form-group">
-                    <label for="recipient-name" class="control-label">商品条码:</label>
-                    <input type="text" class="form-control" name="item_barcode">
-                </div>
-                <div class="form-group">
-                    <label for="recipient-name" class="control-label">原价:</label>
-                    <input type="number" onkeyup="value=value.replace(/[^\d]/g,'')" class="form-control" name="price">
-                </div>
-                <div class="form-group">
-                    <label for="recipient-name" class="control-label">现价:</label>
-                    <input type="number" onkeyup="value=value  .replace(/[^\d]/g,'')" class="form-control" name="current_price">
-                </div>
-                <div class="form-group">
-                    <label for="recipient-name" class="control-label">国外价格:</label>
-                    <input type="number" onkeyup="value=value.replace(/[^\d]/g,'')" class="form-control" name="foreign_price">
-                </div>
-                <div class="form-group">
-                    <label for="recipient-name" class="control-label">关键字:</label>
-                    <input type="text" class="form-control" name="key_word">
-                </div>
-                <div class="form-group">
-                    <label for="recipient-name" class="control-label">产地:</label>
-                    <input type="text" class="form-control" name="origin">
-                </div>
-                <div class="form-group">
-                    <label for="recipient-name" class="control-label">保质期:</label>
-                    <input type="text" class="form-control" name="shelf_life">
-                </div>
-                <div class="form-group">
-                    <label for="recipient-name" class="control-label">容量:</label>
-                    <input type="text" class="form-control" name="capacity">
-                </div>
-                <div class="form-group">
-                    <label for="recipient-name" class="control-label">规格类型:</label>
-                    <select name="specifications_type_id" class="form-control">
-                        <option value="" selected>选择规格</option>
-                        {% for i in specifications_type_dict %}
-                        <option value="{{i}}">{{specifications_type_dict[i]}}</option>
-                        {% end %}
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="recipient-name" class="control-label">适用人群:</label>
-                    <input type="text" class="form-control" name="for_people">
-                </div>
-                <div class="form-group">
-                    <label for="recipient-name" class="control-label">重量:</label>
-                    <input type="text" class="form-control" name="weight">
-                </div>
-            </form>
-            <div class="return_msg_box"></div>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary submit_btn" >Submit</button>
-        </div>
-        </div>
-    </div>
-</div>
 
 <div class="row">
     <div class="col-md-8">
@@ -122,48 +46,74 @@
         </div>
     </div>
     <div class="col-md-4">
-        <button type="button" class="btn btn-info add_item_btn" type="button" data-toggle="modal" data-target="#exampleModal" >添加商品 <span class="glyphicon glyphicon-plus"></span></button>
-        <button type="button" class="btn btn-default choose_item" type="button">选择<span class="glyphicon glyphicon-saved"></span></button>
-        <button type="button" class="btn btn-danger delete_item" type="button">删除<span class="glyphicon glyphicon-trash"></span></button>
+        <a href="/add_item/" class="btn btn-info add_item_btn" >添加商品 <span class="glyphicon glyphicon-plus"></span></a>
+        <button type="button" class="btn btn-default choose_item">选择全部<span class="glyphicon glyphicon-saved"></span></button>
+        <button type="button" class="btn btn-danger delete_item" >删除<span class="glyphicon glyphicon-trash"></span></button>
     </div>
 </div>
 {% end %}
 
 {% block content %}
-{% set table_head =  ["item_id", "item_name", "item_info", "item_code", "item_barcode", 
-                "price", 'current_price', 'foreign_price', "comment_count", 
-                "hot_value", "buy_count", "key_word", "origin", "shelf_life", 
-                "capacity", "specifications_type_id", "for_people", "weight", "create_person", "create_time", 
-                "update_person", "update_time", "more"] %}
+{% set table_head =  {
+    "item_id": 'ID', "item_name": '商品名称', "item_info": '商品信息',
+    "item_code": '商品编码', "item_barcode": '商品条码', 
+    "price": '原价格', 'current_price': '现价', 'foreign_price': '国外价格',
+    "comment_count": '评论数量', "hot_value": '热度值', "buy_count": '购买数量',
+    "key_word": '关键字', "origin": '原产地', "shelf_life": '保质期', 
+    "capacity": '容量', "specifications_type_id": '规格类型ID',"for_people": '适用群体',
+    "weight": '重量', "create_person": '创建人', "create_time": '创建时间', 
+    "update_person": '更新人', "update_time": '更新时间', "more": '更多'
+} %}
 
 <div style="overflow: auto;">
-    <table class="table table-striped item_table" >
-        <head>
-            <tr>
-                {% for i in table_head %}
-                <th>{{i}}</th>
-                {% end %}
-            </tr>
-        </head>
-        <tbody>
-            {% for i in item_obj %}
-            <tr>
-                {% for j in table_head %}
-                    {% if j != 'more' %}
-                        <td> {{ datetime.datetime.fromtimestamp(getattr(i, j)) if j=='create_time' or j=='update_time' else getattr(i, j) }} </td> 
-                    {% end %}
-                {% end %}
-                <td>
-                    <a class='edit_item' style='cursor:pointer;text-decoration:none;'><span class="glyphicon glyphicon-pencil"></span> 编辑</a> 
-                    <big>|</big> 
-                    <a class='image_manage' href="/image_manage?item_id={{i.item_id}}" style='cursor:pointer;text-decoration:none;'><span class="glyphicon glyphicon-picture"></span> 图片管理</a>
-                </td>
-                <td style='display: none'><input type='checkbox'></td>
-            </tr>
-            {% end %}
-        </tbody>
-            
-    </table>  
+    {% for i in item_obj %}
+    <div class="panel panel-info item_list">
+        <div class="panel-heading"><input type="checkbox" class="item_checkbox" item-id={{i.item_id}}>商品名：{{i.item_name}}</div>
+        <div class="panel-body">
+            <div class="media-left">
+                <a href="#">
+                    <img class="media-object" src="{% module GetThumbiconById(i.item_id) %}" style="width: 100px; height: 100px;">
+                </a>
+            </div>
+                <div class="media-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        {{i.item_info}}
+                    </div>
+                    <div class="col-md-2">
+                        <div class="row">
+                            现价：{{i.current_price}}
+                        </div>
+                        <div class="row">
+                            原价：{{i.price}}
+                        </div>
+                        <div class="row">
+                            国外价格：{{i.foreign_price}}
+                        </div>
+                        <div class="row">
+                            容量：/规格：{% if i.specifications_type_id %}{{specifications_type_dict[i.specifications_type_id]}}{% end %}
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                            适用人群：{{i.for_people}}
+                    </div>
+                    <div class="col-md-2">
+                            保质期：{{i.shelf_life}}
+                    </div>
+                    <div class="col-md-2">
+                        <div class="row">
+                            <a  href="/editor_item?item_id={{i.item_id}}" style='cursor:pointer;text-decoration:none;'><span class="glyphicon glyphicon-pencil"></span> 编辑</a>
+                        </div>
+                        <div class="row">
+                            <a href="/image_manage?item_id={{i.item_id}}" style='cursor:pointer;text-decoration:none;'><span class="glyphicon glyphicon-picture"></span> 图片管理</a>
+                        </div>
+                    </div>
+                </div>
+               
+            </div>
+        </div>
+    </div>
+    {% end %}
 </div>
 
 <div>
@@ -187,15 +137,22 @@
             })
         })
         $(".choose_item").click(function(){
-            var tr =  $('.item_table tbody tr')
-            $.each(tr,function(index, item){
-                var $ltd = $(item).children().last()
-                if($ltd.css('display')=='none'){
-                    $ltd.css('display','block')
-                }else{
-                    $ltd.css('display','none')
-                }
-            })
+            var text =  $(this).text()
+            var $item_list = $('.item_list')
+            if(text == '选择全部'){
+                $item_list.each(function(index, item){
+                    var f =  $(item).children().first()
+                    $(f).find('input[type="checkbox"]').prop('checked', true)
+                })
+                $(this).html('取消全部<span class="glyphicon glyphicon-saved"></span>')
+            }else{
+                $item_list.each(function(index, item){
+                    var f =  $(item).children().first()
+                    $(f).find('input[type="checkbox"]').prop('checked', false)
+                })
+                $(this).html('选择全部<span class="glyphicon glyphicon-saved"></span>')
+            }
+            
         })
         $('.delete_item').click(delete_item)
         $('.edit_item').click(get_edit_item_info)
@@ -251,14 +208,13 @@
 
 
     function delete_item(){
-        var tr =  $('.item_table tbody tr')
+        var $item_list = $('.item_list')
         var item_id_list = []
-        $.each(tr,function(index,item){
-            var $ltd = $(item).children().last()
-            var $ftd = $(item).children().first()
-            var $check_box = $ltd.children()
-            if($ltd.css('display')=='block' && $check_box.prop('checked')){
-                item_id_list.push($ftd.text())
+        $item_list.each(function(index, item){
+            var f =  $(item).children().first().find('input[type="checkbox"]')
+            var is_checked = $(f).prop('checked')
+            if(is_checked){
+                item_id_list.push($(f).attr('item-id'))
             }
         })
         if(item_id_list.length>0){

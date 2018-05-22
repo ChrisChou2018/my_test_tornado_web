@@ -4,6 +4,10 @@
     table{
     table-layout:auto;
     }
+    th{
+        word-break:keep-all;
+        white-space:nowrap;
+    }
     td{
     /* width:100%; */
     word-break:keep-all;
@@ -84,7 +88,9 @@
 {% end %}
 
 {% block content %}
-{% set table_head = ['member_id', 'member_name', 'telephone', 'role', 'more'] %}
+{% set table_head = {
+    'member_id': 'ID', 'member_name': '用户名', 'telephone': '手机号',
+    'role': '角色', 'more': '更多操作'} %}
 
 
 <div style="overflow: auto;">
@@ -92,7 +98,7 @@
         <head>
             <tr>
                 {% for i in table_head %}
-                <th>{{i}}</th>
+                <th>{{table_head[i]}}</th>
                 {% end %}
             </tr>
         </head>
@@ -107,7 +113,6 @@
                 <td>
                     <a class='edit_member' style='cursor:pointer;text-decoration:none;'><span class="glyphicon glyphicon-pencil"></span> 编辑</a>
                 </td> 
-               
                 <td style='display: none'><input type='checkbox'></td>
             </tr>
             {% end %}

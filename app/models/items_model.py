@@ -114,6 +114,14 @@ class ItemsImage(base_model.BaseModel):
     @classmethod
     def update_image_by_image_id(cls, image_id, item_dict):
         ItemsImage.update(**item_dict).where(ItemsImage.image_id == image_id).execute()
+
+    @classmethod
+    def get_thumbicon_by_item_id(cls, item_id):
+        try:
+            image_obj = cls.get((ItemsImage.item_id == item_id) & (ItemsImage.status == "normal") & (ItemsImage.image_type == 1))
+            return image_obj
+        except ItemsImage.DoesNotExist:
+            return None
     
 
 class ItemTag(base_model.BaseModel):

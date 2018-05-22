@@ -1,15 +1,20 @@
+import tornado.web
+from tornado import escape
+
 from app.handlers.admin import a_account
 from app.handlers.admin import a_walcome
 from app.handlers.admin import a_member
 from app.handlers.admin import a_items
-import tornado.web
-from tornado import escape
+from app.models import items_model
+
 
 urls = [
     (r"/?",                                 a_walcome.AdminHomeHandler),
     (r"/member_manage/?",                   a_member.AdminMemberManageHandler),
 	(r"/items_manage/?",					a_items.AdminItemsManageHandler),
 	(r"/image_manage/?",					a_items.AdminImageManageHandler),
+	(r"/add_item/?",						a_items.AdminAdditemHandler),
+	(r"/editor_item/?",						a_items.AdminEditorItemHandler),
     (r"/signin/?",                          a_account.AdminSigninHandler),
     (r"/signout/?",                         a_account.AdminSignoutHandler),
     (r"/register/?",                        a_account.AdminRegisterHandler),
@@ -21,9 +26,9 @@ urls += [
     (r"/j/register_member/?",      a_member.AdminJsRegisterMemberHandler),
     (r"/j/delete_member/?",        a_member.AdminJsDeleteMemberHandler),
     (r"/j/edit_member/?",          a_member.AdminJsEditMemberHandler),
-	(r"/j/add_item/?",			   a_items.AdminJsAddItemHandler),
+	# (r"/j/add_item/?",			   a_items.AdminJsAddItemHandler),
 	(r"/j/delete_item/?",		   a_items.AdminJsDeleteItemHandler),
-	(r"/j/edit_item/?",			   a_items.AdminJsEditItemHandler),
+	# (r"/j/edit_item/?",			   a_items.AdminJsEditItemHandler),
 	(r"/j/add_image/?",			   a_items.AdminJsAddImageHandler),
 	(r"/j/delete_image/?",		   a_items.AdminJsDeleteImageHandler),
 ]
@@ -84,8 +89,17 @@ class Pagingfunc(tornado.web.UIModule):
 		html_list.append(nex)
 		return ''.join(html_list)
 
-  
+
+class GetThumbiconById(tornado.web.UIModule):
+	def render(self, item_id):
+		item_image_obj = items_model.ItemsImage.get_thumbicon_by_item_id(item_id)
+		if item_image_obj:
+			return item_image_obj.image_path
+		else:
+			return "/images/user-default.jpg"
+
 
 ui_modules = {
     "Pagingfunc": Pagingfunc,
+	"GetThumbiconById": GetThumbiconById
 }

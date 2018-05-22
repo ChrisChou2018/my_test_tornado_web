@@ -42,12 +42,12 @@
       {% end %}
       <div class="form-group has-feedback">
         <input type="text" name="f_login_name" placeholder="输入用户名或者手机号" class="form-control" id="exampleInputLoginName" value="{{ form_data['login_name'] if form_data and form_data.get('login_name') else '' }}">
-        {% if form_errors and form_errors.get('login_name') %}<div class="form-hint-error">账号名{{ form_errors["login_name"] }}</div>{% end %}
+        {% if form_errors and form_errors.get('login_name') %}<span style="color: red;">账号名{{ form_errors["login_name"] }}</span>{% end %}
         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
       </div>
       <div class="form-group has-feedback">
         <input type="password" name="f_password" placeholder="密码" class="form-control" id="exampleInputPassword">
-        {% if form_errors and form_errors.get('password') %}<div class="form-hint-error">登录密码{{ form_errors["password"] }}</div>{% end %}
+        {% if form_errors and form_errors.get('password') %}<span style="color: red;">登录密码{{ form_errors["password"] }}</span>{% end %}
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
       </div>
       <div class="row">
