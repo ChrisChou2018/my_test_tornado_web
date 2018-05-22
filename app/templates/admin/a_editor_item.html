@@ -3,7 +3,7 @@
     
 {% end %}
 {% block title %}
-<a type="button" class="btn btn-default back_btn" onclick="history.back()" >🔙 Back</a> 编辑商品            
+<a type="button" class="btn btn-default back_btn" onclick="history.back()" >🔙 后退</a> 编辑商品            
 {% end %}
 {% block content %}
 <div class="row">
@@ -78,7 +78,7 @@
                 <label for="recipient-name" class="control-label">重量:</label>
                 <input type="text" class="form-control" name="f_weight" value="{{ form_data['weight'] if form_data and form_data.get('weight') else '' }}">
             </div>
-            <button type="submit" class="btn btn-primary" style="float: right;" >Submit</button>
+            <button type="submit" class="btn btn-primary" style="float: right;" >提交</button>
         </form>
     </div>
     <div class="col-md-3">
