@@ -212,7 +212,7 @@ class AdminJsDeleteImageHandler(handlers.JsSiteBaseHandler):
         self.data['result'] = 'success'
         self.write(self.data)
 
-
+# /add_item/
 class AdminAdditemHandler(handlers.SiteBaseHandler):
     def get(self):
         self._render()
@@ -259,7 +259,7 @@ class AdminAdditemHandler(handlers.SiteBaseHandler):
             specifications_type_dict = specifications_type_dict
         )
 
-
+# /editor_item/
 class AdminEditorItemHandler(handlers.SiteBaseHandler):
     def get(self):
         item_id = self.get_argument('item_id')
