@@ -7,8 +7,7 @@
 {% end %}
 {% block page_header %}
 <ol class="breadcrumb">
-    <li><a href="#"><i class="fa fa-dashboard"></i> Admin</a></li>
-    <li>image_manage</li>
+    <li>商品管理</li>
     <li class="active">{{item_obj.item_name}}</li>
 </ol>
 {% end %}
@@ -33,11 +32,11 @@
                 </div>
             {% end %}
         {% else %}
-            <div class="col-xs-6 col-sm-2 image_item">
+            <!-- <div class="col-xs-6 col-sm-2 image_item">
                 <a class="thumbnail" style="width: 150px;height: 150px;">
                 <img src="/images/user-default.jpg" alt="...">
                 </a>
-            </div>
+            </div> -->
         {% end %}
         
     </div>
@@ -56,34 +55,11 @@
                 </div>
             {% end %}
         {% else %}
-            <div class="col-xs-6 col-md-4 image_item">
-                <a class="thumbnail" style="width: 305px;height: 305px;">
+            <!-- <div class="col-xs-6 col-md-4 image_item">
+                <a class="thumbnail" style="width: 200px;height: 200px;">
                 <img src="/images/user-default.jpg" alt="...">
                 </a>
-            </div>
-        {% end %}
-    </div>
-
-    <h4>图文详情信息图 
-        <button type="button" class="btn btn-info add_image" >Add<span class="glyphicon glyphicon-plus"></span></button>
-        <button type="button" class="btn btn-danger delete_image" type="button">Delete<span class="glyphicon glyphicon-trash"></span></button>
-    </h4>
-    <div class="row" image-type='3' style="overflow: auto; max-width: 900px;">
-       
-        {% if image_dict.get(3) %}
-            {% for i in image_dict.get(3) %}
-                <div class="col-xs-6 col-md-4 image_item" image-id='{{i.get("image_id")}}'>
-                    <a class="thumbnail" style="width: 305px;height: 305px;">
-                    <img src="{{i.get('image_path')}}" alt="..." >
-                    </a>
-                </div>
-            {% end %}
-        {% else %}
-            <div class="col-xs-6 col-md-4 image_item">
-                <a class="thumbnail" style="width: 305px;height: 305px;">
-                <img src="/images/user-default.jpg" alt="...">
-                </a>
-            </div>
+            </div> -->
         {% end %}
     </div>
 
@@ -102,11 +78,11 @@
                 </div>
             {% end %}
         {% else %}
-            <div class="col-xs-6 col-md-3 image_item">
+            <!-- <div class="col-xs-6 col-md-3 image_item">
                 <a class="thumbnail" style="width: 350px;height: 350px;">
                 <img src="/images/user-default.jpg" alt="...">
                 </a>
-            </div>
+            </div> -->
         {% end %}
     </div>
 </div>

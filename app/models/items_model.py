@@ -4,6 +4,24 @@ import peewee
 from app.models import base_model
 
 
+"""
+新增一项品牌管理，可以添加、编辑、删除品牌，品牌有 中文名、中文缩写、英文名、所属国家、关键字、品牌简介、品牌图片 字段
+"""
+class Brand(base_model.BaseModel):
+    brand_id                    = peewee.AutoField(db_column="brand_id", primary_key=True, verbose_name="品牌ID")
+    cn_name                     = peewee.CharField(db_column="cn_name", verbose_name="品牌中文名")
+    cn_name_abridge             = peewee.CharField(db_column="cn_name_abridge", default="", verbose_name="品牌中文名缩写")
+    en_name                     = peewee.CharField(db_column="en_name", default="", verbose_name="品牌英文名")
+    form_country                = peewee.CharField(db_column="form_country", default="", verbose_name="所属国家")
+    key_word                    = peewee.CharField(db_column="key_word", default="", verbose_name="搜索关键字")
+    brand_about                 = peewee.CharField(db_column="brand_about", default="", verbose_name="品牌简介")
+    brand_image                 = peewee.CharField(db_column="brand_image", default="", verbose_name="品牌图片路径")
+
+
+    # class Meta:
+    #     db_table = "app_items"
+
+
 class Items(base_model.BaseModel):
     item_id                     = peewee.AutoField(db_column="item_id", primary_key=True, verbose_name='商品ID')
     item_name                   = peewee.CharField(db_column="item_name", verbose_name='商品名称')
@@ -84,7 +102,6 @@ class ItemsImage(base_model.BaseModel):
         (0, "title"),
         (1, "thumbicon"),
         (2, "item_title"),
-        (3, "item_info"),
         (4, "item"),
     )
     image_type      = peewee.IntegerField(db_column="image_type", choices=type_choces, verbose_name="图片类型")
