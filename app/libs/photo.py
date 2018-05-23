@@ -40,10 +40,12 @@ def convert_photo(photo_id, base_static_path, photo_type):
             left_cent_size =  int((width - height)/2)
             right_cent_size = width - left_cent_size
             new_image_obj = image_obj.crop((left_cent_size, 0, right_cent_size, height))
-        else:
+        elif height > width:
             top_cent_size = int((height - width)/2)
             bottom_cent_size = height - top_cent_size
             new_image_obj = image_obj.crop((0, top_cent_size, width, bottom_cent_size))
+        else:
+            new_image_obj = image_obj.crop((0, 0, width, width))
         width = spec['width']
         new_image_obj = new_image_obj.resize((width, width), Image.ANTIALIAS)
         width = spec["width"]
