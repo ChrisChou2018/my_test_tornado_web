@@ -12,11 +12,11 @@ from app.models import items_model
 #     {"type": "photo", "length": 650, "quality": 86},
 # ]
 photo_specs = {
-    "item_title": { "width": 180, "height": 180, "quality": 86},
-    "thumbicon": {"width": 100, "quality": 86, "is_square": True},
     "title": {"width": 300, "height": 200, "quality": 86, "is_crop": True},
-    "item_info": {"width": 300, "height": 200},
-    "item": {"width": 300, "height": 200},
+    "thumbicon": {"width": 180, "quality": 86, "is_square": True,},
+    "item_title": { "width": 300, "height": 300, "quality": 86},
+    "item_info": {"width": 300, "height": 280},
+    "item": {"width": 320},
 }
 
 # pic_specs = [
@@ -36,9 +36,14 @@ def convert_photo(photo_id, base_static_path, photo_type):
         os.makedirs(d_path_target)
 
     if spec.get("is_square") and spec["is_square"]:
+        height, width = image_obj.size
+        if width < height:
+            new_image_obj = image_obj.crop((0, 0, width, width))
+        else:
+            new_image_obj = image_obj.crop((0, 0, height, height))
+        width = spec['width']
+        new_image_obj = new_image_obj.resize((width, width))
         width = spec["width"]
-        height = width
-        new_image_obj = image_obj.resize((width, height))
     elif spec.get("width") and spec.get("height"):
         if spec.get("is_crop") and spec["is_crop"]:
             width = spec["width"]
@@ -52,6 +57,10 @@ def convert_photo(photo_id, base_static_path, photo_type):
             new_image_obj = image_obj.resize(
                 (width, height)
             )
+    elif spec.get('width') and not spec.get('height'):
+        width, height = image_obj.size
+        width = spec['width']
+        new_image_obj = image_obj.resize((width, height))
     convert_photo_path = os.path.join(d_path_target, photo_id + ".jpg")
     new_image_obj.save(convert_photo_path)
     return {"file_size":os.path.getsize(convert_photo_path),
