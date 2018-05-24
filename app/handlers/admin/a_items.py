@@ -39,9 +39,8 @@ class AdminItemsManageHandler(handlers.SiteBaseHandler):
             filter_args = filter_args,
             uri = uri,
             search_value = value,
-            specifications_type_dict = specifications_type_dict
+            specifications_type_dict = specifications_type_dict,
         )
-
 
 
 # /j/delete_item/
@@ -163,7 +162,7 @@ class AdminAdditemHandler(handlers.SiteBaseHandler):
             "item_barcode", "price", "current_price",
             "foreign_price", "key_word", "origin",
             "shelf_life", "capacity", "specifications_type_id",
-            "for_people", "weight"
+            "for_people", "weight", "brand_id"
         ]
     
     def _validate_form_data(self, form_data):
@@ -175,11 +174,13 @@ class AdminAdditemHandler(handlers.SiteBaseHandler):
     def _render(self, form_data=None, form_errors=None):
         specifications_type_dict = dict(items_model.Items. \
             specifications_type_choices)
+        brands_list = items_model.Brands.get_brands_list_for_all()
         self.render(
             "admin/a_add_item.html",
             form_data = form_data,
             form_errors = form_errors,
-            specifications_type_dict = specifications_type_dict
+            specifications_type_dict = specifications_type_dict,
+            brands_list = brands_list
         )
 
 # /editor_item/
@@ -189,6 +190,7 @@ class AdminEditorItemHandler(handlers.SiteBaseHandler):
         item_obj = items_model.Items.get_item_by_itemid(item_id)
         form_data = self._build_form_data()
         data = { key: getattr(item_obj, key) for key in form_data }
+        print(data)
         self._render(data)
 
     def post(self):
@@ -207,17 +209,157 @@ class AdminEditorItemHandler(handlers.SiteBaseHandler):
             "item_barcode", "price", "current_price",
             "foreign_price", "key_word", "origin",
             "shelf_life", "capacity", "specifications_type_id",
-            "for_people", "weight"
+            "for_people", "weight", "brand_id"
         ]
     
     def _render(self, form_data=None, form_errors=None):
         specifications_type_dict = dict(items_model.Items. \
             specifications_type_choices)
+        brands_list = items_model.Brands.get_brands_list_for_all()
+        print(specifications_type_dict)
         self.render(
             "admin/a_editor_item.html",
             form_data = form_data,
             form_errors = form_errors,
-            specifications_type_dict = specifications_type_dict
+            specifications_type_dict = specifications_type_dict,
+            brands_list = brands_list
         )
 
 
+class AdminBrandsManageHandler(handlers.SiteBaseHandler):
+    def get(self):
+        current_page = self.get_argument('page',1)
+        value = self.get_argument('search_value', None)
+        filter_args = None
+        if value:
+            filter_args = '&search_value={0}'.format(value)
+            search_value = (items_model.Brands.cn_name == value)
+            brands_list = items_model.Brands.get_list_brands(current_page, search_value)
+            brands_count = items_model.Brands.get_brands_count(search_value)
+        else:
+            brands_list = items_model.Brands.get_list_brands(current_page)
+            brands_count = items_model.Brands.get_brands_count()
+        uri = self.get_uri()
+        self.render(
+            'admin/a_brands_manage.html',
+            search_value = value,
+            filter_args = filter_args,
+            brands_list = brands_list,
+            brands_count = brands_count,
+            uri = uri,
+            current_page = current_page
+        )
+
+
+
+class AdminAddbrandHandler(handlers.SiteBaseHandler):
+    def get(self):
+        self._render()
+    
+    def post(self):
+        form_data = self._build_form_data()
+        form_error = self._validate_form_data(form_data)
+        if form_error:
+            self._render(form_error, form_data)
+
+        files = self.request.files
+        if files:
+            file_obj = files.get('f_brand_image')
+            server_file_path = '/static/photos'
+            file_dir = os.path.join(
+                config_web.settings_common['static_path'],
+                'photos'
+            )
+            if not os.path.exists(file_dir):
+                os.makedirs(file_dir)
+            data = photo.save_upload_photo(
+                file_obj[0],
+                file_dir,
+                server_file_path,
+                'brand'
+            )
+            if data:
+                brand_image = data['image_path']
+                form_data.update({'brand_image': brand_image})
+        items_model.Brands.create_brand(form_data)
+        self.redirect('/brands_manage/')
+    
+    def _list_form_keys(self):
+        return [
+            'cn_name', 'cn_name_abridge', 'en_name',
+            'form_country', 'key_word', 'brand_about'
+        ]
+    
+    def _validate_form_data(self, form_data):
+        form_error = dict()
+        if not form_data['cn_name']:
+            form_error['cn_name'] = '至少这个不能为空'
+        return form_error
+    
+    def _render(self, form_error=None, form_data=None):
+        self.render(
+            'admin/a_add_brand.html',
+            form_error = form_error,
+            form_data = form_data
+        )
+
+
+# /j/delete_brands/
+class AdminJsDeleteBrandHandler(handlers.JsSiteBaseHandler):
+    def post(self):
+        brand_ids_list = self.get_arguments('brand_ids_list[]')
+        for i in brand_ids_list:
+            items_model.Brands.delete_by_id(i)
+        self.data['result'] = 'success'
+        self.write(self.data)
+
+
+# /editor_brand/
+class AdminEditorBrandHandler(handlers.SiteBaseHandler):
+    def get(self):
+        brand_id = self.get_argument('brand_id')
+        brand_obj = items_model.Brands.get_brand_by_brandid(brand_id)
+        form_data = items_model.Brands.obj_to_dict(brand_obj)
+        self._render(form_data=form_data)
+    
+    def post(self):
+        brand_id = self.get_argument('brand_id', None)
+        form_data = self._build_form_data()
+        new_form_data = { i:form_data[i] for i in form_data if form_data[i] }
+        files = self.request.files
+        if files:
+            file_obj = files.get('f_brand_image')
+            server_file_path = '/static/photos'
+            file_dir = os.path.join(
+                config_web.settings_common['static_path'],
+                'photos'
+            )
+            if not os.path.exists(file_dir):
+                os.makedirs(file_dir)
+            data = photo.save_upload_photo(
+                file_obj[0],
+                file_dir,
+                server_file_path,
+                'brand'
+            )
+            if data:
+                brand_image = data['image_path']
+                new_form_data.update({'brand_image': brand_image})
+        if new_form_data:
+            print(new_form_data)
+            items_model.Brands.update_brand_by_brandid(brand_id, new_form_data)
+            self.redirect('/brands_manage/')
+    
+    def _render(self, form_error=None, form_data=None, brand_obj=None):
+        self.render(
+            'admin/a_add_brand.html',
+            form_error = form_error,
+            form_data = form_data,
+            brand_obj = brand_obj
+        )
+    
+    def _list_form_keys(self):
+        return [
+            'cn_name', 'cn_name_abridge', 'en_name',
+            'form_country', 'key_word', 'brand_about'
+        ]

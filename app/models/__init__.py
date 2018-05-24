@@ -11,6 +11,8 @@ def init_table():
         items_model.Items.create_table(safe=True)
     if not items_model.ItemImages.table_exists():
         items_model.ItemImages.create_table(safe=True)
+    if not items_model.Brands.table_exists():
+        items_model.Brands.create_table(safe=True)
     print('finish....')
     
 # init_table()

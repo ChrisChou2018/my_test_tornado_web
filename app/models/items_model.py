@@ -4,9 +4,7 @@ import peewee
 from app.models import base_model
 
 
-"""
-新增一项品牌管理，可以添加、编辑、删除品牌，品牌有 中文名、中文缩写、英文名、所属国家、关键字、品牌简介、品牌图片 字段
-"""
+
 class Brands(base_model.BaseModel):
     brand_id                    = peewee.AutoField(db_column="brand_id", primary_key=True, verbose_name="品牌ID")
     cn_name                     = peewee.CharField(db_column="cn_name", verbose_name="品牌中文名")
@@ -20,6 +18,60 @@ class Brands(base_model.BaseModel):
 
     class Meta:
         db_table = "app_brands"
+    
+    
+    @classmethod
+    def create_brand(cls, datas):
+        cls.create(**datas)
+    
+    @classmethod
+    def get_list_brands(cls, current_page, search_value=None):
+        if search_value:
+            brand_obj = cls.select().where(search_value).order_by(-cls.brand_id).paginate(int(current_page), 15)
+        else:
+            brand_obj = cls.select().order_by(-cls.brand_id).paginate(int(current_page), 15)
+        
+        return brand_obj
+    
+    @classmethod
+    def get_brands_count(cls, search_value=None):
+        if search_value:
+            obj_count = cls.select().where(search_value).count()
+        else:
+            obj_count = cls.select().count()
+        
+        return obj_count
+    
+    @classmethod
+    def get_brand_by_brandid(cls, brand_id):
+        try:
+            return cls.get(cls.brand_id == brand_id)
+        except cls.DoesNotExist:
+            return None
+    
+    @classmethod
+    def obj_to_dict(cls, obj):
+        data = dict()
+        data['cn_name'] = obj.cn_name
+        data['cn_name_abridge'] = obj.cn_name_abridge
+        data['en_name'] = obj.en_name
+        data['form_country'] = obj.form_country
+        data['key_word'] = obj.key_word
+        data['brand_about'] = obj.brand_about
+        data['brand_image'] = obj.brand_image
+        return data
+    
+    @classmethod
+    def update_brand_by_brandid(cls, brand_id, data):
+        cls.update(**data).where(cls.brand_id == brand_id).execute()
+
+    @classmethod
+    def get_brands_list_for_all(cls):
+        data_list = list()
+        all_data = cls.select()
+        for i in all_data:
+            data_list.append((i.brand_id, i.cn_name))
+        return data_list
 
 
 class Items(base_model.BaseModel):
@@ -49,6 +101,7 @@ class Items(base_model.BaseModel):
         (7, '盒')
     )
     specifications_type_id      = peewee.SmallIntegerField(db_column="specifications_type_id", choices=specifications_type_choices, null=True, verbose_name="规格类型")
+    brand_id                    = peewee.CharField(db_column="brand_id", default="", verbose_name="品牌ID")
     for_people                  = peewee.CharField(db_column="for_people", default="", verbose_name="适用人群")
     weight                      = peewee.CharField(db_column="weight", default="", verbose_name="重量")
     create_person               = peewee.CharField(db_column="create_person", verbose_name="创建人")

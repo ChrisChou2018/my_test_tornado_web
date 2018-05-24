@@ -16,6 +16,7 @@ photo_specs = {
     "thumbicon": {"width": 180, "is_square": True},
     "item_title": { "width": 300, "is_square": True},
     "item": {"width": 980},
+    "brand": {"width": 300, "is_square": True},
 }
 
 # pic_specs = [
