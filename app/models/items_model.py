@@ -7,7 +7,7 @@ from app.models import base_model
 """
 新增一项品牌管理，可以添加、编辑、删除品牌，品牌有 中文名、中文缩写、英文名、所属国家、关键字、品牌简介、品牌图片 字段
 """
-class Brand(base_model.BaseModel):
+class Brands(base_model.BaseModel):
     brand_id                    = peewee.AutoField(db_column="brand_id", primary_key=True, verbose_name="品牌ID")
     cn_name                     = peewee.CharField(db_column="cn_name", verbose_name="品牌中文名")
     cn_name_abridge             = peewee.CharField(db_column="cn_name_abridge", default="", verbose_name="品牌中文名缩写")
@@ -18,8 +18,8 @@ class Brand(base_model.BaseModel):
     brand_image                 = peewee.CharField(db_column="brand_image", default="", verbose_name="品牌图片路径")
 
 
-    # class Meta:
-    #     db_table = "app_items"
+    class Meta:
+        db_table = "app_brands"
 
 
 class Items(base_model.BaseModel):
@@ -68,34 +68,34 @@ class Items(base_model.BaseModel):
     @classmethod
     def get_item_by_itemid(cls, item_id):
         try:
-            return Items.get(Items.item_id == item_id)
-        except Items.DoesNotExist:
+            return cls.get(cls.item_id == item_id)
+        except cls.DoesNotExist:
             return None
 
     @classmethod
     def update_item_by_itemid(cls, item_id, item_dict):
-        Items.update(**item_dict).where(Items.item_id == item_id).execute()
+        cls.update(**item_dict).where(cls.item_id == item_id).execute()
 
     @classmethod
     def get_list_items(cls, current_page, search_value=None):
         if search_value:
-            item_obj = Items.select().where(search_value).order_by(-Items.item_id).paginate(int(current_page), 15)
+            item_obj = cls.select().where(search_value).order_by(-cls.item_id).paginate(int(current_page), 15)
         else:
-            item_obj = Items.select().order_by(-Items.item_id).paginate(int(current_page), 15)
+            item_obj = cls.select().order_by(-cls.item_id).paginate(int(current_page), 15)
         
         return item_obj
     
     @classmethod
     def get_items_count(cls, search_value=None):
         if search_value:
-            item_obj_count = Items.select().where(search_value).count()
+            item_obj_count = cls.select().where(search_value).count()
         else:
-            item_obj_count = Items.select().count()
+            item_obj_count = cls.select().count()
         
         return item_obj_count
 
 
-class ItemsImage(base_model.BaseModel):
+class ItemImages(base_model.BaseModel):
     image_id       = peewee.AutoField(db_column="image_id", primary_key=True, verbose_name="图片ID")
     item_id        = peewee.BigIntegerField(db_column="item_id", verbose_name="所属商品ID")
     type_choces    = (
@@ -113,7 +113,7 @@ class ItemsImage(base_model.BaseModel):
     
     
     class Meta:
-        db_table = "app_items_image"
+        db_table = "app_item_images"
 
 
     @classmethod
@@ -123,35 +123,35 @@ class ItemsImage(base_model.BaseModel):
     @classmethod
     def get_images_by_itemid(cls, item_id, search_value = None):
         try:
-            image_obj = ItemsImage.select().where((ItemsImage.item_id == item_id) & (ItemsImage.status == "normal"))
+            image_obj = cls.select().where((cls.item_id == item_id) & (cls.status == "normal"))
             return image_obj
         except Items.DoesNotExist:
             return None
     
     @classmethod
     def update_image_by_image_id(cls, image_id, item_dict):
-        ItemsImage.update(**item_dict).where(ItemsImage.image_id == image_id).execute()
+        cls.update(**item_dict).where(cls.image_id == image_id).execute()
 
     @classmethod
     def get_thumbicon_by_item_id(cls, item_id):
         try:
-            image_obj = cls.get((ItemsImage.item_id == item_id) & (ItemsImage.status == "normal") & (ItemsImage.image_type == 1))
+            image_obj = cls.get((cls.item_id == item_id) & (cls.status == "normal") & (cls.image_type == 1))
             return image_obj
-        except ItemsImage.DoesNotExist:
+        except cls.DoesNotExist:
             return None
     
 
-class ItemTag(base_model.BaseModel):
+class ItemTags(base_model.BaseModel):
     tag_id          = peewee.AutoField(db_column="tag_id", verbose_name="标签ID")
     tag_name        = peewee.CharField(db_column="tag_name", verbose_name="标签名")
     item_id         = peewee.BigIntegerField(db_column="item_id", verbose_name="所属商品ID")
     
     
     class Meta:
-        db_table = "app_item_tag"
+        db_table = "app_item_tags"
 
 
-class ItemComment(base_model.BaseModel):
+class ItemComments(base_model.BaseModel):
     comment_id      = peewee.AutoField(db_column="comment_id", verbose_name="评论ID")
     member_id       = peewee.BigIntegerField(db_column="member_id", verbose_name="评论用户ID")
     item_id         = peewee.BigIntegerField(db_column="item_id", verbose_name="所属商品ID")
@@ -161,10 +161,10 @@ class ItemComment(base_model.BaseModel):
 
 
     class Meta:
-        db_table = "app_item_comment"
+        db_table = "app_item_comments"
 
 
-class CommentImage(base_model.BaseModel):
+class CommentImages(base_model.BaseModel):
     image_id        = peewee.AutoField(db_column="image_id", verbose_name="图片ID")
     comment_id      = peewee.BigIntegerField(db_column="comment_id", verbose_name="所属评论ID")
     image_path      = peewee.CharField(db_column="image_path", verbose_name="路径")
@@ -174,6 +174,6 @@ class CommentImage(base_model.BaseModel):
 
 
     class Meta:
-        db_table = "app_comment_image"
+        db_table = "app_comment_images"
 
 

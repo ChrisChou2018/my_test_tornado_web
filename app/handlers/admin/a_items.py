@@ -136,7 +136,7 @@ class AdminImageManageHandler(handlers.SiteBaseHandler):
     def get(self):
         item_id = self.get_argument('item_id')
         item =  items_model.Items.get_item_by_itemid(item_id)
-        items_image_list = items_model.ItemsImage.get_images_by_itemid(item_id)
+        items_image_list = items_model.ItemImages.get_images_by_itemid(item_id)
         image_dict = {}
         for i in items_image_list:
             if i.image_type not in image_dict:
@@ -157,7 +157,7 @@ class AdminJsAddImageHandler(handlers.JsSiteBaseHandler):
     def post(self):
         file_dict = self.request.files
         image_type = self.get_argument('image_type')
-        image_type_dict = items_model.ItemsImage.type_choces
+        image_type_dict = items_model.ItemImages.type_choces
         image_type_dict = dict(image_type_dict)
         item_id = self.get_argument('item_id')
         # with ThreadPoolExecutor(max_workers=10) as pool:
@@ -179,7 +179,7 @@ class AdminJsAddImageHandler(handlers.JsSiteBaseHandler):
                 data.update(
                     {'image_type': image_type, 'item_id': item_id}
                 )
-                items_model.ItemsImage.create_item_image(data)
+                items_model.ItemImages.create_item_image(data)
             else:
                 self.data['message'] = '上传失败'
                 self.write(self.data)
@@ -193,10 +193,10 @@ class AdminJsAddImageHandler(handlers.JsSiteBaseHandler):
 class AdminJsDeleteImageHandler(handlers.JsSiteBaseHandler):
     def post(self):
         image_id_list = self.get_arguments('image_id_list[]')
-        image_type = items_model.ItemsImage.type_choces
+        image_type = items_model.ItemImages.type_choces
         image_type = dict(image_type)
         for i in image_id_list:
-            image_obj = items_model.ItemsImage.get_by_id(i)
+            image_obj = items_model.ItemImages.get_by_id(i)
             image_name = image_obj.image_path.rsplit('/', 1)[1]
             file_base_path = os.path.join(
                 config_web.settings_common['static_path'],
@@ -207,7 +207,7 @@ class AdminJsDeleteImageHandler(handlers.JsSiteBaseHandler):
             new_file_name = os.path.join(file_base_path, uuid.uuid4().hex + '.jpg')
             if os.path.exists(file_path):
                 os.rename(file_path, new_file_name)
-            items_model.ItemsImage.update_image_by_image_id(i, {'status': 'deleted'})
+            items_model.ItemImages.update_image_by_image_id(i, {'status': 'deleted'})
             
         self.data['result'] = 'success'
         self.write(self.data)
