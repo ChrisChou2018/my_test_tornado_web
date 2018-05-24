@@ -125,7 +125,7 @@ class ItemImages(base_model.BaseModel):
         try:
             image_obj = cls.select().where((cls.item_id == item_id) & (cls.status == "normal"))
             return image_obj
-        except Items.DoesNotExist:
+        except cls.DoesNotExist:
             return None
     
     @classmethod

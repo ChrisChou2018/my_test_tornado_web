@@ -127,7 +127,7 @@ class Pagingfunc(tornado.web.UIModule):
 
 class GetThumbiconById(tornado.web.UIModule):
 	def render(self, item_id):
-		item_image_obj = items_model.ItemsImage.get_thumbicon_by_item_id(item_id)
+		item_image_obj = items_model.ItemImages.get_thumbicon_by_item_id(item_id)
 		if item_image_obj:
 			return item_image_obj.image_path
 		else:

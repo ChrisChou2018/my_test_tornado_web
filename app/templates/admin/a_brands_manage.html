@@ -1,0 +1,49 @@
+{% extends '../admin/a_layout.html' %}
+{% block css %}
+    
+{% end %}
+
+{% block title %}
+品牌表
+{% end %}
+{% block page_header %}
+<ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i> 品牌管理</a></li>
+</ol>
+{% end %}
+
+{% block content_title %}
+
+<div class="row">
+    <div class="col-md-8">
+        <div "row">
+            <div class="col-md-8">
+                <form action="" method="GET" class="search_input">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="搜索品牌" name="search_value" value="{{search_value if search_value else '' }}">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default search_input_btn" type="submit">搜索</button>
+                    </span>
+                  </div><!-- /input-group -->
+                </form>
+            </div>
+            <div class="col-md-4">
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <a href="/add_item/" class="btn btn-info add_item_btn" >添加商品 <span class="glyphicon glyphicon-plus"></span></a>
+        <button type="button" class="btn btn-default choose_item">选择全部<span class="glyphicon glyphicon-saved"></span></button>
+        <button type="button" class="btn btn-danger delete_item" >删除<span class="glyphicon glyphicon-trash"></span></button>
+    </div>
+</div>
+{% end %}
+
+{% block content %}
+
+
+{% end %}
+{% block js %}
+   
+{% end %}

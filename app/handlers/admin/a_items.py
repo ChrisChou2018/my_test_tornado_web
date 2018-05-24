@@ -43,45 +43,6 @@ class AdminItemsManageHandler(handlers.SiteBaseHandler):
         )
 
 
-# # /j/add_item/
-# class AdminJsAddItemHandler(handlers.JsSiteBaseHandler):
-#     """
-#     添加商品
-#     """
-#     def post(self):
-#         form_data = self._build_form_data()
-#         message = self._validate_form_data(form_data)
-#         if message is not None:
-#             self.data['message'] = message
-#             self.write(self.data)
-#             return
-#         new_form_data = { key: form_data[key] \
-#             for key in form_data if form_data[key] }
-#         if new_form_data:
-#             new_form_data.update({
-#                 "create_person": self.current_user.member_name,
-#                 "create_time": int(time.time()),
-#                 "update_time": int(time.time()),
-#             })
-#             items_model.Items.create_item(new_form_data)
-#             self.data['result'] = 'success'
-#             self.write(self.data)
-
-#     def _list_form_keys(self):
-#         return [
-#             "item_name", "item_info", "item_code",
-#             "item_barcode", "price", "current_price",
-#             "foreign_price", "key_word", "origin",
-#             "shelf_life", "capacity", "specifications_type_id",
-#             "for_people", "weight"
-#         ]
-    
-#     def _validate_form_data(self, form_data):
-#         message = None
-#         if not form_data['item_name']:
-#             message = '不能为空'
-#         return message
-
 
 # /j/delete_item/
 class AdminJsDeleteItemHandler(handlers.JsSiteBaseHandler):
@@ -92,44 +53,6 @@ class AdminJsDeleteItemHandler(handlers.JsSiteBaseHandler):
         self.data['result'] = 'success'
         self.write(self.data)
 
-
-# # /j/edit_item/
-# class AdminJsEditItemHandler(handlers.JsSiteBaseHandler):
-#     def get(self):
-#         item_id = self.get_argument('item_id', None)
-#         member_obj = items_model.Items.get_item_by_itemid(item_id)
-#         field = [
-#             "item_name", "item_info", "item_code",
-#             "item_barcode", "price", "current_price",
-#             "foreign_price", "key_word", "origin",
-#             "shelf_life", "capacity", "specifications_type_id",
-#             "for_people", "weight"
-#         ]
-#         data_dict = {i:getattr(member_obj, i) for i in field if i != "more"}
-#         self.data['result'] = 'success'
-#         self.data['data'] = data_dict
-#         self.write(self.data)
-        
-#     def post(self):
-#             item_id = self.get_argument('item_id', None)
-#             form_data = self._build_form_data()
-#             new_form_data = { i:form_data[i] for i in form_data if form_data[i] }
-#             if new_form_data:
-#                 new_form_data['update_person'] = self.current_user.member_name
-#                 new_form_data['update_time'] = int(time.time())
-#                 items_model.Items.update_item_by_itemid(item_id, new_form_data)
-#                 self.data['result'] = 'success'
-#                 self.write(self.data)
-
-#     def _list_form_keys(self):
-#         return [
-#             "item_name", "item_info", "item_code",
-#             "item_barcode", "price", "current_price",
-#             "foreign_price", "key_word", "origin",
-#             "shelf_life", "capacity", "specifications_type_id",
-#             "for_people", "weight"
-#         ]
-    
 
 # /image_manage/
 class AdminImageManageHandler(handlers.SiteBaseHandler):
@@ -296,3 +219,5 @@ class AdminEditorItemHandler(handlers.SiteBaseHandler):
             form_errors = form_errors,
             specifications_type_dict = specifications_type_dict
         )
+
+

@@ -9,8 +9,8 @@ def init_table():
         member_model.Member.create_table(safe=True)
     if not items_model.Items.table_exists():
         items_model.Items.create_table(safe=True)
-    if not items_model.ItemsImage.table_exists():
-        items_model.ItemsImage.create_table(safe=True)
+    if not items_model.ItemImages.table_exists():
+        items_model.ItemImages.create_table(safe=True)
     print('finish....')
     
 # init_table()
