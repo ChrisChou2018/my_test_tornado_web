@@ -4,6 +4,10 @@
     table{
     table-layout:auto;
     }
+    th{
+        word-break:keep-all;
+        white-space:nowrap;
+    }
     td{
     /* width:100%; */
     word-break:keep-all;
@@ -16,8 +20,7 @@
 {% end %}
 {% block page_header %}
 <ol class="breadcrumb">
-    <li><a href="#"><i class="fa fa-dashboard"></i> Admin</a></li>
-    <li class="active">member_manage</li>
+    <li><a href="#"><i class="fa fa-dashboard"></i> 用户管理</a></li>
 </ol>
 {% end %}
 
@@ -32,19 +35,19 @@
         <div class="modal-body">
             <form method="post" action="" class="member_form">
                 <div class="form-group">
-                    <label for="recipient-name" class="control-label">Name:</label>
+                    <label for="recipient-name" class="control-label">用户名:</label>
                     <input type="text" class="form-control" id="recipient-name" name="member_name">
                 </div>
                 <div class="form-group">
-                    <label for="recipient-name" class="control-label">Email:</label>
-                    <input type="text" class="form-control" id="recipient-name" name="email">
+                    <label for="recipient-name" class="control-label">手机号:</label>
+                    <input type="text" class="form-control" id="recipient-name" name="telephone">
                 </div>
                 <div class="form-group">
-                    <label for="recipient-name" class="control-label">Password:</label>
+                    <label for="recipient-name" class="control-label">密码:</label>
                     <input type="password" class="form-control" id="recipient-name" name="password">
                 </div>
                 <div class="form-group">
-                    <label for="recipient-name" class="control-label">RetypePassword:</label>
+                    <label for="recipient-name" class="control-label">确认密码:</label>
                     <input type="password" class="form-control" id="recipient-name" name="password2">
                 </div>
             </form>
@@ -64,9 +67,9 @@
             <div class="col-md-8">
                 <form action="" method="GET" class="search_input">
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search for..." name="search_value" value="{{ search_value if search_value else '' }}">
+                    <input type="text" class="form-control" placeholder="搜索手机号或着用户名" name="search_value" value="{{ search_value if search_value else '' }}">
                     <span class="input-group-btn">
-                        <button class="btn btn-default search_input_btn" type="submit">Search</button>
+                        <button class="btn btn-default search_input_btn" type="submit">搜索</button>
                     </span>
                   </div><!-- /input-group -->
                 </form>
@@ -77,28 +80,30 @@
         </div>
     </div>
     <div class="col-md-4">
-        <button type="button" class="btn btn-info add_member_btn" type="button" data-toggle="modal" data-target="#exampleModal" >AddUser <span class="glyphicon glyphicon-plus"></span></button>
-        <button type="button" class="btn btn-default choose_member" type="button">Choose<span class="glyphicon glyphicon-saved"></span></button>
-        <button type="button" class="btn btn-danger delete_member" type="button">Delete<span class="glyphicon glyphicon-trash"></span></button>
+        <button type="button" class="btn btn-info add_member_btn" type="button" data-toggle="modal" data-target="#exampleModal" >添加用户 <span class="glyphicon glyphicon-plus"></span></button>
+        <button type="button" class="btn btn-default choose_member" type="button">选择<span class="glyphicon glyphicon-saved"></span></button>
+        <button type="button" class="btn btn-danger delete_member" type="button">删除<span class="glyphicon glyphicon-trash"></span></button>
     </div>
 </div>
 {% end %}
 
 {% block content %}
-{% set table_head = ['member_id', 'member_name', 'email', 'role', 'more'] %}
+{% set table_head = {
+    'member_id': 'ID', 'member_name': '用户名', 'telephone': '手机号',
+    'role': '角色', 'more': '更多操作'} %}
 
 
-<div style="overflow: auto;">
+<div style="overflow: auto;padding: 15px;"> 
     <table class="table table-striped member_table" >
         <head>
             <tr>
                 {% for i in table_head %}
-                <th>{{i}}</th>
+                <th>{{table_head[i]}}</th>
                 {% end %}
             </tr>
         </head>
         <tbody>
-            {% for i in member_obj %}
+            {% for i in member_list %}
             <tr>
                 {% for j in table_head %}
                     {% if j != 'more' %}
@@ -108,7 +113,6 @@
                 <td>
                     <a class='edit_member' style='cursor:pointer;text-decoration:none;'><span class="glyphicon glyphicon-pencil"></span> 编辑</a>
                 </td> 
-               
                 <td style='display: none'><input type='checkbox'></td>
             </tr>
             {% end %}
@@ -119,7 +123,7 @@
 <div>
     <nav aria-label="Page navigation">
         <ul class="pagination page_box">
-            {% module Pagingfunc(current_page, member_obj_count, filter_args, url) %}
+            {% module Pagingfunc(current_page, member_count, filter_args, uri) %}
         </ul>
     </nav>
 </div>
@@ -130,8 +134,7 @@
 {% block js %}
     <script>
         $(function(){
-            $('.admin').addClass('active menu-open  ')
-            $('.admin .member_manage').addClass('active')
+            $('.member_manage').addClass('active')
             // init_table()
             $('.add_member_btn').click(function(){
                 $('.modal-title').text('CreateMember')
@@ -176,10 +179,10 @@
                     '/j/delete_member/',
                     {'member_id_list':member_id_list, '_xsrf':getCookie('_xsrf')},
                     function(value){
-                        if(value.status){
+                        if(value.result == 'success'){
                             location.reload()
                         }else{
-                            alert(value.error_msg)
+                            alert(value.message)
                         }
                     },
                     'json'
@@ -196,7 +199,7 @@
             $.get(
                 '/j/edit_member/?member_id='+member_id,
                 function(value){
-                    if(value.status){
+                    if(value.result == 'success'){
                         data_dict = value.data
                         $('#exampleModal').modal('show')
                         var $input_list = $('.member_form input')
@@ -240,16 +243,11 @@
                 post_url,
                 data_dict,
                 function(value){
-                    if(value.status){
+                    if(value.result == 'success'){
                         $('#exampleModal').modal('hide')
                         location.reload()
                     }else{
-                        var error_msg_dict = value.error_msg
-                        var msg_list = []
-                        $.each(error_msg_dict,function(index,item){
-                            msg_list.push(item)
-                        })
-                        $('.return_msg_box').text(msg_list[0])
+                        $('.return_msg_box').text(value.message)
                     }
                 },
                 'json'

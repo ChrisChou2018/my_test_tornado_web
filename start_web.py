@@ -1,32 +1,29 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
+
 import peewee
 import tornado.web
 import tornado.log
 import tornado.ioloop
 import tornado.options
+from tornado.options import define, options
+
 import config_web
 import app.handlers
 import app.models.base_model as base_model
 import app.libs.common as lib_common
-from tornado.options import define, options
 from app.libs.url_include import url_wrapper, include
-# from app.handlers.admin import ui_modules as UiModules
-# from app.handlers import api as api_admin
 from app import models
 from app.handlers import admin
 
 define("port", default=9900)
 define("debug", default=True)
 define("smode", default="debug")
-
-
 tornado.options.parse_command_line()
-
-# ui_modules = dict()
-# ui_modules.update(UiModules.ui_modules)
-config_web.settings["ui_modules"] = admin
+ui_modules = dict()
+ui_modules.update(admin.ui_modules)
+config_web.settings["ui_modules"] = ui_modules
 
 
 class BaseApplication(tornado.web.Application):
@@ -47,14 +44,12 @@ class BaseApplication(tornado.web.Application):
 app = BaseApplication(
     [],
     **config_web.settings
-    )
+)
 app.add_handlers(config_web.settings["admin_domain"], admin.urls)
-
 
 def main():
     app.listen(options.port, address="127.0.0.1", xheaders=True)
     tornado.ioloop.IOLoop.instance().start()
-
 
 if __name__ == "__main__":
     main()

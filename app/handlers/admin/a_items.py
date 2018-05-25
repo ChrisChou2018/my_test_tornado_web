@@ -1,13 +1,13 @@
+import os
+import uuid
+import json
+import time
+
 from app.libs import decorators
 from app.libs import handlers
 from app.models import items_model
-import json
-import config_web
-import time
-from concurrent.futures import ThreadPoolExecutor
-import os
-import uuid
 from app.libs import photo
+import config_web
 
 
 # /items_manage
@@ -23,175 +23,343 @@ class AdminItemsManageHandler(handlers.SiteBaseHandler):
         if value:
             filter_args = '&search_value={0}'.format(value)
             search_value = (items_model.Items.item_name == value)
-            item_obj = items_model.Items.get_items_obj(current_page, search_value)
-            item_obj_count = items_model.Items.get_items_obj_count(search_value)
+            item_list = items_model.Items.get_list_items(current_page, search_value)
+            item_count = items_model.Items.get_items_count(search_value)
         else:
-            item_obj = items_model.Items.get_items_obj(current_page)
-            item_obj_count = items_model.Items.get_items_obj_count()
-        if '?' in self.request.uri:
-            url = self.request.uri.split('?')[0]
-        else:
-            url = self.request.uri
-        
-        self.render('admin/a_items.html', item_obj = item_obj, 
-                                          item_obj_count = item_obj_count,
-                                          current_page = current_page,
-                                          filter_args = filter_args,
-                                          url = url,
-                                          search_value = value,)
-
-
-# /j/add_item/
-class AdminJsAddItemHandler(handlers.JsSiteBaseHandler):
-    """
-    添加商品
-    """
-    def post(self):
-        form_data = self._build_form_data()
-        form_data.update({
-            "create_person":self.current_user.member_name,
-            "create_time":int(time.time()),
-            "update_time":int(time.time()),
-        })
-        try:
-            items_model.Items.create(**form_data)
-            self.write(json.dumps({'status':True}))
-        except Exception as error:
-            self.write(json.dumps({"status":False,
-            "error_msg":"服务器出错:\n{0}".format(str(error))}))
-
-    def _list_form_keys(self):
-        return ["item_name", "item_info", "item_code",
-                "item_barcode", "price", "current_price",
-                "foreign_price", "key_word", "origin",
-                "shelf_life", "capacity", "for_people", "weight"]
+            item_list = items_model.Items.get_list_items(current_page)
+            item_count = items_model.Items.get_items_count()
+        uri = self.get_uri()
+        specifications_type_dict = dict(items_model.Items. \
+            specifications_type_choices)
+        self.render(
+            'admin/a_items.html',
+            item_obj = item_list, 
+            item_obj_count = item_count,
+            current_page = current_page,
+            filter_args = filter_args,
+            uri = uri,
+            search_value = value,
+            specifications_type_dict = specifications_type_dict,
+        )
 
 
 # /j/delete_item/
 class AdminJsDeleteItemHandler(handlers.JsSiteBaseHandler):
     def post(self):
-        try:
-            item_id_list = self.get_arguments('item_id_list[]')
-            for i in item_id_list:
-                items_model.Items.delete_by_id(i)
-            self.write(json.dumps({'status':True}))
-        except Exception as error:
-            self.write(json.dumps({'status':False,
-                                   'error_msg':'服务器出错：{0}'.format(str(error))}))
-
-
-# /j/edit_item/
-class AdminJsEditItemHandler(handlers.JsSiteBaseHandler):
-    def get(self):
-        item_id = self.get_argument('item_id', None)
-        try:
-            member_obj = items_model.Items.get_item_by_itemid(item_id)
-            field = ["item_name", "item_info", "item_code",
-                     "item_barcode", "price", "current_price",
-                     "foreign_price", "key_word", "origin",
-                     "shelf_life", "capacity", "for_people", "weight"]
-            data_dict = {i:getattr(member_obj, i) for i in field if i != "more"}
-            self.write(json.dumps({"status":True, "data":data_dict}))
-        except Exception as error:
-            self.write(json.dumps({"status":False,
-                                   "error_msg":"服务器出错:{0}".format(str(error))}))
-        
-        
-    
-    def post(self):
-            item_id = self.get_argument('item_id', None)
-            form_data = self._build_form_data()
-            new_form_data = { i:form_data[i] for i in form_data if form_data[i] }
-            new_form_data['update_person'] = self.current_user.member_name
-            new_form_data['update_time'] = int(time.time())
-            if new_form_data:
-                try:
-                    items_model.Items.update_item_by_itemid(item_id, new_form_data)
-                    self.write(json.dumps({"status":True}))
-                except Exception as error:
-                    self.write(json.dumps({"status":False,
-                    "error_msg":"服务器出错:{0}".format(str(error))}))
-
-        
-    def _list_form_keys(self):
-        return ["item_name", "item_info", "item_code",
-                "item_barcode", "price", "current_price",
-                "foreign_price", "key_word", "origin",
-                "shelf_life", "capacity", "for_people", "weight"]
-
-
+        item_id_list = self.get_arguments('item_id_list[]')
+        for i in item_id_list:
+            items_model.Items.delete_by_id(i)
+        self.data['result'] = 'success'
+        self.write(self.data)
 
 
 # /image_manage/
 class AdminImageManageHandler(handlers.SiteBaseHandler):
     def get(self):
         item_id = self.get_argument('item_id')
-        item_obj =  items_model.Items.get_item_by_itemid(item_id)
-        items_image_obj = items_model.ItemsImage.get_images_by_itemid(item_id)
+        item =  items_model.Items.get_item_by_itemid(item_id)
+        items_image_list = items_model.ItemImages.get_images_by_itemid(item_id)
         image_dict = {}
-        for i in items_image_obj:
+        for i in items_image_list:
             if i.image_type not in image_dict:
-                image_dict[i.image_type] = [{'image_path':i.image_path,
-                                             'image_id':i.image_id}]
+                image_dict[i.image_type] = [
+                    {'image_path': i.image_path, 'image_id': i.image_id}
+                ]
             else:
-                image_dict[i.image_type].append({'image_path':i.image_path,
-                                                 'image_id':i.image_id})
-        self.render('admin/a_image_manage.html', item_obj = item_obj,
-                                                 image_dict = image_dict)
-    
+                image_dict[i.image_type].append(
+                    {'image_path': i.image_path, 'image_id': i.image_id}
+                )
+        self.render('admin/a_image_manage.html',
+            item_obj = item,
+            image_dict = image_dict)
+
+
+# /j/add_image
+class AdminJsAddImageHandler(handlers.JsSiteBaseHandler):
     def post(self):
         file_dict = self.request.files
         image_type = self.get_argument('image_type')
-        image_type_dict = items_model.ItemsImage.type_choces
+        image_type_dict = items_model.ItemImages.type_choces
         image_type_dict = dict(image_type_dict)
         item_id = self.get_argument('item_id')
         # with ThreadPoolExecutor(max_workers=10) as pool:
         for k in file_dict:
             server_file_path = '/static/photos'
-            file_dir = os.path.join(config_web.settings_common['static_path'], 'photos')
-            if not os.path.exists(file_dir):os.mkdir(file_dir)
-            data = photo.save_upload_photo(file_dict[k][0],
-                                            file_dir,
-                                            server_file_path,
-                                            image_type_dict.get(int(image_type)))
+            file_dir = os.path.join(
+                config_web.settings_common['static_path'],
+                'photos'
+            )
+            if not os.path.exists(file_dir):
+                os.makedirs(file_dir)
+            data = photo.save_upload_photo(
+                file_dict[k][0],
+                file_dir,
+                server_file_path,
+                image_type_dict.get(int(image_type))
+            )
             if data:
-                data.update({
-                    'image_type':image_type,
-                    'item_id':item_id,
-                })
-                try:
-                    items_model.ItemsImage.create(**data)
-                except Exception as error:
-                    self.write(json.dumps({'status':False,
-                                           'error_msg':str(error)}))
-                    break
+                data.update(
+                    {'image_type': image_type, 'item_id': item_id}
+                )
+                items_model.ItemImages.create_item_image(data)
             else:
-                self.write(json.dumps({'status':False,
-                                       'error_msg':"服务器出错：上传失败"}))
+                self.data['message'] = '上传失败'
+                self.write(self.data)
                 return
         else:
-            self.write(json.dumps({'status':True}))
+            self.data['result'] = 'success'
+            self.write(self.data)
         
-
 
 # /j/delete_image/
 class AdminJsDeleteImageHandler(handlers.JsSiteBaseHandler):
     def post(self):
         image_id_list = self.get_arguments('image_id_list[]')
-        image_type = items_model.ItemsImage.type_choces
+        image_type = items_model.ItemImages.type_choces
         image_type = dict(image_type)
-        try:
-            for i in image_id_list:
-                image_obj = items_model.ItemsImage.get_by_id(i)
-                image_name = image_obj.image_path.rsplit('/', 1)[1]
-                file_base_path = os.path.join(config_web.settings_common['static_path'],
-                                              'photos',
-                                              image_type.get(image_obj.image_type))
-                file_path = os.path.join(file_base_path, image_name)
-                new_file_name = os.path.join(file_base_path, uuid.uuid4().hex + '.jpg')
-                if os.path.exists(file_path):os.rename(file_path, new_file_name)
-                items_model.ItemsImage.update_image_by_image_id(i, {'status':'deleted'})
-            self.write(json.dumps({'status':True}))
-        except Exception as error:
-            self.write(json.dumps({'status':False,
-                    'error_msg':'服务器出错：{0}'.format(str(error))}))
+        for i in image_id_list:
+            image_obj = items_model.ItemImages.get_by_id(i)
+            image_name = image_obj.image_path.rsplit('/', 1)[1]
+            file_base_path = os.path.join(
+                config_web.settings_common['static_path'],
+                'photos',
+                image_type.get(image_obj.image_type)
+            )
+            file_path = os.path.join(file_base_path, image_name)
+            new_file_name = os.path.join(file_base_path, uuid.uuid4().hex + '.jpg')
+            if os.path.exists(file_path):
+                os.rename(file_path, new_file_name)
+            items_model.ItemImages.update_image_by_image_id(i, {'status': 'deleted'})
+            
+        self.data['result'] = 'success'
+        self.write(self.data)
+
+# /add_item/
+class AdminAdditemHandler(handlers.SiteBaseHandler):
+    def get(self):
+        self._render()
+    
+    def post(self):
+        form_data = self._build_form_data()
+        form_error = self._validate_form_data(form_data)
+        if form_error:
+            self._render(form_data, form_error)
+            return
+        new_form_data = { key: form_data[key] \
+            for key in form_data if form_data[key] }
+        if new_form_data:
+            new_form_data.update({
+                "create_person": self.current_user.member_name,
+                "create_time": int(time.time()),
+                "update_time": int(time.time()),
+            })
+            items_model.Items.create_item(new_form_data)
+            self.redirect('/items_manage/')
+
+    def _list_form_keys(self):
+        return [
+            "item_name", "item_info", "item_code",
+            "item_barcode", "price", "current_price",
+            "foreign_price", "key_word", "origin",
+            "shelf_life", "capacity", "specifications_type_id",
+            "for_people", "weight", "brand_id"
+        ]
+    
+    def _validate_form_data(self, form_data):
+        form_error = dict()
+        if not form_data['item_name']:
+            form_error['item_name'] = '不能为空'
+        return form_error
+    
+    def _render(self, form_data=None, form_errors=None):
+        specifications_type_dict = dict(items_model.Items. \
+            specifications_type_choices)
+        brands_list = items_model.Brands.get_brands_list_for_all()
+        self.render(
+            "admin/a_add_item.html",
+            form_data = form_data,
+            form_errors = form_errors,
+            specifications_type_dict = specifications_type_dict,
+            brands_list = brands_list
+        )
+
+# /editor_item/
+class AdminEditorItemHandler(handlers.SiteBaseHandler):
+    def get(self):
+        item_id = self.get_argument('item_id')
+        item_obj = items_model.Items.get_item_by_itemid(item_id)
+        form_data = self._build_form_data()
+        data = { key: getattr(item_obj, key) for key in form_data }
+        print(data)
+        self._render(data)
+
+    def post(self):
+        item_id = self.get_argument('item_id', None)
+        form_data = self._build_form_data()
+        new_form_data = { i:form_data[i] for i in form_data if form_data[i] }
+        if new_form_data:
+            new_form_data['update_person'] = self.current_user.member_name
+            new_form_data['update_time'] = int(time.time())
+            items_model.Items.update_item_by_itemid(item_id, new_form_data)
+            self.redirect('/items_manage/')
+    
+    def _list_form_keys(self):
+        return [
+            "item_name", "item_info", "item_code",
+            "item_barcode", "price", "current_price",
+            "foreign_price", "key_word", "origin",
+            "shelf_life", "capacity", "specifications_type_id",
+            "for_people", "weight", "brand_id"
+        ]
+    
+    def _render(self, form_data=None, form_errors=None):
+        specifications_type_dict = dict(items_model.Items. \
+            specifications_type_choices)
+        brands_list = items_model.Brands.get_brands_list_for_all()
+        print(specifications_type_dict)
+        self.render(
+            "admin/a_editor_item.html",
+            form_data = form_data,
+            form_errors = form_errors,
+            specifications_type_dict = specifications_type_dict,
+            brands_list = brands_list
+        )
+
+
+class AdminBrandsManageHandler(handlers.SiteBaseHandler):
+    def get(self):
+        current_page = self.get_argument('page',1)
+        value = self.get_argument('search_value', None)
+        filter_args = None
+        if value:
+            filter_args = '&search_value={0}'.format(value)
+            search_value = (items_model.Brands.cn_name == value)
+            brands_list = items_model.Brands.get_list_brands(current_page, search_value)
+            brands_count = items_model.Brands.get_brands_count(search_value)
+        else:
+            brands_list = items_model.Brands.get_list_brands(current_page)
+            brands_count = items_model.Brands.get_brands_count()
+        uri = self.get_uri()
+        self.render(
+            'admin/a_brands_manage.html',
+            search_value = value,
+            filter_args = filter_args,
+            brands_list = brands_list,
+            brands_count = brands_count,
+            uri = uri,
+            current_page = current_page
+        )
+
+
+
+class AdminAddbrandHandler(handlers.SiteBaseHandler):
+    def get(self):
+        self._render()
+    
+    def post(self):
+        form_data = self._build_form_data()
+        form_error = self._validate_form_data(form_data)
+        if form_error:
+            self._render(form_error, form_data)
+
+        files = self.request.files
+        if files:
+            file_obj = files.get('f_brand_image')
+            server_file_path = '/static/photos'
+            file_dir = os.path.join(
+                config_web.settings_common['static_path'],
+                'photos'
+            )
+            if not os.path.exists(file_dir):
+                os.makedirs(file_dir)
+            data = photo.save_upload_photo(
+                file_obj[0],
+                file_dir,
+                server_file_path,
+                'brand'
+            )
+            if data:
+                brand_image = data['image_path']
+                form_data.update({'brand_image': brand_image})
+        items_model.Brands.create_brand(form_data)
+        self.redirect('/brands_manage/')
+    
+    def _list_form_keys(self):
+        return [
+            'cn_name', 'cn_name_abridge', 'en_name',
+            'form_country', 'key_word', 'brand_about'
+        ]
+    
+    def _validate_form_data(self, form_data):
+        form_error = dict()
+        if not form_data['cn_name']:
+            form_error['cn_name'] = '至少这个不能为空'
+        return form_error
+    
+    def _render(self, form_error=None, form_data=None):
+        self.render(
+            'admin/a_add_brand.html',
+            form_error = form_error,
+            form_data = form_data
+        )
+
+
+# /j/delete_brands/
+class AdminJsDeleteBrandHandler(handlers.JsSiteBaseHandler):
+    def post(self):
+        brand_ids_list = self.get_arguments('brand_ids_list[]')
+        for i in brand_ids_list:
+            items_model.Brands.delete_by_id(i)
+        self.data['result'] = 'success'
+        self.write(self.data)
+
+
+# /editor_brand/
+class AdminEditorBrandHandler(handlers.SiteBaseHandler):
+    def get(self):
+        brand_id = self.get_argument('brand_id')
+        brand_obj = items_model.Brands.get_brand_by_brandid(brand_id)
+        form_data = items_model.Brands.obj_to_dict(brand_obj)
+        self._render(form_data=form_data)
+    
+    def post(self):
+        brand_id = self.get_argument('brand_id', None)
+        form_data = self._build_form_data()
+        new_form_data = { i:form_data[i] for i in form_data if form_data[i] }
+        files = self.request.files
+        if files:
+            file_obj = files.get('f_brand_image')
+            server_file_path = '/static/photos'
+            file_dir = os.path.join(
+                config_web.settings_common['static_path'],
+                'photos'
+            )
+            if not os.path.exists(file_dir):
+                os.makedirs(file_dir)
+            data = photo.save_upload_photo(
+                file_obj[0],
+                file_dir,
+                server_file_path,
+                'brand'
+            )
+            if data:
+                brand_image = data['image_path']
+                new_form_data.update({'brand_image': brand_image})
+        if new_form_data:
+            print(new_form_data)
+            items_model.Brands.update_brand_by_brandid(brand_id, new_form_data)
+            self.redirect('/brands_manage/')
+    
+    def _render(self, form_error=None, form_data=None, brand_obj=None):
+        self.render(
+            'admin/a_add_brand.html',
+            form_error = form_error,
+            form_data = form_data,
+            brand_obj = brand_obj
+        )
+    
+    def _list_form_keys(self):
+        return [
+            'cn_name', 'cn_name_abridge', 'en_name',
+            'form_country', 'key_word', 'brand_about'
+        ]

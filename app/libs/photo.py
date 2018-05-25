@@ -1,7 +1,9 @@
-from PIL import Image
 import os
 import subprocess
 import uuid
+
+from PIL import Image
+
 from app.models import items_model
 # photo_specs = [
 #     {"type": "thumb", "width": 180, "height": 180, "quality": 86},
@@ -10,11 +12,11 @@ from app.models import items_model
 #     {"type": "photo", "length": 650, "quality": 86},
 # ]
 photo_specs = {
-    "item_title": { "width": 180, "height": 180, "quality": 86},
-    "thumbicon": {"width": 100, "quality": 86, "is_square": True},
-    "title": {"width": 300, "height": 200, "quality": 86, "is_crop": True},
-    "item_info": {"width": 300, "height": 200},
-    "item": {"width": 300, "height": 200},
+    "title": {"width": 300, "height": 200},
+    "thumbicon": {"width": 180, "is_square": True},
+    "item_title": { "width": 300, "is_square": True},
+    "item": {"width": 980},
+    "brand": {"width": 300, "is_square": True},
 }
 
 # pic_specs = [
@@ -23,59 +25,71 @@ photo_specs = {
 # ]
 
 def convert_photo(photo_id, base_static_path, photo_type):
-    f_path_raw = os.path.join(base_static_path, "raw", photo_id + ".jpg")
+    f_path_raw = os.path.join(base_static_path, "raw", photo_id[0:2], photo_id + ".jpg")
     image_obj = Image.open(f_path_raw)
     new_image_obj = None
     width = None
     height = None
     spec = photo_specs.get(photo_type)
-    d_path_target = os.path.join(base_static_path, photo_type)
+    d_path_target = os.path.join(base_static_path, photo_type, photo_id[0:2])
     if not os.path.exists(d_path_target):
         os.makedirs(d_path_target)
 
     if spec.get("is_square") and spec["is_square"]:
-        width = spec["width"]
-        height = width
-        new_image_obj = image_obj.resize((width, height))
-    elif spec.get("width") and spec.get("height"):
-        if spec.get("is_crop") and spec["is_crop"]:
-            width = spec["width"]
-            height = spec["height"]
-            new_image_obj = image_obj.crop((width,
-                                            height,
-                                            width,
-                                            height))
+        width, height = image_obj.size
+        if width > height:
+            left_cent_size =  int((width - height)/2)
+            right_cent_size = width - left_cent_size
+            new_image_obj = image_obj.crop((left_cent_size, 0, right_cent_size, height))
+        elif height > width:
+            top_cent_size = int((height - width)/2)
+            bottom_cent_size = height - top_cent_size
+            new_image_obj = image_obj.crop((0, top_cent_size, width, bottom_cent_size))
         else:
-            width = spec["width"]
-            height = spec["height"]
-            new_image_obj = image_obj.resize((width,
-                                              height,))
+            new_image_obj = image_obj.crop((0, 0, width, width))
+        width = spec['width']
+        new_image_obj = new_image_obj.resize((width, width), Image.ANTIALIAS)
+        width = spec["width"]
+    elif spec.get("width") and spec.get("height"):
+        width = spec["width"]
+        height = spec["height"]
+        new_image_obj = image_obj.resize(
+            (width, height),
+            Image.ANTIALIAS
+        )
+    elif spec.get('width') and not spec.get('height'):
+        width, height = image_obj.size
+        spec_width = spec['width']
+        if width > spec_width:
+            scaling_percentage = spec_width/width
+            height = int(scaling_percentage * height)
+            new_image_obj = image_obj.resize((spec_width, height), Image.ANTIALIAS)
+        else:
+            new_image_obj = image_obj.resize((width, height), Image.ANTIALIAS)
     convert_photo_path = os.path.join(d_path_target, photo_id + ".jpg")
-    try:
-        new_image_obj.save(convert_photo_path)
-        return {"file_size":os.path.getsize(convert_photo_path),
-                "resolution":"{0}*{1}".format(width, height),
-                'file_type':'jpg'}
-    except Exception:
-        return None
+    new_image_obj.save(convert_photo_path)
+    return {"file_size":os.path.getsize(convert_photo_path),
+            "resolution":"{0}*{1}".format(width, height),
+            'file_type':'jpg'}
 
-def save_upload_photo(photo_file, base_static_path, server_file_path,
-                                                    photo_type):
+def save_upload_photo(photo_file, base_static_path, server_file_path, photo_type):
     photo_id = uuid.uuid4().hex
-    d_path_raw = os.path.join(base_static_path, "raw")
+    d_path_raw = os.path.join(base_static_path, "raw", photo_id[0:2])
     f_path_raw = os.path.join(d_path_raw, photo_id + ".jpg")
     if not os.path.exists(d_path_raw):
         os.makedirs(d_path_raw)
     with open(f_path_raw, "wb") as f:
         f.write(photo_file["body"])
     data = convert_photo(photo_id, base_static_path, photo_type)
-    if data is not None:
-        data.update({"image_path" : os.path.join(server_file_path,
-                                                 photo_type,
-                                                 photo_id + '.jpg')})
-        return data
-    else:
-        return None
+    image_path = os.path.join(
+        server_file_path,
+        photo_type,
+        photo_id[0:2],
+        photo_id + '.jpg'
+    )
+    data.update({"image_path" : image_path})
+    return data
+   
 
 
 # def remove_photo(photo_id, base_static_path, photo_type="photo"):

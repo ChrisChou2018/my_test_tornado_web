@@ -3,29 +3,31 @@
 
 import time
 import json
+
 import bcrypt
 import peewee
-from app.models import base_model
+from peewee import fn, SQL
 
+from app.models import base_model
 import app.libs.common as lib_common
 
-from peewee import fn, SQL
+
 
 
 class Member(base_model.BaseModel):
-    member_id = peewee.AutoField(db_column="MemberId", primary_key=True)
+    member_id = peewee.AutoField(db_column="member_id", primary_key=True)
     # login_name = peewee.CharField(db_column="LoginName")
-    member_name = peewee.CharField(db_column="MemberName")
+    member_name = peewee.CharField(db_column="member_name")
     # password = peewee.CharField(db_column="LpassWord")
-    hash_pwd = peewee.CharField(db_column="HashPwd", default="")
+    hash_pwd = peewee.CharField(db_column="hash_pwd", default="")
     # member_lvl = peewee.CharField(db_column="MemberLvl")
     # member_score = peewee.CharField(db_column="MemberScore")
-    # telephone = peewee.CharField(db_column="Telephone")
-    email = peewee.CharField(db_column="Email")
+    telephone = peewee.CharField(db_column="telephone")
+    # email = peewee.CharField(db_column="email")
     # pay_password = peewee.CharField(db_column="PayPassword")
-    status = peewee.CharField(db_column="Status")
-    create_time = peewee.DateTimeField(db_column="CreateTime")
-    salt_key = peewee.CharField(db_column="SaltKey")
+    status = peewee.CharField(db_column="status")
+    create_time = peewee.DateTimeField(db_column="create_time")
+    salt_key = peewee.CharField(db_column="salt_key")
     # qq_openid = peewee.CharField(db_column="qq_openid")
     # update_time = peewee.DateTimeField(db_column="UpdateTime")
     # wb_openid = peewee.CharField(db_column="wb_openid")
@@ -58,21 +60,26 @@ class Member(base_model.BaseModel):
 
     def is_vip_valid(self):
         return self.vip_avail_at > time.time()
+    
+    @classmethod
+    def create_member(cls, data):
+        cls.create(**data)
 
     @classmethod
-    def get_member_by_login(cls, email):
+    def get_member_by_login(cls, member_name):
         try:
-            return Member.get((Member.member_name == email) | (Member.email == email))
+            return Member.get((Member.member_name == member_name) | \
+                (Member.telephone == member_name))
         except Member.DoesNotExist:
             return None
 
     @classmethod
-    def get_user_by_sess(self, email, session_id):
+    def get_user_by_sess(self, telephone, session_id):
         member = None
         sessions = None
 
         try:
-            member = Member.get(Member.email == email)
+            member = Member.get(Member.telephone == telephone)
             sessions = json.loads(member.sessions)
         except:
             return None
@@ -88,20 +95,6 @@ class Member(base_model.BaseModel):
         return None
 
     @classmethod
-    def find_telephone_by_memberid(cls, member_id):
-        try:
-            return Member.get(Member.member_id == member_id)
-        except Member.DoesNotExist:
-            return None
-
-    @classmethod
-    def get_member_by_email(cls, email):
-        try:
-            return Member.get(Member.email == email)
-        except Member.DoesNotExist:
-            return None
-
-    @classmethod
     def get_member_by_telephone(cls, telephone):
         # status 为10表示邀请的用户，但是并未注册
         member_select = (Member.telephone == telephone)
@@ -109,17 +102,6 @@ class Member(base_model.BaseModel):
             return Member.get(member_select)
         except Member.DoesNotExist:
             return None
-
-    @classmethod
-    def member_registration(cls, member_dict):
-        member_dict["member_lvl"] = MemberGrading.get_uuid_by_default()
-        return Member.create(**member_dict)
-
-    @classmethod
-    def update_member(cls, member_dict):
-        return Member.update(**member_dict).where(
-            Member.telephone == member_dict["telephone"]
-        ).execute()
 
     @classmethod
     def update_pwd_by_telephone(cls, telephone, new_hash_pwd):
@@ -154,18 +136,17 @@ class Member(base_model.BaseModel):
         query = Member.update(hash_pwd=new_psw).where(Member.member_id == member_id)
         query.execute()
 
-    # admin
-    @classmethod
-    def load_member_by_member_id(self, member_id):
-        try:
-            return Member.get(Member.member_id == member_id)
-        except Member.DoesNotExist:
-            return None
-
     @classmethod
     def get_member_by_name(cls, member_name):
         try:
             return Member.get(Member.member_name == member_name)
+        except Member.DoesNotExist:
+            return None
+    
+    @classmethod
+    def get_member_by_id(cls, member_id):
+        try:
+            return Member.get(Member.member_id == member_id)
         except Member.DoesNotExist:
             return None
 
@@ -178,67 +159,10 @@ class Member(base_model.BaseModel):
         return [each for each in Member.select().where(
             Member.member_id.in_(member_ids))]
 
-    # admin
-    @classmethod
-    def list_members(cls, member_id=None, telephone=None, is_staff=None, is_vip=False,
-                     orderby=None, is_count=False, start=0, num=50, member_manager=False):
-        member_select = (Member.status!="99")
-        if member_id:
-            member_id = "%"+member_id+"%"
-            member_select = member_select&(Member.member_id ** member_id)
-        if telephone:
-            telephone = "%"+telephone+"%"
-            member_select = member_select&(Member.telephone ** telephone)
-
-        if is_staff is True:
-            member_select = member_select&(Member.is_staff == "Y")
-        elif is_staff is False:
-            member_select = member_select&(Member.is_staff == "N")
-
-        if is_vip:
-            member_select = member_select&(Member.vip_avail_at > int(time.time()))
-
-        if is_count:
-            if member_manager:
-                member_select = member_select&(Member.is_builtin=="1")
-            return Member.select().where(member_select).count()
-
-        if orderby == "last_vip_at_desc":
-            order_cond = Member.last_vip_at.desc()
-        else:
-            order_cond = Member.create_time.desc()
-
-        if member_manager:
-            member_select = member_select&(Member.is_builtin=="1")
-            return Member.select().where(member_select) \
-                .order_by(Member.is_builtin.desc(), order_cond).offset(start).limit(num)
-        else:
-            return Member.select().where(member_select).order_by(order_cond) \
-                .offset(start).limit(num)
-
-    @classmethod
-    def load_other_platform_member(cls, openid, platform="wechat"):
-        if platform == "wechat":
-            member_select = (Member.wx_openid==openid)
-        elif platform == "qq":
-            member_select = (Member.qq_openid==openid)
-        elif platform == "sina":
-            member_select = (Member.wb_openid==openid)
-
-        try:
-            return Member.get(member_select)
-        except Member.DoesNotExist:
-            return None
 
     @classmethod
     def update_member_by_member_ids(cls, member_ids, member_dict):
         Member.update(**member_dict).where(Member.member_id.in_(member_ids)).execute()
-
-    @classmethod
-    def list_members_by_builtin(cls):
-        return [each for each in Member.select().where(
-            (Member.status=="1")&(Member.is_builtin=="1")).order_by(fn.Rand())
-        ]
 
     @classmethod
     def list_members_by_status(cls, status="1"):
@@ -268,7 +192,7 @@ class Member(base_model.BaseModel):
         ]
 
     @classmethod
-    def get_member_obj(cls, current_page, search_value=None):
+    def get_member_list(cls, current_page, search_value=None):
         if search_value:
             member_obj = Member.select().where(search_value).order_by(-Member.member_id).paginate(int(current_page), 15)
         else:
@@ -276,7 +200,7 @@ class Member(base_model.BaseModel):
         return member_obj
     
     @classmethod
-    def get_member_obj_count(cls, search_value=None):
+    def get_member_count(cls, search_value=None):
         if search_value:
             member_obj_count = Member.select().where(search_value).count()
         else:

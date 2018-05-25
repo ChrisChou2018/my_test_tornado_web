@@ -3,12 +3,11 @@
     
 {% end %}
 {% block title %}
-<div><a type="button" class="btn btn-default back_btn" >🔙 Back</a> </div> <hr> 图片管理 
+<div><a type="button" class="btn btn-default back_btn" >🔙 后退</a> </div> <hr> 图片管理 
 {% end %}
 {% block page_header %}
 <ol class="breadcrumb">
-    <li><a href="#"><i class="fa fa-dashboard"></i> Admin</a></li>
-    <li>image_manage</li>
+    <li>商品管理</li>
     <li class="active">{{item_obj.item_name}}</li>
 </ol>
 {% end %}
@@ -16,91 +15,74 @@
 {% block content %}
 <input type="file" accept=".jpg" name="add_new_image" multiple style="display:none;" item-id="{{ item_obj.item_id }}"> 
 <div class="container">
-    <div class="row" image-type='1'>
-        <h4>商品缩略图 
-            <a type="button" class="btn btn-info add_image" >Add
-                <span class="glyphicon glyphicon-plus"></span>
-            </a>
-            <button type="button" class="btn btn-danger delete_image" type="button">Delete<span class="glyphicon glyphicon-trash"></span></button>
-        </h4>
+    <h4>商品缩略图 
+        <a type="button" class="btn btn-info add_image" >Add
+            <span class="glyphicon glyphicon-plus"></span>
+        </a>
+        <button type="button" class="btn btn-danger delete_image" type="button">Delete<span class="glyphicon glyphicon-trash"></span></button>
+    </h4>
+    <div class="row" image-type='1' style="overflow: auto; max-width: 900px;" >
+        
         {% if image_dict.get(1) %}
             {% for i in image_dict.get(1) %}
-                <div class="col-xs-6 col-md-3 image_item" image-id='{{i.get("image_id")}}'>
-                    <a class="thumbnail">
-                    <img src="{{i.get('image_path')}}" alt="..." style="width: 253px;height: 253px;">
+                <div class="col-xs-6 col-md-2 image_item" image-id='{{i.get("image_id")}}'>
+                    <a class="thumbnail" style="width: 150px;height: 150px;">
+                    <img src="{{i.get('image_path')}}" alt="..." >
                     </a>
                 </div>
             {% end %}
         {% else %}
-            <div class="col-xs-6 col-md-3 image_item">
-                <a class="thumbnail">
-                <img src="/assets/images/user-default.jpg" alt="..." style="width: 253px;height: 253px;">
+            <!-- <div class="col-xs-6 col-sm-2 image_item">
+                <a class="thumbnail" style="width: 150px;height: 150px;">
+                <img src="/images/user-default.jpg" alt="...">
                 </a>
-            </div>
+            </div> -->
         {% end %}
         
     </div>
-    <div class="row" image-type='2'>
-        <h4>商品样式图 
-            <button type="button" class="btn btn-info add_image" >Add<span class="glyphicon glyphicon-plus"></span></button>
-            <button type="button" class="btn btn-danger delete_image" type="button">Delete<span class="glyphicon glyphicon-trash"></span></button>
-        </h4>
+    <h4>商品样式图 
+        <button type="button" class="btn btn-info add_image" >Add<span class="glyphicon glyphicon-plus"></span></button>
+        <button type="button" class="btn btn-danger delete_image" type="button">Delete<span class="glyphicon glyphicon-trash"></span></button>
+    </h4>
+    <div class="row" image-type='2' style="overflow: auto; max-width: 900px;">
+        
         {% if image_dict.get(2) %}
             {% for i in image_dict.get(2) %}
                 <div class="col-xs-6 col-md-3 image_item" image-id='{{i.get("image_id")}}'> 
-                    <a class="thumbnail">
-                    <img src="{{i.get('image_path')}}" alt="..." style="width: 253px;height: 253px;">
+                    <a class="thumbnail" style="width: 200px;height: 200px;">
+                    <img src="{{i.get('image_path')}}" alt="..." >
                     </a>
                 </div>
             {% end %}
         {% else %}
-            <div class="col-xs-6 col-md-3 image_item">
-                <a class="thumbnail">
-                <img src="/assets/images/user-default.jpg" alt="..." style="width: 253px;height: 253px;">
+            <!-- <div class="col-xs-6 col-md-4 image_item">
+                <a class="thumbnail" style="width: 200px;height: 200px;">
+                <img src="/images/user-default.jpg" alt="...">
                 </a>
-            </div>
+            </div> -->
         {% end %}
     </div>
-    <div class="row" image-type='3'>
-        <h4>图文详情图 
-            <button type="button" class="btn btn-info add_image" >Add<span class="glyphicon glyphicon-plus"></span></button>
-            <button type="button" class="btn btn-danger delete_image" type="button">Delete<span class="glyphicon glyphicon-trash"></span></button>
-        </h4>
-        {% if image_dict.get(3) %}
-            {% for i in image_dict.get(3) %}
-                <div class="col-xs-6 col-md-3 image_item" image-id='{{i.get("image_id")}}'>
-                    <a class="thumbnail">
-                    <img src="{{i.get('image_path')}}" alt="..." style="width: 253px;height: 253px;">
-                    </a>
-                </div>
-            {% end %}
-        {% else %}
-            <div class="col-xs-6 col-md-3 image_item">
-                <a class="thumbnail">
-                <img src="/assets/images/user-default.jpg" alt="..." style="width: 253px;height: 253px;">
-                </a>
-            </div>
-        {% end %}
-    </div>
-    <div class="row" image-type='4'>
-        <h4>商品详细介绍图 
-            <button type="button" class="btn btn-info add_image" >Add<span class="glyphicon glyphicon-plus"></span></button>
-            <button type="button" class="btn btn-danger delete_image" type="button">Delete<span class="glyphicon glyphicon-trash"></span></button>
-        </h4>
+
+    <h4>商品详细图 
+        <button type="button" class="btn btn-info add_image" >Add<span class="glyphicon glyphicon-plus"></span></button>
+        <button type="button" class="btn btn-danger delete_image" type="button">Delete<span class="glyphicon glyphicon-trash"></span></button>
+    </h4>
+    <div class="row" image-type='4' style="overflow: auto; max-width: 1000px;">
+        
         {% if image_dict.get(4) %}
             {% for i in image_dict.get(4) %}
-                <div class="col-xs-6 col-md-3 image_item" image-id='{{i.get("image_id")}}'>
-                    <a class="thumbnail">
-                    <img src="{{i.get('image_path')}}" alt="..." style="width: 253px;height: 253px;">
+                <div class="col-xs-6 col-md-4 image_item" image-id='{{i.get("image_id")}}'>
+                    <a class="thumbnail" style="width: 350px;height: 350px; overflow: auto;">
+                    <img src="{{i.get('image_path')}}" alt="..." >
                     </a>
                 </div>
             {% end %}
         {% else %}
-            <div class="col-xs-6 col-md-3 image_item">
-                <a class="thumbnail">
-                <img src="/assets/images/user-default.jpg" alt="..." style="width: 253px;height: 253px;">
+            <!-- <div class="col-xs-6 col-md-3 image_item">
+                <a class="thumbnail" style="width: 350px;height: 350px;">
+                <img src="/images/user-default.jpg" alt="...">
                 </a>
-            </div>
+            </div> -->
         {% end %}
     </div>
 </div>
@@ -126,7 +108,7 @@
         $('.add_image').click(function(){
             $('input[name=add_new_image]').trigger('click')
             $('input[name=add_new_image]').unbind()
-            var image_type = $(this).parent().parent().attr('image-type')
+            var image_type = $(this).parent().next().attr('image-type')
             $('input[name=add_new_image]').change(function(){
                 var file =  $(this)[0].files
                 var formData = new FormData();
@@ -138,17 +120,16 @@
                 formData.append('_xsrf', getCookie("_xsrf"))
                 $.ajax({
                     type:'post',
-                    url:"/image_manage/",
+                    url:"/j/add_image/",
                     data:formData,
                     dataType:'json',
                     contentType:false,
                     processData:false,
                     success:function(data){
-                        console.log(data)
-                        if(data.status){
+                        if(data.result == 'success'){
                             location.reload()
                         }else{
-                            alert(data.error_msg)
+                            alert(data.message)
                         }
                     }
                 })
@@ -159,7 +140,7 @@
 
         //删除图片事件
         $('.delete_image').click(function(){
-            var image_item_list = $(this).parent().siblings()
+            var image_item_list = $(this).parent().next().children()
             var image_id_list = []
             $.each(image_item_list, function(index, item){
                 if($(item).find('a').css('background-color') == 'rgb(95, 158, 160)'){
@@ -177,10 +158,10 @@
                         '/j/delete_image/',
                         {'image_id_list':image_id_list, '_xsrf':getCookie("_xsrf")},
                         function(value){
-                            if(value.status){
+                            if(value.result == 'success'){
                                 location.reload()
                             }else{
-                                alert(value.error_msg)
+                                alert(value.message)
                             }
                         },
                         'json'
