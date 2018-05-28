@@ -101,7 +101,7 @@ class Items(base_model.BaseModel):
         (7, '盒')
     )
     specifications_type_id      = peewee.SmallIntegerField(db_column="specifications_type_id", choices=specifications_type_choices, null=True, verbose_name="规格类型")
-    brand_id                    = peewee.CharField(db_column="brand_id", default="", verbose_name="品牌ID")
+    brand_id                    = peewee.BigIntegerField(db_column="brand_id", null=True, verbose_name="品牌ID")
     for_people                  = peewee.CharField(db_column="for_people", default="", verbose_name="适用人群")
     weight                      = peewee.CharField(db_column="weight", default="", verbose_name="重量")
     create_person               = peewee.CharField(db_column="create_person", verbose_name="创建人")
