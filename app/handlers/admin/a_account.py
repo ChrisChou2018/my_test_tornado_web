@@ -61,7 +61,7 @@ class AdminSigninHandler(handlers.SiteBaseHandler):
         member_obj.sessions = json.dumps(sessions)
         member_obj.save()
         self.set_cookie(self.settings["cookie_key_sess"],
-            member_obj.member_id+":"+sess_key
+            str(member_obj.member_id)+":"+sess_key
         )
         self.redirect("/")
 
