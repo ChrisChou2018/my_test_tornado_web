@@ -220,11 +220,11 @@ class AdminChangePasswordHandler(handlers.SiteBaseHandler):
 
     def _validate_form_data(self, form_data):
         form_errors = dict()
+        print(form_data)
         for key in self._list_form_keys():
             if not form_data[key]:
-                form_errors[key] = "不能为空"
-        if form_data['password'] != form_data['password2']:
-            form_errors['password'] = "两次密码不一致"
+                form_errors['password'] = "不能为空"
         if len(form_data['password']) > 30:
             form_errors['password'] = '密码长度不超过30'
+        print(form_errors)
         return form_errors
