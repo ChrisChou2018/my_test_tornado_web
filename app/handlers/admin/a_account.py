@@ -61,7 +61,7 @@ class AdminSigninHandler(handlers.SiteBaseHandler):
         member_obj.sessions = json.dumps(sessions)
         member_obj.save()
         self.set_cookie(self.settings["cookie_key_sess"],
-            member_obj.telephone+":"+sess_key
+            member_obj.member_id+":"+sess_key
         )
         self.redirect("/")
 
@@ -101,13 +101,12 @@ class AdminRegisterHandler(handlers.SiteBaseHandler):
         member = member_model.Member
         form_data =  self._build_form_data()
         form_errors = self._validate_form_data(form_data)
-        print(form_data)
         if form_errors:
             self._render(form_data, form_errors)
             return
 
         member_obj_by_telephone = member.get_member_by_telephone(form_data.get('telephone'))
-        member_obj_by_name = member.get_member_by_name(form_data.get('member_name'))
+        member_obj_by_name = member.get_member_by_member_name(form_data.get('member_name'))
         if member_obj_by_telephone:
             return_data['error_msg']['has_member_error'] = '手机号已经被注册'
         elif member_obj_by_name:
@@ -128,10 +127,12 @@ class AdminRegisterHandler(handlers.SiteBaseHandler):
         form_data['hash_pwd'] = haspwd
         form_data.update({
             'sessions': json.dumps(list()),
-            'status': '1',
+            'status': 'normal',
             'role': 'admin',
             'salt_key': random_salt_key,
-            'create_time': dt.datetime.now()
+            'create_time': int(time.time()),
+            'update_time': int(time.time()),
+            'is_builtin': '1'
         })
         member.create(**form_data)
         return self.render("admin/a_register_success.html")

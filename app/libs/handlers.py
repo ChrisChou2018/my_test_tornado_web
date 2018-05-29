@@ -318,7 +318,7 @@ class ApiBaseHandler(DbBaseHandler):
             member_id, session_id = session_data.split(":")
         except:
             return None
-
+        
         member = Member.get_user_by_sess(member_id, session_id)
         return member
 

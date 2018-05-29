@@ -12,15 +12,18 @@ import app.libs.common as lib_common
 
 
 class Member(base_model.BaseModel):
-    member_id = peewee.AutoField(db_column="member_id", primary_key=True)
-    member_name = peewee.CharField(db_column="member_name")
-    hash_pwd = peewee.CharField(db_column="hash_pwd")
-    telephone = peewee.CharField(db_column="telephone")
-    status = peewee.CharField(db_column="status")
-    create_time = peewee.DateTimeField(db_column="create_time")
-    salt_key = peewee.CharField(db_column="salt_key")
-    role = peewee.CharField(db_column="role")
-    sessions = peewee.CharField(db_column="sessions")
+    member_id           = peewee.AutoField(db_column="member_id", primary_key=True)
+    member_name         = peewee.CharField(db_column="member_name")
+    hash_pwd            = peewee.CharField(db_column="hash_pwd")
+    telephone           = peewee.CharField(db_column="telephone")
+    status              = peewee.CharField(db_column="status")
+    salt_key            = peewee.CharField(db_column="salt_key")
+    role                = peewee.CharField(db_column="role", null=True)
+    sessions            = peewee.CharField(db_column="sessions")
+    created_ip          = peewee.CharField(db_column="created_ip", null=True)
+    is_builtin          = peewee.CharField(db_column="is_builtin")
+    create_time         = peewee.IntegerField(db_column="create_time")
+    update_time         = peewee.IntegerField(db_column="update_time")
     
 
     class Meta:
@@ -39,12 +42,11 @@ class Member(base_model.BaseModel):
             return None
 
     @classmethod
-    def get_user_by_sess(self, telephone, session_id):
+    def get_user_by_sess(cls, member_id, session_id):
         member = None
         sessions = None
-
         try:
-            member = Member.get(Member.telephone == telephone)
+            member = cls.get(cls.member_id == member_id)
             sessions = json.loads(member.sessions)
         except:
             return None
@@ -81,7 +83,7 @@ class Member(base_model.BaseModel):
         query.execute()
 
     @classmethod
-    def get_member_by_name(cls, member_name):
+    def get_member_by_member_name(cls, member_name):
         try:
             return Member.get(Member.member_name == member_name)
         except Member.DoesNotExist:
@@ -125,4 +127,54 @@ class Member(base_model.BaseModel):
     def update_member_by_member_id(cls, member_id, update_dict):
         Member.update(**update_dict).where(Member.member_id == member_id).execute()
 
+
+# class IdentifyingCode(base_model.BaseModel):
+#     telephone           = peewee.CharField(db_column="MemberId", primary_key=True)
+#     code                = peewee.CharField(db_column="Code")
+#     create_time         = peewee.DateTimeField(db_column="CreateTime")
+
+#     class Meta:
+#         db_table = "app_identifying_code"
+
+#     @classmethod
+#     def delete_code_by_telephone(cls, telephone):
+#         query = IdentifyingCode.delete().where(IdentifyingCode.telephone ==
+#             telephone)
+#         query.execute()
+
+#     @classmethod
+#     def insert_code_by_telephone(cls, telephone, code, create_time):
+#         return IdentifyingCode.create(telephone=telephone, code=code,
+#             create_time=create_time)
+
+#     @classmethod
+#     def find_validate_code(cls, code, telephone):
+#         try:
+#             return IdentifyingCode.get((IdentifyingCode.telephone==
+#                 telephone)&(IdentifyingCode.code==code))
+#         except IdentifyingCode.DoesNotExist:
+#             return None
+
+
+
+# class MemberGrading(base_model.BaseModel):
+#     uuid = peewee.CharField(db_column="UUID", primary_key=True)
+#     order_num = peewee.CharField(db_column="OrderNum")
+#     name = peewee.CharField(db_column="Name")
+#     create_person = peewee.CharField(db_column="CreatePerson")
+#     create_time = peewee.DateTimeField(db_column="CreateTime")
+#     update_person = peewee.CharField(db_column="UpdatePerson")
+#     update_time = peewee.DateTimeField(db_column="Name")
+#     is_default = peewee.CharField(db_column="ISDefault")
+
+#     class Meta:
+#         db_table = "app_member_grading"
+
+#     @classmethod
+#     def get_uuid_by_default(cls):
+#         try:
+#             grading = cls.get(cls.is_default == "1")
+#             return grading.uuid
+#         except cls.DoesNotExist:
+#             return None
 

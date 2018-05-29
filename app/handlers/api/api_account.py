@@ -1,371 +1,304 @@
-# #!/usr/bin/env python
-# # -*- coding: utf-8 -*-
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-# import hashlib
-# import tornado.web
-# import random
-# from datetime import *
-# import time
-# import uuid
-# import sys
-# import string
-# import json
+import hashlib
+import random
+from datetime import *
+import time
+import uuid
+import sys
+import string
+import json
 
-# import bcrypt
-
-# import meihuishuo.libs.coupon as lib_coupon
-# import meihuishuo.libs.picture as lib_picture
-# import meihuishuo.models.goods_model as goods_model
-# import meihuishuo.models.member_model as member_model
-
-# from meihuishuo.libs.handlers import ApiBaseHandler
-# from meihuishuo.models.member_model import Member, MemberGrading, Opinion, Address
-# from meihuishuo.models.member_model import IdentifyingCode, CheckinLog, MemberCoinLog
-# from meihuishuo.models.shop_cart_model import ShopCart
-# from meihuishuo.libs.decorators import api_authenticated
-# from meihuishuo.models.coupon_model import Coupon, Invitation, CouponSet
-# from meihuishuo.models.util_model import Versions, SkinTestReport
-# from meihuishuo.models.order_model import Order, OrderGoods
-# from meihuishuo.models.goods_model import Comment, Goods, HomeLimitedGoods, Collection, Country, CurrencyType
+import bcrypt
+import tornado.web
 
 
-# class ApiMemberBase(ApiBaseHandler):
-#     #create and send code
-#     def create_send_identifying_code(self, telephone):
-#         flag = "success"
-#         tab = ""
-#         code = str(random.random())[3:9]
-#         time = datetime.now()
-#         IdentifyingCode.delete_code_by_telephone(telephone)
-#         IdentifyingCode.insert_code_by_telephone(telephone, code, time)
-
-#         if len(telephone) == 11:
-#             self.send_template_sms(telephone, [code, 5], "1")
-#             tab = "1"
-#         else:
-#             member = Member.find_telephone_by_memberid(telephone)
-#             if member:
-#                 self.send_template_sms(telephone, [code, 5], "1")
-#                 tab = "1"
-#             else:
-#                 tab = "0"
-#         if tab == "0":
-#             IdentifyingCode.delete_code_by_telephone(telephone)
-#             flag = "error"
-#         return flag
-
-#     # send code help
-#     def send_code_help(self, telephone, api="register"):
-#         da = "error"
-#         if not telephone:
-#             self.data["result"] = da
-#             self.data["status"] = da
-#             self.data["message"] = "电话号码为空"
-#             return
-
-#         member = Member.get_member_by_telephone(telephone)
-#         if api in ("register", "new_telephone"):
-#             if member and member.status == "1":
-#                 self.data["status"] = "error_telephone_exists"
-#                 self.data["message"] = "电话号码已注册"
-#                 return
-#         elif api in ("find_pass", "change_pass"):
-#             if not member:
-#                 self.data["message"] = "用户不存在"
-#                 return
-
-#         if len(telephone) == 11:
-#             is_num = True
-#             try:
-#                 int(telephone)
-#             except Exception, e:
-#                 is_num = False
-#             if is_num:
-#                 da = self.create_send_identifying_code(telephone)
-#         else:
-#             member1 = Member.find_telephone_by_memberid(telephone)
-#             if not member1:
-#                 self.data["message"] = "用户不存在"
-#                 return
-#             da = self.create_send_identifying_code(member1.telephone)
-
-#         self.data["result"] = da
-#         self.data["status"] = da
-#         self.data["message"] = ""
-#         return
-
-#     #validate code
-#     def validate_code(self, code, member_id, api=False, overtime=5):
-#         flag = "error"
-#         identifying_code = IdentifyingCode.find_validate_code(code, member_id)
-#         if not identifying_code:
-#             return "codeError"
-
-#         now_time = datetime.now()
-#         end = time.mktime(now_time.timetuple())
-#         begin = time.mktime(identifying_code.create_time.timetuple())
-
-#         try:
-#             between_time = float(end-begin)/60
-#             if between_time > overtime:
-#                 flag = "overtime"
-#             else:
-#                 flag = "success"
-#         except Exception, e:
-#             flag = "error"
-
-#         if not api:
-#             IdentifyingCode.delete_code_by_telephone(member_id)
-
-#         return flag
-
-#     def login_help(self, telephone, password):
-#         if not telephone:
-#             self.data["message"] = u"用户名为空"
-#             return
-
-#         member= Member.get_member_by_login(telephone)
-#         if not member:
-#             self.data["message"] = u"用户不存在"
-#             return
-
-#         md5d = hashlib.md5(password).hexdigest()
-#         hash_pwd = str(member.hash_pwd) if member.hash_pwd else None
-#         password = member.password
-
-#         signin_flag = False
-#         if hash_pwd and bcrypt.hashpw(md5d, hash_pwd) == hash_pwd:
-#             signin_flag = True
-#         elif password and md5d == password:
-#             signin_flag = True
-#             hashd = bcrypt.hashpw(md5d, bcrypt.gensalt())
-#             member.hash_pwd = hashd
-#             member.password = ""
-
-#         if not signin_flag:
-#             self.data["message"] = u"密码错误"
-#             return
-
-#         self.data["result"] = "success"
-#         self.data["status"] = "success"
-#         member.sessions, self.data["session_id"] = \
-#             self.set_login_session_and_write_data(member)
-#         member.sessions = json.dumps(member.sessions)
-#         member.save()
-
-#         self._calc_vip_status(member)
-#         # self.data["session_id"] = sess_key
-#         self.data["message"] = ""
-
-#     def member_registration_help(self, password, telephone):
-#         Email = ""
-#         member = None
-#         if "@" in telephone:
-#             Email = telephone
-#             member = Member.get_member_by_email(telephone)
-#         else:
-#             member = Member.get_member_by_telephone(telephone)
-
-#         if member and member.status == "1":
-#             self.data["status"] = "error_telephone_exists"
-#             self.data["message"] = "电话号码已注册"
-#             return
-
-#         member_dict = dict()
-#         member_dict["telephone"] = telephone
-
-#         if member and (member.status == "10" or member.status == "20"):
-#             member_dict["member_id"] = member.member_id
-#         else:
-#             member_dict["member_id"] = str(uuid.uuid4()).replace("-", "")
-#             member_dict["member_id"] = member_dict["member_id"][0:15]
-
-#         member_dict["member_name"] = "MHS_" + str(random.random())[3:3+8]
-
-#         while True:
-#             member_name_exit = Member.get_member_by_member_name(member_dict["member_name"])
-#             if member_name_exit:
-#                 member_dict["member_name"] = "MHS_" + str(random.random())[3:3+8]
-#             else:
-#                 break
-
-#         now_time = datetime.now()
-#         md5d = hashlib.md5(password).hexdigest()
-#         member_dict["hash_pwd"] = bcrypt.hashpw(md5d, bcrypt.gensalt())
-#         MAX = sys.maxint
-#         MIN = int(MAX/2)
-#         member_dict["member_num"] = int(MIN+random.random()*(MAX-MIN))
-#         member_dict["create_time"] = now_time
-#         member_dict["update_time"] = now_time
-#         member_dict["member_score"] = "0"
-#         member_dict["is_builtin"] = "0"
-#         member_dict["sessions"] = ""
-#         member_dict["status"] = "1"
-#         member_dict["email"] = Email
-#         if member and (member.status == "10" or member.status == "20"):
-#             Member.update_member(member_dict)
-#         else:
-#             Member.member_registration(member_dict)
-
-#         self.login_help(telephone, password)
-
-#         return
-
-#     # identify_message
-#     def identify_message(self, message):
-#         if message != "success":
-#             if message == "codeError":
-#                 self.data["message"] = "验证码错误"
-#             elif message == "overtime":
-#                 self.data["message"] = "验证超时"
-#             elif message == "error":
-#                 self.data["message"] = "验证码不存在"
-#         return
-
-#     # pass help
-#     def pass_help(self, api="find_pass"):
-#         telephone = self.get_argument("telephone", "")
-#         if api == "change_pass":
-#             telephone = self.current_user.telephone
-#         code = self.get_argument("code", "")
-#         password = self.get_argument("password", "")
-
-#         if not telephone or not code or not password:
-#             self.data["message"] = "请补全信息"
-#             return
-
-#         if len(password) > 16 or len(password) < 6:
-#             self.data["message"] = "密码的长度请控制在6~16位"
-#             return
-
-#         try:
-#             member = Member.get(Member.telephone == telephone)
-#         except Exception, e:
-#             member = None
-
-#         if not member:
-#             self.data["message"] = "用户不存在"
-#             return
-
-#         da = self.validate_code(code, telephone)
-#         self.identify_message(da)
-#         if da != "success":
-#             return
-
-#         # member.password = hashlib.md5(password).hexdigest()
-#         md5d = hashlib.md5(password).hexdigest()
-#         member.hash_pwd = bcrypt.hashpw(md5d, bcrypt.gensalt())
-#         member.password = ""
-#         member.save()
-
-#         self.data["status"] = "success"
-#         self.data["message"] = ""
-#         return
-
-#     def set_login_session_and_write_data(self, member):
-#         sess_key = ''.join(
-#             random.choice(string.lowercase + string.digits) for i in range(10)
-#         )
-#         session = {"id": sess_key, "time": int(time.time())}
-#         try:
-#             sessions = json.loads(member.sessions)
-#         except:
-#             sessions = list()
-#         if not isinstance(sessions, list):
-#             sessions = list()
-#         sessions.append(session)
-
-#         if len(sessions) > 5:
-#             sessions = sessions[-5:]
-
-#         self._calc_vip_status(member)
-#         cart_item_count = 0
-#         for each in ShopCart.list_cart_goods(member.member_id):
-#             cart_item_count += int(each.goods_count)
-#         self.data["member_name"] = member.member_name
-#         self.data["member_id"] = member.member_id
-#         self.data["status"] = "success"
-#         self.data["cart_item_count"] = str(cart_item_count)
-#         self.data["member_avatar"] = member.member_avatar
-
-#         return sessions, sess_key
-
-#     def _calc_vip_status(self, member):
-#         if member.vip_avail_at < int(time.time()):
-#             self.data['member_level'] = u'普卡会员'
-#         else:
-#             self.data['member_level'] = u'VIP 星级用户'
+import app.models.member_model as member_model
+from app.libs.handlers import ApiBaseHandler
+from app.libs.decorators import api_authenticated
 
 
-# class ApiMemberSigninHandler(ApiMemberBase):
-#     def post(self):
-#         login_name = self.get_argument("LoginName", "")
-#         password = self.get_argument("Lpassword", "")
-#         if not login_name:
-#             login_name = self.get_argument("login_name", "")
-#             password = self.get_argument("password", "")
 
-#         code = self.get_argument("code", "")
-#         if code:
-#             if not login_name:
-#                 self.data["message"] = "电话号码不正确"
-#                 self.write(self.data)
-#                 return
+class ApiMemberBase(ApiBaseHandler):
+    # create and send code
+    # def create_send_identifying_code(self, telephone):
+    #     flag = "success"
+    #     tab = ""
+    #     code = str(random.random())[3:9]
+    #     time = datetime.now()
+    #     IdentifyingCode.delete_code_by_telephone(telephone)
+    #     IdentifyingCode.insert_code_by_telephone(telephone, code, time)
 
-#             self.auth_login(login_name, code)
-#             self.write(self.data)
-#             return
+    #     if len(telephone) == 11:
+    #         self.send_template_sms(telephone, [code, 5], "1")
+    #         tab = "1"
+    #     else:
+    #         member = Member.find_telephone_by_memberid(telephone)
+    #         if member:
+    #             self.send_template_sms(telephone, [code, 5], "1")
+    #             tab = "1"
+    #         else:
+    #             tab = "0"
+    #     if tab == "0":
+    #         IdentifyingCode.delete_code_by_telephone(telephone)
+    #         flag = "error"
+    #     return flag
 
-#         if not login_name or not password:
-#             self.data["result"] = "error"
-#             self.data["message"] = "请补全账号密码"
-#             self.write(self.data)
-#             return
+    # # send code help
+    # def send_code_help(self, telephone, api="register"):
+    #     da = "error"
+    #     if not telephone:
+    #         self.data["result"] = da
+    #         self.data["status"] = da
+    #         self.data["message"] = "电话号码为空"
+    #         return
 
-#         self.login_help(login_name, password)
-#         self.write(self.data)
+    #     member = Member.get_member_by_telephone(telephone)
+    #     if api in ("register", "new_telephone"):
+    #         if member and member.status == "1":
+    #             self.data["status"] = "error_telephone_exists"
+    #             self.data["message"] = "电话号码已注册"
+    #             return
+    #     elif api in ("find_pass", "change_pass"):
+    #         if not member:
+    #             self.data["message"] = "用户不存在"
+    #             return
 
-#     def auth_login(self, telephone, code):
-#         status = self.validate_code(code, telephone)
-#         if status != "success":
-#             self.identify_message(status)
-#             return
+    #     if len(telephone) == 11:
+    #         is_num = True
+    #         try:
+    #             int(telephone)
+    #         except Exception, e:
+    #             is_num = False
+    #         if is_num:
+    #             da = self.create_send_identifying_code(telephone)
+    #     else:
+    #         member1 = Member.find_telephone_by_memberid(telephone)
+    #         if not member1:
+    #             self.data["message"] = "用户不存在"
+    #             return
+    #         da = self.create_send_identifying_code(member1.telephone)
 
-#         member = Member.get_member_by_telephone(telephone)
-#         if not member:
-#             member = Member()
-#             now_time = datetime.now()
-#             member.member_id = str(uuid.uuid4()).replace("-", "")[0:15]
-#             member.telephone = telephone
-#             member.member_name = "MHS_" + str(random.random())[3:3+8]
-#             member.create_time = now_time
-#             member.update_time = now_time
-#             member.created_ip = self.client_ip
-#             member.status = "1"
-#             member.is_builtin = "0"
-#             member.member_lvl = MemberGrading.get_uuid_by_default()
-#             member.save(force_insert=True)
+    #     self.data["result"] = da
+    #     self.data["status"] = da
+    #     self.data["message"] = ""
+    #     return
 
-#             coupon_sets = list()
-#             coupon_sum_value = 0
-#             coupon_sets = lib_coupon.gen_coupon_by_condition(
-#                 condition="register", member_id=member.member_id
-#             )
+    # #validate code
+    # def validate_code(self, code, member_id, api=False, overtime=5):
+    #     flag = "error"
+    #     identifying_code = IdentifyingCode.find_validate_code(code, member_id)
+    #     if not identifying_code:
+    #         return "codeError"
 
-#             if coupon_sets:
-#                 for each in coupon_sets:
-#                     coupon_sum_value = coupon_sum_value + each.face_value
+    #     now_time = datetime.now()
+    #     end = time.mktime(now_time.timetuple())
+    #     begin = time.mktime(identifying_code.create_time.timetuple())
 
-#             self.data["coupon_sum_value"] = str(coupon_sum_value)
+    #     try:
+    #         between_time = float(end-begin)/60
+    #         if between_time > overtime:
+    #             flag = "overtime"
+    #         else:
+    #             flag = "success"
+    #     except Exception, e:
+    #         flag = "error"
 
-#         member.sessions, self.data["session_id"] = \
-#             self.set_login_session_and_write_data(member)
-#         member.sessions = json.dumps(member.sessions)
-#         member.save()
+    #     if not api:
+    #         IdentifyingCode.delete_code_by_telephone(member_id)
 
-#         self.data["status"] = "success"
-#         return
+    #     return flag
 
+    def login_help(self, telephone, password):
+        if not telephone:
+            self.data["message"] = "用户名为空"
+            return
+
+        member=  member_model.Member.get_member_by_login(telephone)
+        if not member:
+            self.data["message"] = "用户不存在"
+            return
+
+        salt_key = str(member.salt_key)
+        member_hashpw = str(member.hash_pwd)
+        signin_flag = False
+        if member_hashpw:
+            if bcrypt.hashpw((password+salt_key).encode(),
+                    member_hashpw.encode()) == member_hashpw.encode():
+                signin_flag = True
+
+        if not signin_flag:
+            self.data["message"] = u"密码错误"
+            return
+
+        self.data["status"] = "success"
+        member.sessions, self.data["session_id"] = \
+            self.set_login_session_and_write_data(member)
+        member.sessions = json.dumps(member.sessions)
+        member.save()
+
+        # self._calc_vip_status(member)
+        self.data["message"] = ""
+
+    def member_registration_help(self, password, telephone):
+        member = None
+        member = member_model.Member.get_member_by_telephone(telephone)
+
+        if member and member.status == "normal":
+            self.data["status"] = "error_telephone_exists"
+            self.data["message"] = "电话号码已注册"
+            return
+
+        member_dict = dict()
+        member_dict["telephone"] = telephone
+
+        member_dict["member_name"] = "MHS_" + str(random.random())[3:3+8]
+
+        while True:
+            member_name_exit =  member_model.Member.\
+                get_member_by_member_name(member_dict["member_name"])
+            if member_name_exit:
+                member_dict["member_name"] = "MHS_" + str(random.random())[3:3+8]
+            else:
+                break
+
+        random_salt_key = ''.join(
+            random.choice(string.ascii_lowercase + string.digits) \
+            for i in range(8)
+        )
+        haspwd = bcrypt.hashpw(
+            (password+random_salt_key).encode(),
+            bcrypt.gensalt()
+        )
+        member_dict["hash_pwd"] = haspwd
+        member_dict["create_time"] = int(time.time())
+        member_dict["update_time"] = int(time.time())
+        member_dict["is_builtin"] = "0"
+        member_dict["sessions"] = json.dumps(list())
+        member_dict["status"] = "normal"
+        member_dict["salt_key"] = random_salt_key
+        # member_dict["email"] = Email
+        member_model.Member.create_member(member_dict)
+        self.login_help(telephone, password)
+        return
+
+    # # identify_message
+    # def identify_message(self, message):
+    #     if message != "success":
+    #         if message == "codeError":
+    #             self.data["message"] = "验证码错误"
+    #         elif message == "overtime":
+    #             self.data["message"] = "验证超时"
+    #         elif message == "error":
+    #             self.data["message"] = "验证码不存在"
+    #     return
+
+    # pass help
+    def pass_help(self, api="find_pass"):
+        telephone = self.get_argument("telephone", "")
+        if api == "change_pass":
+            telephone = self.current_user.telephone
+        # code = self.get_argument("code", "")
+        password = self.get_argument("password", "")
+
+        if not telephone or not password:
+            self.data["message"] = "请补全信息"
+            return
+
+        if len(password) > 16 or len(password) < 6:
+            self.data["message"] = "密码的长度请控制在6~16位"
+            return
+
+        
+        member =  member_model.Member.get_member_by_telephone(telephone)
+        
+        if not member:
+            self.data["message"] = "用户不存在"
+            return
+
+        # da = self.validate_code(code, telephone)
+        # self.identify_message(da)
+        # if da != "success":
+        #     return
+        new_salt_key = ''.join(
+            random.choice(string.ascii_lowercase + string.digits) \
+            for i in range(8)
+        )
+        hashd = bcrypt.hashpw(
+            (password + new_salt_key).encode('utf8'),
+            bcrypt.gensalt()
+        )
+        member_model.Member.update_pwd(
+            self.current_user.member_id,
+            hashd
+        )
+        query = member_model.Member.update({'salt_key':new_salt_key}).\
+            where(member_model.Member.member_id == self.current_user.member_id)
+        query.execute()
+
+        self.data["status"] = "success"
+        self.data["message"] = ""
+        return
+
+    def set_login_session_and_write_data(self, member):
+        sess_key = ''.join(
+            random.choice(string.ascii_lowercase + string.digits) for i in range(10)
+        )
+        session = {"id": sess_key, "time": int(time.time())}
+        try:
+            sessions = json.loads(member.sessions)
+        except:
+            sessions = list()
+        if not isinstance(sessions, list):
+            sessions = list()
+        sessions.append(session)
+
+        if len(sessions) > 5:
+            sessions = sessions[-5:]
+
+        # self._calc_vip_status(member)
+        # cart_item_count = 0
+        # for each in ShopCart.list_cart_goods(member.member_id):
+        #     cart_item_count += int(each.goods_count)
+        self.data["member_name"] = member.member_name
+        self.data["member_id"] = member.member_id
+        self.data["status"] = "success"
+        # self.data["cart_item_count"] = str(cart_item_count)
+        # self.data["member_avatar"] = member.member_avatar
+
+        return sessions, sess_key
+
+    # def _calc_vip_status(self, member):
+    #     if member.vip_avail_at < int(time.time()):
+    #         self.data['member_level'] = u'普卡会员'
+    #     else:
+    #         self.data['member_level'] = u'VIP 星级用户'
+
+
+class ApiMemberSigninHandler(ApiMemberBase):
+    def post(self):
+        
+        login_name = self.get_argument("telephone", "")
+        password = self.get_argument("password", "")
+
+        # code = self.get_argument("code", "")
+        # if code:
+        if not login_name:
+            self.data["message"] = "电话号码不正确"
+            self.write(self.data)
+            return
+
+        if not login_name or not password:
+            self.data["result"] = "error"
+            self.data["message"] = "请补全账号密码"
+            self.write(self.data)
+            return
+
+        self.login_help(login_name, password)
+        self.write(self.data)
+
+ 
 
 # class ApiRegisterCodeHandler(ApiMemberBase):
 #     def post(self):
@@ -386,97 +319,83 @@
 #         self.write(self.data)
 
 
-# class ApiMemberRegistrationHandler(ApiMemberBase):
+
+
+class ApiMemberRegistrationHandler(ApiMemberBase):
+    def post(self):
+        form_data = self._build_form_data()
+        # code = form_data["code"]
+        telephone = form_data["telephone"]
+        if not telephone:
+            self.data["message"] = "电话号码为空"
+            self.write(self.data)
+            return
+
+        # da = self.validate_code(code, telephone)
+        # self.identify_message(da)
+        # if self.data["message"]:
+        #     self.write(self.data)
+        #     return
+
+        password = form_data["password"]
+        if len(password) < 6:
+            self.data["message"] = "密码的长度要大于6"
+            self.write(self.data)
+            return
+
+        # member_status = member_model.Member.get_member_by_telephone(telephone)
+        self.member_registration_help(password, telephone)
+        if self.data['message']:
+            self.write(self.data)
+            return
+
+        self.write(self.data)
+
+    def _list_form_keys(self):
+        return ("password", "telephone")
+
+
+class ApiChangePassHandler(ApiMemberBase):
+    @api_authenticated
+    def post(self):
+        self.pass_help(api="change_pass")
+        self.write(self.data)
+
+
+# class ApiSetPasswordHandler(ApiMemberBase):
+#     @api_authenticated
 #     def post(self):
-#         form_data = self._build_form_data()
-#         code = form_data["code"]
-#         telephone = form_data["telephone"]
-#         if not telephone:
-#             self.data["message"] = "电话号码为空"
+#         code = self.get_argument("code", "")
+#         password = self.get_argument("password", "")
+#         telephone = self.current_user.telephone
+
+#         if not telephone or not code:
+#             self.data["message"] = "参数有误"
 #             self.write(self.data)
 #             return
 
-#         da = self.validate_code(code, telephone)
-#         self.identify_message(da)
-#         if self.data["message"]:
+#         if len(password) > 16 or len(password) < 6:
+#             self.data["message"] = "密码的长度请控制在6~16位"
 #             self.write(self.data)
 #             return
 
-#         password = form_data["password"]
-#         if len(password) < 6:
-#             self.data["message"] = "密码的长度要大于6"
+#         if self.current_user.hash_pwd:
+#             self.data["message"] = "亲，您的账号已经有密码哦～"
 #             self.write(self.data)
 #             return
 
-#         member_status = Member.get_member_by_telephone(telephone)
-#         try:
-#             self.member_registration_help(password, telephone)
-#         except Exception, e:
-#             self.data["message"] = "请检查您的电话号码是否正确"
+#         validate_status = self.validate_code(code, telephone)
+#         if validate_status != "success":
+#             self.identify_message(validate_status)
 #             self.write(self.data)
 #             return
 
-#         coupons = list()
-#         coupon_sets = list()
-#         coupon_set_ids = list()
-#         coupon_list = list()
-#         invite_coupon_sets = list()
-#         coupon_sum_value = 0
-
-#         if self.data["status"] == "success":
-#             if member_status and member_status.status == "10":
-#                 invite_coupon_sets = lib_coupon.gen_coupon_by_condition(
-#                     condition="invite", member_id=self.data["member_id"]
-#                 )
-#                 # Update the invitation record.
-#                 # Then the inviter obtain the coupon.
-#                 invitation_dict = {}
-#                 invitation_dict["update_time"] = datetime.now()
-#                 invitation_dict["status"] = "1"
-#                 Invitation.update_invitation_by_invitee_id(
-#                     self.data["member_id"], invitation_dict
-#                 )
-
-#                 invitation_list = Invitation.list_invitation_by_invitee_id(self.data["member_id"])
-#                 for invitation in invitation_list:
-#                     lib_coupon.gen_coupon_by_condition(condition="inviter",
-#                                                        member_id=invitation.inviter_id)
-#             elif member_status and member_status.status == "20":
-#                 coupon_sets = lib_coupon.gen_goods_coupon(self.data["member_id"])
-
-#             if not coupon_sets:
-#                 coupon_sets = lib_coupon.gen_coupon_by_condition(
-#                     condition="register", member_id=self.data["member_id"]
-#                 )
-
-#         if coupon_sets:
-#             coupon_set_ids = [each.coupon_set_id for each in coupon_sets]
-
-#         if invite_coupon_sets:
-#             for each in invite_coupon_sets:
-#                 coupon_set_ids.append(each.coupon_set_id)
-
-#         if coupon_set_ids:
-#             coupon_list = Coupon.list_register_coupons(self.data["member_id"], coupon_set_ids)
-
-#         if coupon_list:
-#             for each in coupon_list:
-#                 coupon_dict = dict()
-#                 coupon_dict["coupon_id"] = each.coupon_id
-#                 coupon_dict["avail_start_at"] = each.avail_start_at
-#                 coupon_dict["avail_end_at"] = each.avail_end_at
-#                 coupon_dict["coupon_set_name"] = each.coupon_set_name
-#                 coupon_dict["face_value"] = str(each.face_value)
-#                 coupon_dict["use_condition"] = str(each.use_condition)
-#                 coupons.append(coupon_dict)
-#                 coupon_sum_value = coupon_sum_value + each.face_value
-
-#         self.data["coupons"] = coupons
-#         self.data["coupon_sum_value"] = str(coupon_sum_value)
+#         self.current_user.hash_pwd = bcrypt.hashpw(
+#             hashlib.md5(password).hexdigest(), bcrypt.gensalt()
+#         )
+#         self.current_user.save()
+#         self.data["status"] = "success"
 #         self.write(self.data)
-
-#     def _list_form_keys(self):
-#         return ("password", "code", "telephone")
 
 
 # class ApiFindPassCodeHandler(ApiMemberBase):
@@ -522,12 +441,6 @@
 #         self.write(self.data)
 
 
-# class ApiChangePassHandler(ApiMemberBase):
-#     @api_authenticated
-#     def post(self):
-#         self.pass_help(api="change_pass")
-#         self.write(self.data)
-
 
 # class ApiChangeTelephoneCodeHandler(ApiMemberBase):
 #     @api_authenticated
@@ -542,6 +455,60 @@
 #         #     return
 
 #         self.send_code_help(telephone, api="change_telephone")
+#         self.write(self.data)
+
+
+# class ApiUpdatePwdHandler(ApiMemberBase):
+#     @api_authenticated
+#     def post(self):
+#         code = self.get_argument("Code", "")
+#         member_id = self.get_argument("MemberId", "")
+#         old_password = self.get_argument("OldPass", "")
+#         new_password = self.get_argument("NewPass", "")
+#         if not member_id:
+#             code = self.get_argument("code", "")
+#             member_id = self.get_argument("telephone", "")
+#             old_password = self.get_argument("old_password", "")
+#             new_password = self.get_argument("new_password", "")
+
+#         validate_flag = self.validate_code(code, member_id)
+#         if validate_flag != "success":
+#             self.data["status"] = "error"
+#             self.data["result"] = "error"
+#             if validate_flag == "codeError":
+#                 self.data["message"] = "验证码错误"
+#             elif validate_flag == "overtime":
+#                 self.data["message"] = "验证超时"
+#             elif validate_flag == "error":
+#                 self.data["message"] = "验证码不存在"
+#             self.write(self.data)
+#             return
+
+#         new_md5d = hashlib.md5(new_password).hexdigest()
+#         new_pass = bcrypt.hashpw(new_md5d, bcrypt.gensalt())
+#         old_md5_pass = hashlib.md5(old_password).hexdigest()
+
+#         member = Member.load_member_by_member_id(self.current_user.member_id)
+
+#         validate_flag = False
+#         if member:
+#             if (member.hash_pwd and
+#                     member.hash_pwd == bcrypt.hashpw(old_md5_pass, member.hash_pwd)):
+#                 validate_flag = True
+#             elif member.password and member.password == old_md5_pass:
+#                 validate_flag = True
+
+#         if not validate_flag:
+#             self.data["result"] = "error"
+#             self.data["status"] = "error"
+#             self.data["message"] = "密码错误"
+#             self.write(self.data)
+#             return
+
+#         Member.update_pwd(member.member_id, new_pass)
+
+#         self.data["result"] = "success"
+#         self.data["status"] = "success"
 #         self.write(self.data)
 
 
@@ -800,58 +767,7 @@
 #         )
 
 
-# class ApiUpdatePwdHandler(ApiMemberBase):
-#     @api_authenticated
-#     def post(self):
-#         code = self.get_argument("Code", "")
-#         member_id = self.get_argument("MemberId", "")
-#         old_password = self.get_argument("OldPass", "")
-#         new_password = self.get_argument("NewPass", "")
-#         if not member_id:
-#             code = self.get_argument("code", "")
-#             member_id = self.get_argument("telephone", "")
-#             old_password = self.get_argument("old_password", "")
-#             new_password = self.get_argument("new_password", "")
 
-#         validate_flag = self.validate_code(code, member_id)
-#         if validate_flag != "success":
-#             self.data["status"] = "error"
-#             self.data["result"] = "error"
-#             if validate_flag == "codeError":
-#                 self.data["message"] = "验证码错误"
-#             elif validate_flag == "overtime":
-#                 self.data["message"] = "验证超时"
-#             elif validate_flag == "error":
-#                 self.data["message"] = "验证码不存在"
-#             self.write(self.data)
-#             return
-
-#         new_md5d = hashlib.md5(new_password).hexdigest()
-#         new_pass = bcrypt.hashpw(new_md5d, bcrypt.gensalt())
-#         old_md5_pass = hashlib.md5(old_password).hexdigest()
-
-#         member = Member.load_member_by_member_id(self.current_user.member_id)
-
-#         validate_flag = False
-#         if member:
-#             if (member.hash_pwd and
-#                     member.hash_pwd == bcrypt.hashpw(old_md5_pass, member.hash_pwd)):
-#                 validate_flag = True
-#             elif member.password and member.password == old_md5_pass:
-#                 validate_flag = True
-
-#         if not validate_flag:
-#             self.data["result"] = "error"
-#             self.data["status"] = "error"
-#             self.data["message"] = "密码错误"
-#             self.write(self.data)
-#             return
-
-#         Member.update_pwd(member.member_id, new_pass)
-
-#         self.data["result"] = "success"
-#         self.data["status"] = "success"
-#         self.write(self.data)
 
 
 # class ApiInsertHandler(ApiBaseHandler):
@@ -1328,42 +1244,6 @@
 
 #         # 电话号码没有注册
 #         self.current_user.telephone = telephone
-#         self.current_user.save()
-#         self.data["status"] = "success"
-#         self.write(self.data)
-
-
-# class ApiSetPasswordHandler(ApiMemberBase):
-#     @api_authenticated
-#     def post(self):
-#         code = self.get_argument("code", "")
-#         password = self.get_argument("password", "")
-#         telephone = self.current_user.telephone
-
-#         if not telephone or not code:
-#             self.data["message"] = "参数有误"
-#             self.write(self.data)
-#             return
-
-#         if len(password) > 16 or len(password) < 6:
-#             self.data["message"] = "密码的长度请控制在6~16位"
-#             self.write(self.data)
-#             return
-
-#         if self.current_user.hash_pwd:
-#             self.data["message"] = "亲，您的账号已经有密码哦～"
-#             self.write(self.data)
-#             return
-
-#         validate_status = self.validate_code(code, telephone)
-#         if validate_status != "success":
-#             self.identify_message(validate_status)
-#             self.write(self.data)
-#             return
-
-#         self.current_user.hash_pwd = bcrypt.hashpw(
-#             hashlib.md5(password).hexdigest(), bcrypt.gensalt()
-#         )
 #         self.current_user.save()
 #         self.data["status"] = "success"
 #         self.write(self.data)
