@@ -1,19 +1,24 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import peewee
 
 from app.models import member_model
 from app.models import items_model
 
+
+models_file_list = [
+    member_model,
+    items_model
+]
+
 def init_table():
-    if not member_model.Member.table_exists():
-        member_model.Member.create_table(safe=True)
-    if not items_model.Items.table_exists():
-        items_model.Items.create_table(safe=True)
-    if not items_model.ItemImages.table_exists():
-        items_model.ItemImages.create_table(safe=True)
-    if not items_model.Brands.table_exists():
-        items_model.Brands.create_table(safe=True)
-    print('finish....')
-    
-# init_table()
+    for models in models_file_list:
+        for model in dir(models):
+            model_obj = getattr(models, model)
+            if isinstance(model_obj, peewee.ModelBase) and \
+                not model_obj.table_exists():
+                model_obj.create_table(safe=True)
+    else:
+        print('finish....')
+
 

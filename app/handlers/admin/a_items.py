@@ -98,9 +98,11 @@ class AdminJsAddImageHandler(handlers.JsSiteBaseHandler):
                 image_type_dict.get(int(image_type))
             )
             if data:
-                data.update(
-                    {'image_type': image_type, 'item_id': item_id}
-                )
+                data.update({
+                    'image_type': image_type,
+                    'item_id': item_id,
+                    'status': 'normal'
+                })
                 items_model.ItemImages.create_item_image(data)
             else:
                 self.data['message'] = '上传失败'
