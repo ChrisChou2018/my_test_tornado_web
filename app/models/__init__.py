@@ -5,7 +5,6 @@ import peewee
 from app.models import member_model
 from app.models import items_model
 
-
 models_file_list = [
     member_model,
     items_model
@@ -20,5 +19,3 @@ def init_table():
                 model_obj.create_table(safe=True)
     else:
         print('finish....')
-
-

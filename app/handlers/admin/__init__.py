@@ -18,6 +18,9 @@ urls = [
 	(r"/brands_manage/?",					a_items.AdminBrandsManageHandler),
 	(r"/add_brand/?",						a_items.AdminAddbrandHandler),
 	(r"/editor_brand/?",					a_items.AdminEditorBrandHandler),
+	(r"/categories_manage/?",				a_items.AdminCategoriesManageHandler),
+	(r"/add_categorie/?",					a_items.AdminAddCategorieHandler),
+	(r"/editor_categorie/?",				a_items.AdminEditorCategorieHandler),
     (r"/signin/?",                          a_account.AdminSigninHandler),
     (r"/signout/?",                         a_account.AdminSignoutHandler),
     (r"/register/?",                        a_account.AdminRegisterHandler),
@@ -35,6 +38,7 @@ urls += [
 	(r"/j/add_image/?",			   a_items.AdminJsAddImageHandler),
 	(r"/j/delete_image/?",		   a_items.AdminJsDeleteImageHandler),
 	(r"/j/delete_brands/?",		   a_items.AdminJsDeleteBrandHandler),
+	(r"/j/delete_categorie/?",	   a_items.AdminJsDeleteCategorieHandler),
 ]
 
 

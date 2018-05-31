@@ -17,7 +17,7 @@ class AdminItemsManageHandler(handlers.SiteBaseHandler):
     """
     @decorators.admin_authenticated
     def get(self):
-        current_page = self.get_argument('page',1)
+        current_page = self.get_argument('page', 1)
         value = self.get_argument('search_value', None)
         filter_args = None
         if value:
@@ -31,6 +31,8 @@ class AdminItemsManageHandler(handlers.SiteBaseHandler):
         uri = self.get_uri()
         specifications_type_dict = dict(items_model.Items. \
             specifications_type_choices)
+        brand_dict = items_model.Brands.get_brands_list_for_all()
+        categories_dict = items_model.Categories.get_all_categoreis_dict()
         self.render(
             'admin/a_items.html',
             item_obj = item_list, 
@@ -40,6 +42,8 @@ class AdminItemsManageHandler(handlers.SiteBaseHandler):
             uri = uri,
             search_value = value,
             specifications_type_dict = specifications_type_dict,
+            brand_dict = brand_dict,
+            categories_dict = categories_dict,
         )
 
 
@@ -164,7 +168,8 @@ class AdminAdditemHandler(handlers.SiteBaseHandler):
             "item_barcode", "price", "current_price",
             "foreign_price", "key_word", "origin",
             "shelf_life", "capacity", "specifications_type_id",
-            "for_people", "weight", "brand_id"
+            "for_people", "weight", "brand_id",
+            "categories_id"
         ]
     
     def _validate_form_data(self, form_data):
@@ -177,12 +182,14 @@ class AdminAdditemHandler(handlers.SiteBaseHandler):
         specifications_type_dict = dict(items_model.Items. \
             specifications_type_choices)
         brands_list = items_model.Brands.get_brands_list_for_all()
+        categories_list = items_model.Categories.get_all_categoreis_dict()
         self.render(
             "admin/a_add_item.html",
             form_data = form_data,
             form_errors = form_errors,
             specifications_type_dict = specifications_type_dict,
-            brands_list = brands_list
+            brands_list = brands_list,
+            categories_list = categories_list
         )
 
 # /editor_item/
@@ -192,7 +199,6 @@ class AdminEditorItemHandler(handlers.SiteBaseHandler):
         item_obj = items_model.Items.get_item_by_itemid(item_id)
         form_data = self._build_form_data()
         data = { key: getattr(item_obj, key) for key in form_data }
-        print(data)
         self._render(data)
 
     def post(self):
@@ -211,20 +217,22 @@ class AdminEditorItemHandler(handlers.SiteBaseHandler):
             "item_barcode", "price", "current_price",
             "foreign_price", "key_word", "origin",
             "shelf_life", "capacity", "specifications_type_id",
-            "for_people", "weight", "brand_id"
+            "for_people", "weight", "brand_id",
+            "categories_id"
         ]
     
     def _render(self, form_data=None, form_errors=None):
         specifications_type_dict = dict(items_model.Items. \
             specifications_type_choices)
         brands_list = items_model.Brands.get_brands_list_for_all()
-        print(specifications_type_dict)
+        categories_list = items_model.Categories.get_all_categoreis_dict()
         self.render(
             "admin/a_editor_item.html",
             form_data = form_data,
             form_errors = form_errors,
             specifications_type_dict = specifications_type_dict,
-            brands_list = brands_list
+            brands_list = brands_list,
+            categories_list = categories_list
         )
 
 
@@ -348,7 +356,6 @@ class AdminEditorBrandHandler(handlers.SiteBaseHandler):
                 brand_image = data['image_path']
                 new_form_data.update({'brand_image': brand_image})
         if new_form_data:
-            print(new_form_data)
             items_model.Brands.update_brand_by_brandid(brand_id, new_form_data)
             self.redirect('/brands_manage/')
     
@@ -365,3 +372,163 @@ class AdminEditorBrandHandler(handlers.SiteBaseHandler):
             'cn_name', 'cn_name_abridge', 'en_name',
             'form_country', 'key_word', 'brand_about'
         ]
+
+
+class AdminCategoriesManageHandler(handlers.SiteBaseHandler):
+    def get(self):
+        current_page = self.get_argument('page', 1)
+        value = self.get_argument('search_value', None)
+        filter_args = None
+        categorie_choices = dict(items_model.Categories.type_choices)
+        if value:
+            filter_args = '&search_value={0}'.format(value)
+            search_value = items_model.Categories.categorie_name == value
+            categories_list = items_model.Categories. \
+                get_list_categories(current_page, search_value)
+            categories_count = items_model.Categories. \
+                get_categories_count(search_value)
+        else:
+            categories_list = items_model.Categories. \
+                get_list_categories(current_page)
+            categories_count = items_model.Categories. \
+                get_categories_count()
+        self.render(
+            "admin/a_categories_manage.html",
+            search_value = value,
+            categories_list = categories_list,
+            current_page = current_page,
+            categories_count = categories_count,
+            filter_args = filter_args,
+            uri = self.get_uri(),
+            categorie_choices = categorie_choices
+        )
+    
+
+class AdminAddCategorieHandler(handlers.SiteBaseHandler):
+    def get(self):
+        self._render()
+
+    def post(self):
+        form_data = self._build_form_data()
+        form_error = self._validate_form_data(form_data)
+        if form_error:
+            self._render(form_data, form_error)
+            return
+        files = self.request.files
+        if files:
+            file_obj = files.get('f_categorie_image')
+            server_file_path = '/static/photos'
+            file_dir = os.path.join(
+                config_web.settings_common['static_path'],
+                'photos'
+            )
+            if not os.path.exists(file_dir):
+                os.makedirs(file_dir)
+            data = photo.save_upload_photo(
+                file_obj[0],
+                file_dir,
+                server_file_path,
+                'brand'
+            )
+            if data:
+                image_path = data['image_path']
+                form_data.update({'image_path': image_path})
+        items_model.Categories.create_new_categories(form_data)
+        self.redirect("/categories_manage/")
+
+    
+    def _list_form_keys(self):
+        return [
+            'categorie_name', 'categorie_type',
+        ]
+
+    def _validate_form_data(self, form_data):
+        form_errors = dict()
+        if not form_data['categorie_name']:
+            form_errors['categorie_name'] = '分类名不能为空'
+        if not form_data['categorie_type']:
+            form_errors['categorie_type'] = '请选择类别'
+        return form_errors
+
+    def _render(self, form_data=None, form_error=None):
+        categorie_choices = dict(items_model.Categories.type_choices)
+        self.render(
+            'admin/a_add_categorie.html',
+            form_data = form_data,
+            form_error = form_error,
+            categorie_choices = categorie_choices,
+        )
+    
+class AdminEditorCategorieHandler(handlers.SiteBaseHandler):
+    def get(self):
+        categorie_id = self.get_argument('categorie_id')
+        data = items_model.Categories.get_categorie_by_id(categorie_id)
+        form_data = self._build_form_data()
+        new_form_data = { key: getattr(data, key) for key in form_data }
+        self._render(new_form_data)
+    
+    def post(self):
+        categorie_id = self.get_argument('categorie_id')
+        form_data = self._build_form_data()
+        form_error = self._validate_form_data(form_data)
+        if form_error:
+            self._render(form_data, form_error)
+            return
+
+        files = self.request.files
+        if files:
+            file_obj = files.get('f_categorie_image')
+            server_file_path = '/static/photos'
+            file_dir = os.path.join(
+                config_web.settings_common['static_path'],
+                'photos'
+            )
+            if not os.path.exists(file_dir):
+                os.makedirs(file_dir)
+            data = photo.save_upload_photo(
+                file_obj[0],
+                file_dir,
+                server_file_path,
+                'brand'
+            )
+            if data:
+                image_path = data['image_path']
+                form_data.update({'image_path': image_path})
+        new_form_data = { key: form_data[key] for key in form_data if form_data[key] }
+        items_model.Categories.update_categorie_bt_id(categorie_id, new_form_data)
+        self.redirect("/categories_manage/")
+
+            
+
+    def _list_form_keys(self):
+        return [
+            'categorie_name', 'categorie_type', 'image_path'
+        ]
+    
+    def _validate_form_data(self, form_data):
+        form_errors = dict()
+        if not form_data['categorie_name']:
+            form_errors['categorie_name'] = '分类名不能为空'
+        if not form_data['categorie_type']:
+            form_errors['categorie_type'] = '请选择类别'
+        return form_errors
+    
+    def _render(self, form_data=None, form_error=None):
+        categorie_choices = dict(items_model.Categories.type_choices)
+        self.render(
+            'admin/a_add_categorie.html',
+            form_data = form_data,
+            form_error = form_error,
+            categorie_choices = categorie_choices
+        )
+
+
+class AdminJsDeleteCategorieHandler(handlers.JsSiteBaseHandler):
+    def post(self):
+        categorie_ids_list = self.get_arguments('categorie_ids_list[]')
+        for i in categorie_ids_list:
+            items_model.Categories.delete_by_id(i)
+        self.data['result'] = 'success'
+        self.write(self.data)
+    
+

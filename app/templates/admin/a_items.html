@@ -41,16 +41,6 @@
 {% end %}
 
 {% block content %}
-{% set table_head =  {
-    "item_id": 'ID', "item_name": '商品名称', "item_info": '商品信息',
-    "item_code": '商品编码', "item_barcode": '商品条码', 
-    "price": '原价格', 'current_price': '现价', 'foreign_price': '国外价格',
-    "comment_count": '评论数量', "hot_value": '热度值', "buy_count": '购买数量',
-    "key_word": '关键字', "origin": '原产地', "shelf_life": '保质期', 
-    "capacity": '容量', "specifications_type_id": '规格类型ID',"for_people": '适用群体',
-    "weight": '重量', "create_person": '创建人', "create_time": '创建时间', 
-    "update_person": '更新人', "update_time": '更新时间', "more": '更多'
-} %}
 
 <div style="overflow: auto; padding: 15px;">
     {% for i in item_obj %}
@@ -82,7 +72,15 @@
                         </div>
                     </div>
                     <div class="col-md-2">
+                        <div class="row">
                             适用人群：{{i.for_people}}
+                        </div>
+                        <div class="row">
+                            所属品牌：{{ brand_dict[i.brand_id] }}
+                        </div>
+                        <div class="row">
+                            所属分类：{{ categories_dict[i.categories_id] }}
+                        </div>
                     </div>
                     <div class="col-md-2">
                             保质期：{{i.shelf_life}}

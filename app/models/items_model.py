@@ -66,11 +66,12 @@ class Brands(base_model.BaseModel):
 
     @classmethod
     def get_brands_list_for_all(cls):
-        data_list = list()
+        data_dict = dict()
         all_data = cls.select()
-        for i in all_data:
-            data_list.append((i.brand_id, i.cn_name))
-        return data_list
+        if all_data:
+            for i in all_data:
+                data_dict[i.brand_id] = i.cn_name
+        return data_dict
 
 
 class Items(base_model.BaseModel):
@@ -100,6 +101,7 @@ class Items(base_model.BaseModel):
         (7, '盒')
     )
     specifications_type_id      = peewee.SmallIntegerField(db_column="specifications_type_id", choices=specifications_type_choices, null=True, verbose_name="规格类型")
+    categories_id               = peewee.BigIntegerField(db_column="categories_id", null=True, verbose_name="分类ID")
     brand_id                    = peewee.BigIntegerField(db_column="brand_id", null=True, verbose_name="品牌ID")
     for_people                  = peewee.CharField(db_column="for_people", null=True, verbose_name="适用人群")
     weight                      = peewee.CharField(db_column="weight", null=True, verbose_name="重量")
@@ -201,6 +203,59 @@ class ItemTags(base_model.BaseModel):
     
     class Meta:
         db_table = "app_item_tags"
+
+
+class Categories(base_model.BaseModel):
+    categorie_id    = peewee.AutoField(db_column="categorie_id", verbose_name="分类ID")
+    categorie_name  = peewee.CharField(db_column="categorie_name", verbose_name="分类名")
+    type_choices    = (
+        (0, '功效专区'),
+        (1, '基础护理'),
+        (2, '个性彩妆'),
+        (3, '营养保健')
+    )
+    categorie_type  = peewee.SmallIntegerField(db_column="categorie_type", choices=type_choices, null=True, verbose_name="类别")
+    image_path      = peewee.CharField(db_column="image_path", null=True, verbose_name="缩略图路径")
+
+    class Meta:
+        db_table = "app_categories"
+
+
+    @classmethod
+    def get_list_categories(cls, current_page, search_value=None):
+        if search_value:
+            obj = cls.select().where(search_value).order_by(-cls.categorie_id).paginate(int(current_page), 15)
+        else:
+            obj = cls.select().order_by(-cls.categorie_id).paginate(int(current_page), 15)
+        return obj
+    
+    @classmethod
+    def get_categories_count(cls, search_value=None):
+        if search_value:
+            count = cls.select().where(search_value).count()
+        else:
+            count = cls.select().count()
+        return count
+    
+    @classmethod
+    def create_new_categories(cls, data):
+        cls.create(**data)
+    
+    @classmethod
+    def get_categorie_by_id(cls, categorie_id):
+        return cls.get_by_id(categorie_id)
+    
+    @classmethod
+    def update_categorie_bt_id(cls, categorie_id, data):
+        cls.update(**data).where(cls.categorie_id == categorie_id).execute()
+
+    @classmethod
+    def get_all_categoreis_dict(cls):
+        dict_data = dict()
+        all_obj =  cls.select()
+        if all_obj:
+            dict_data = { i.categorie_id: i.categorie_name for i in all_obj }
+        return dict_data
 
 
 class ItemComments(base_model.BaseModel):

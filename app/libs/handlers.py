@@ -266,7 +266,7 @@ class JsWwwBaseHandler(WwwBaseHandler):
 class JsSiteBaseHandler(SiteBaseHandler):
     def initialize(self):
         super(SiteBaseHandler, self).initialize()
-        self.data = {"result":"error"}
+        self.data = {"result": "error", "message": ""}
 
     def _build_form_data(self):
         form_data = dict()

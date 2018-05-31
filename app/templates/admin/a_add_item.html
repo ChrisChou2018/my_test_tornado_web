@@ -77,10 +77,23 @@
             <select name="f_brand_id" class="form-control">
                 <option value="" selected>--选择--</option>
                 {% for i in brands_list %}
-                    {% if form_data and form_data.get('brand_id') is not None and str(i[0]) == form_data['brand_id'] %}
-                        <option value="{{i[0]}}" selected>{{i[1]}}</option>
+                    {% if form_data and form_data.get('brand_id') is not None and i == form_data['brand_id'] %}
+                        <option value="{{ i }}" selected>{{ brands_list[i] }}</option>
                     {% else %}
-                        <option value="{{i[0]}}">{{i[1]}}</option>
+                        <option value="{{ i }}">{{ brands_list[i] }}</option>
+                    {% end %}
+                {% end %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="recipient-name" class="control-label">选择分类:</label>
+            <select name="f_categories_id" class="form-control">
+                <option value="" selected>--选择--</option>
+                {% for i in categories_list %}
+                    {% if form_data and form_data.get('categories_id') is not None and i == form_data['categories_id'] %}
+                        <option value="{{ i }}" selected>{{ categories_list[i] }}</option>
+                    {% else %}
+                        <option value="{{ i }}">{{ categories_list[i] }}</option>
                     {% end %}
                 {% end %}
             </select>
