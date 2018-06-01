@@ -1,0 +1,54 @@
+
+{% extends '../admin/a_layout.html' %}
+{% block css %}
+    
+{% end %}
+{% block title %}
+<a type="button" class="btn btn-default back_btn" onclick="history.back()" >🔙 后退</a>             
+{% end %}
+{% block content %}
+<div class="box box-primary" style="padding: 15px">
+    <div class="box-header">
+      <h3 class="box-title">添加评论</h3>
+    </div><!-- /.box-header -->
+    <!-- form start -->
+    <form role="form" method="POST" action="" enctype="multipart/form-data">
+        {% module xsrf_form_html() %}
+      <div class="box-body">
+        <div class="form-group">
+          <label for="exampleInputEmail1">评论内容</label>
+          <textarea name="f_comment_content" id="" cols="30" rows="10" class="form-control">
+          </textarea>
+          <span style="color: red">{{ form_error['categorie_name'] if form_error and form_error.get('categorie_name') else '' }}</span>
+        </div>
+        <div class="form-group">
+          <label for="cn_name_abridge">商品选择</label>
+          <input class="form-control search_input" type="text" placeholder="查找商品名">
+          <select name="f_item_id" id="" class="form-control" size="5">
+                {% for i in items_list %}
+                    <option value="{{ i['item_id'] }}">{{ i['item_name'] }}</option>
+                {% end %}
+          </select>
+          <span style="color: red">{{ form_error['item_id'] if form_error and form_error.get('item_id') else '' }}</span>
+        </div>
+      </div><!-- /.box-body -->
+
+      <div class="box-footer">
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </div>
+    </form>
+  </div>
+
+{% end %}
+{% block js %}
+    <script>
+    $(function(){
+        $('.search_input').change(function(){
+
+        })
+    })
+    
+    </script>
+{% end %}
+
+

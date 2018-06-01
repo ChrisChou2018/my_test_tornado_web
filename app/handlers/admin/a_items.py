@@ -271,6 +271,7 @@ class AdminAddbrandHandler(handlers.SiteBaseHandler):
         form_error = self._validate_form_data(form_data)
         if form_error:
             self._render(form_error, form_data)
+            return
 
         files = self.request.files
         if files:
@@ -459,6 +460,7 @@ class AdminAddCategorieHandler(handlers.SiteBaseHandler):
             categorie_choices = categorie_choices,
         )
     
+
 class AdminEditorCategorieHandler(handlers.SiteBaseHandler):
     def get(self):
         categorie_id = self.get_argument('categorie_id')
@@ -498,8 +500,6 @@ class AdminEditorCategorieHandler(handlers.SiteBaseHandler):
         items_model.Categories.update_categorie_bt_id(categorie_id, new_form_data)
         self.redirect("/categories_manage/")
 
-            
-
     def _list_form_keys(self):
         return [
             'categorie_name', 'categorie_type', 'image_path'
@@ -530,5 +530,45 @@ class AdminJsDeleteCategorieHandler(handlers.JsSiteBaseHandler):
             items_model.Categories.delete_by_id(i)
         self.data['result'] = 'success'
         self.write(self.data)
-    
 
+
+# /item_comments_manage/
+class AdminItemCommentsManageHandler(handlers.SiteBaseHandler):
+    def get(self):
+        current_page = self.get_argument('current_page', 1)
+        value = self.get_argument('search_value', None)
+        filter_args = None
+        if value:
+            filter_args = '&search_value={0}'.format(value)
+            search_value = items_model.Items.item_name == value
+            item_comments_list = items_model.ItemComments. \
+                get_item_comments_list(current_page, search_value)
+            count = items_model.ItemComments. \
+                get_item_comments_count(search_value)
+        else:
+            item_comments_list = items_model.ItemComments. \
+                get_item_comments_list(current_page)
+            count = items_model.ItemComments.get_item_comments_count()
+        self.render(
+            'admin/a_item_comments_manage.html',
+            current_page = current_page,
+            search_value = value,
+            filter_args = filter_args,
+            item_comments_list = item_comments_list,
+            count = count,
+            uri = self.get_uri(),
+        )
+
+
+class AdminAddCommentHandler(handlers.SiteBaseHandler):
+    def get(self):
+        self._render()
+    
+    def _render(self, form_data=None, form_error=None):
+        items_list = items_model.Items.get_items_all_select()
+        self.render(
+            'admin/a_add_comment.html',
+            form_data = form_data,
+            form_error = form_error,
+            items_list = items_list
+        )

@@ -17,6 +17,7 @@ photo_specs = {
     "item_title": { "width": 300, "is_square": True},
     "item": {"width": 980},
     "brand": {"width": 300, "is_square": True},
+    "comment": {"width": 300, "height": 400}
 }
 
 # pic_specs = [

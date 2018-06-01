@@ -2,7 +2,9 @@
 import peewee
 
 from app.models import base_model
-
+from app.models import member_model
+from app.libs import common
+from playhouse.shortcuts import model_to_dict
 
 class Brands(base_model.BaseModel):
     brand_id                    = peewee.AutoField(db_column="brand_id", primary_key=True, verbose_name="品牌ID")
@@ -67,7 +69,7 @@ class Brands(base_model.BaseModel):
     @classmethod
     def get_brands_list_for_all(cls):
         data_dict = dict()
-        all_data = cls.select()
+        all_data = cls.select(cls.brand_id, cls.cn_name)
         if all_data:
             for i in all_data:
                 data_dict[i.brand_id] = i.cn_name
@@ -136,7 +138,6 @@ class Items(base_model.BaseModel):
             item_obj = cls.select().where(search_value).order_by(-cls.item_id).paginate(int(current_page), 15)
         else:
             item_obj = cls.select().order_by(-cls.item_id).paginate(int(current_page), 15)
-        
         return item_obj
     
     @classmethod
@@ -147,6 +148,37 @@ class Items(base_model.BaseModel):
             item_obj_count = cls.select().count()
         
         return item_obj_count
+
+    @classmethod
+    def get_items_all_select(cls):
+        items = cls.select(cls.item_id, cls.item_name).dicts()
+        return items
+    
+    @classmethod
+    def get_items_list_for_api(cls, current_page):
+        item_obj = cls.select().order_by(-cls.item_id).paginate(int(current_page), 15).dicts()
+        item_obj = list(item_obj)
+        for i in item_obj:
+            image_obj = ItemImages.get_images_by_itemid(i['item_id']).dicts()
+            image_obj = list(image_obj)
+            i['image_list'] = image_obj
+            icon_obj = ItemImages.get_thumbicon_by_item_id(i['item_id'])
+            i['item_thumbicon'] = model_to_dict(icon_obj)
+        return item_obj
+
+    @classmethod
+    def get_items_by_categorie_id(cls, categorie_id, current_page):
+        item_obj = cls.select().order_by(-cls.item_id). \
+            where(cls.categories_id == categorie_id). \
+            paginate(int(current_page), 15).dicts()
+        item_obj = list(item_obj)
+        for i in item_obj:
+            image_obj = ItemImages.get_images_by_itemid(i['item_id']).dicts()
+            image_obj = list(image_obj)
+            i['image_list'] = image_obj
+            icon_obj = ItemImages.get_thumbicon_by_item_id(i['item_id'])
+            i['item_thumbicon'] = model_to_dict(icon_obj)
+        return item_obj
 
 
 class ItemImages(base_model.BaseModel):
@@ -193,6 +225,7 @@ class ItemImages(base_model.BaseModel):
             return image_obj
         except cls.DoesNotExist:
             return None
+    
     
 
 class ItemTags(base_model.BaseModel):
@@ -252,10 +285,19 @@ class Categories(base_model.BaseModel):
     @classmethod
     def get_all_categoreis_dict(cls):
         dict_data = dict()
-        all_obj =  cls.select()
+        all_obj =  cls.select(cls.categorie_id, cls.categorie_name)
         if all_obj:
             dict_data = { i.categorie_id: i.categorie_name for i in all_obj }
         return dict_data
+    
+    @classmethod
+    def get_categoreis_for_api(cls):
+        data_list = list()
+        for i in cls.type_choices:
+            temp = cls.select().where(cls.categorie_type == i[0]).dicts()
+            temp = list(temp)
+            data_list.append({i[i]: temp})
+        return data_list
 
 
 class ItemComments(base_model.BaseModel):
@@ -263,12 +305,49 @@ class ItemComments(base_model.BaseModel):
     member_id       = peewee.BigIntegerField(db_column="member_id", verbose_name="评论用户ID")
     item_id         = peewee.BigIntegerField(db_column="item_id", verbose_name="所属商品ID")
     comment_content = peewee.CharField(max_length=255, db_column="comment_content", verbose_name="评论内容")
-    reply_id        = peewee.BigIntegerField(db_column="reply_id", null=True, verbose_name="回复的评论ID")
+    # reply_id        = peewee.BigIntegerField(db_column="reply_id", null=True, verbose_name="回复的评论ID")
     create_time     = peewee.IntegerField(db_column="create_time", verbose_name="创建时间")
 
 
     class Meta:
         db_table = "app_item_comments"
+    
+
+    @classmethod
+    def create_item_comment(cls, data):
+        cls.create(**data)
+
+    @classmethod
+    def get_item_comments_list(cls, current_page, search_value=None):
+        if search_value:
+            item_comments_list = cls.select(cls, Items, member_model.Member). \
+                join(
+                    Items, on=(cls.item_id == Items.item_id).alias('itmes')
+                ).join(
+                    member_model.Member,
+                    on=(cls.member_id == member_model.Member.member_id).alias('members')
+                ).where(search_value).order_by(cls.comment_id). \
+                paginate(int(current_page), 15)
+        else:
+            item_comments_list = cls.select(cls, Items, member_model.Member). \
+                join(
+                    Items, on=(cls.item_id == Items.item_id).alias('itmes')
+                ).join(
+                    member_model.Member,
+                    on=(cls.member_id == member_model.Member.member_id).alias('members')
+                ).paginate(int(current_page), 15)
+        return item_comments_list
+    
+    @classmethod
+    def get_item_comments_count(cls, search_value=None):
+        count = None
+        if search_value:
+            count = cls.select(cls, Items).join(
+                Items, on=(cls.item_id == Items.item_id)
+            ).where(search_value).count()
+        else:
+            count = cls.select().count()
+        return count
 
 
 class CommentImages(base_model.BaseModel):
@@ -277,10 +356,16 @@ class CommentImages(base_model.BaseModel):
     image_path      = peewee.CharField(db_column="image_path", verbose_name="路径")
     file_size       = peewee.CharField(db_column="file_size", verbose_name="文件大小")
     resolution      = peewee.CharField(db_column="resolution", verbose_name="分辨率")
-    file_type       = peewee.CharField(db_column="file_type", verbose_name="文件类型")
+    file_type       = peewee.CharField(db_column="file_type", verbose_name="文件类型", default='.jpg')
 
 
     class Meta:
         db_table = "app_comment_images"
+    
+
+    @classmethod
+    def create_many_comment_image(cls, data_list):
+        for i in data_list:
+            cls.create(**i)
 
 

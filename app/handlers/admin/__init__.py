@@ -21,20 +21,20 @@ urls = [
 	(r"/categories_manage/?",				a_items.AdminCategoriesManageHandler),
 	(r"/add_categorie/?",					a_items.AdminAddCategorieHandler),
 	(r"/editor_categorie/?",				a_items.AdminEditorCategorieHandler),
+	(r"/item_comments_manage/?",			a_items.AdminItemCommentsManageHandler),
+	(r"/add_comment/?",						a_items.AdminAddCommentHandler),
     (r"/signin/?",                          a_account.AdminSigninHandler),
     (r"/signout/?",                         a_account.AdminSignoutHandler),
     (r"/register/?",                        a_account.AdminRegisterHandler),
     (r"/change_password/?",                 a_account.AdminChangePasswordHandler),
 ]
 
+# ajax请求
 urls += [
-    # (r"/j/member_info/?",          a_walcome.AdminJsMemberInfoHandler),
     (r"/j/register_member/?",      a_member.AdminJsRegisterMemberHandler),
     (r"/j/delete_member/?",        a_member.AdminJsDeleteMemberHandler),
     (r"/j/edit_member/?",          a_member.AdminJsEditMemberHandler),
-	# (r"/j/add_item/?",			   a_items.AdminJsAddItemHandler),
 	(r"/j/delete_item/?",		   a_items.AdminJsDeleteItemHandler),
-	# (r"/j/edit_item/?",			   a_items.AdminJsEditItemHandler),
 	(r"/j/add_image/?",			   a_items.AdminJsAddImageHandler),
 	(r"/j/delete_image/?",		   a_items.AdminJsDeleteImageHandler),
 	(r"/j/delete_brands/?",		   a_items.AdminJsDeleteBrandHandler),
