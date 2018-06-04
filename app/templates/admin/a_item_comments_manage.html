@@ -2,11 +2,11 @@
 {% block css %}
 {% end %}
 {% block title %}
-商品分类表            
+评论列表            
 {% end %}
 {% block page_header %}
 <ol class="breadcrumb">
-    <li><a href="#"><i class="fa fa-dashboard"></i> 分类管理</a></li>
+    <li><a href="#"><i class="fa fa-dashboard"></i> 评论管理</a></li>
 </ol>
 {% end %}
 
@@ -19,7 +19,7 @@
             <div class="col-md-8">
                 <form action="" method="GET" class="search_input">
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="搜索分类名称" name="search_value" value="{{ search_value if search_value else '' }}">
+                    <input type="text" class="form-control" placeholder="按商品搜索" name="search_value" value="{{ search_value if search_value else '' }}">
                     <span class="input-group-btn">
                         <button class="btn btn-default search_input_btn" type="submit">搜索</button>
                     </span>
@@ -32,7 +32,7 @@
         </div>
     </div>
     <div class="col-md-4">
-        <a href="/add_comment/" class="btn btn-info" >添加评论 <span class="glyphicon glyphicon-plus"></span></a>
+        <!-- <a href="/add_comment/" class="btn btn-info" >添加评论 <span class="glyphicon glyphicon-plus"></span></a> -->
         <button type="button" class="btn btn-default choose_comment" type="button">选择全部<span class="glyphicon glyphicon-saved"></span></button>
         <button type="button" class="btn btn-danger delete_comment" type="button">删除<span class="glyphicon glyphicon-trash"></span></button>
     </div>
@@ -43,12 +43,12 @@
 
 <div style="padding: 15px;overflow: auto;">
     {% for i in item_comments_list %}
-        <div class="panel panel-success categories_list">
+        <div class="panel panel-success comment_list">
             <div class="panel-heading"><input type="checkbox" class="item_checkbox" item-id={{i.comment_id}}>分类名：{{i.items.item_name}}</div>
             <div class="panel-body">
                 <div class="media-left">
                     <a href="#">
-                        <img class="media-object" src="{{i.image_path if i.image_path else '/images/user-default.jpg' }}" style="width: 100px; height: 100px;">
+                        <img class="media-object" src="/images/user-default.jpg" style="width: 100px; height: 100px;">
                     </a>
                 </div>
                 <div class="media-body">
@@ -64,7 +64,7 @@
                                 <a  href="/comment_image_manage/?comment_id={{i.comment_id}}" style='cursor:pointer;text-decoration:none;'><span class="glyphicon glyphicon-pencil"></span> 图片管理</a>                               
                             </div>
                             <div class="row">
-                                    <a  href="/editor_comment/?comment_id={{i.comment_id}}" style='cursor:pointer;text-decoration:none;'><span class="glyphicon glyphicon-pencil"></span> 编辑</a>
+                                    <a  href="/editor_comment/?comment_id={{i.comment_id}}&back_url={{request.uri}}" style='cursor:pointer;text-decoration:none;'><span class="glyphicon glyphicon-pencil"></span> 编辑</a>
                             </div>
                         </div>
                     </div>
@@ -97,17 +97,17 @@
                     add_or_edit_categorie(false)
                 })
             })
-            $('.choose_categories').click(function(){
+            $('.choose_comment').click(function(){
                 var text =  $(this).text()
-                var $categories_list = $('.categories_list')
+                var $comment_list = $('.comment_list')
                 if(text == '选择全部'){
-                    $categories_list.each(function(index, item){
+                    $comment_list.each(function(index, item){
                         var $f =  $(item).children().find('input[type="checkbox"]')
                         $f.prop('checked', true)
                     })
                     $(this).html('取消全部<span class="glyphicon glyphicon-saved"></span>')
                 }else{
-                    $categories_list.each(function(index, item){
+                    $comment_list.each(function(index, item){
                         var $f =  $(item).children().find('input[type="checkbox"]')
                         $f.prop('checked', false)
                     })
@@ -115,27 +115,28 @@
                 }
                 
             })
-            $('.delete_categories').click(delete_member)
+            $('.delete_comment').click(delete_comment)
             $('.edit_categorie').click(get_edit_category_info)
         })
         
  
 
         // 删除用户按钮
-        function delete_member(){
-            var $item_list = $('.categories_list')
-            var categorie_ids_list = []
+        function delete_comment(){
+            var $item_list = $('.comment_list')
+            var comment_ids_list = []
             $item_list.each(function(index, item){
                 var f =  $(item).children().find('input[type="checkbox"]')
                 var is_checked = $(f).prop('checked')
                 if(is_checked){
-                    categorie_ids_list.push($(f).attr('item-id'))
+                    comment_ids_list.push($(f).attr('item-id'))
                 }
             })
-            if(categorie_ids_list.length>0){
+        
+            if(comment_ids_list.length>0){
                 $.post(
-                    '/j/delete_categorie/',
-                    {'categorie_ids_list': categorie_ids_list, '_xsrf': getCookie('_xsrf')},
+                    '/j/delete_comments/',
+                    {'comment_ids_list': comment_ids_list, '_xsrf': getCookie('_xsrf')},
                     function(value){
                         if(value.result == 'success'){
                             location.reload()

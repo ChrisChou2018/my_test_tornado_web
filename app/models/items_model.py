@@ -111,6 +111,7 @@ class Items(base_model.BaseModel):
     create_time                 = peewee.IntegerField(db_column="create_time", verbose_name="创建时间")
     update_person               = peewee.CharField(db_column="update_person", null=True, verbose_name="更新人")
     update_time                 = peewee.IntegerField(db_column="update_time", verbose_name="更新时间")
+    status                      = peewee.CharField(db_column="status", verbose_name="状态", default="normal")
     
     
     class Meta:
@@ -124,7 +125,9 @@ class Items(base_model.BaseModel):
     @classmethod
     def get_item_by_itemid(cls, item_id):
         try:
-            return cls.get(cls.item_id == item_id)
+            return cls.get(
+                (cls.item_id == item_id) & (cls.status == 'normal')
+            )
         except cls.DoesNotExist:
             return None
 
@@ -135,41 +138,32 @@ class Items(base_model.BaseModel):
     @classmethod
     def get_list_items(cls, current_page, search_value=None):
         if search_value:
-            item_obj = cls.select().where(search_value).order_by(-cls.item_id).paginate(int(current_page), 15)
+            item_obj = cls.select().where(
+                (search_value) & (cls.status == 'normal')
+            ).order_by(-cls.item_id).paginate(int(current_page), 15)
         else:
-            item_obj = cls.select().order_by(-cls.item_id).paginate(int(current_page), 15)
+            item_obj = cls.select().where(cls.status == 'normal').order_by(-cls.item_id).paginate(int(current_page), 15)
         return item_obj
     
     @classmethod
     def get_items_count(cls, search_value=None):
         if search_value:
-            item_obj_count = cls.select().where(search_value).count()
+            item_obj_count = cls.select().where(
+                (search_value) & (cls.status == 'normal')
+            ).count()
         else:
-            item_obj_count = cls.select().count()
-        
+            item_obj_count = cls.select().where(cls.status == 'normal').count()
         return item_obj_count
 
     @classmethod
     def get_items_all_select(cls):
-        items = cls.select(cls.item_id, cls.item_name).dicts()
+        items = cls.select(cls.item_id, cls.item_name).where(cls.status == 'normal').dicts()
         return items
     
     @classmethod
     def get_items_list_for_api(cls, current_page):
-        item_obj = cls.select().order_by(-cls.item_id).paginate(int(current_page), 15).dicts()
-        item_obj = list(item_obj)
-        for i in item_obj:
-            image_obj = ItemImages.get_images_by_itemid(i['item_id']).dicts()
-            image_obj = list(image_obj)
-            i['image_list'] = image_obj
-            icon_obj = ItemImages.get_thumbicon_by_item_id(i['item_id'])
-            i['item_thumbicon'] = model_to_dict(icon_obj)
-        return item_obj
-
-    @classmethod
-    def get_items_by_categorie_id(cls, categorie_id, current_page):
         item_obj = cls.select().order_by(-cls.item_id). \
-            where(cls.categories_id == categorie_id). \
+            where(cls.status == 'normal'). \
             paginate(int(current_page), 15).dicts()
         item_obj = list(item_obj)
         for i in item_obj:
@@ -177,7 +171,24 @@ class Items(base_model.BaseModel):
             image_obj = list(image_obj)
             i['image_list'] = image_obj
             icon_obj = ItemImages.get_thumbicon_by_item_id(i['item_id'])
-            i['item_thumbicon'] = model_to_dict(icon_obj)
+            if icon_obj:
+                i['item_thumbicon'] = model_to_dict(icon_obj)
+        return item_obj
+
+    @classmethod
+    def get_items_by_categorie_id(cls, categorie_id, current_page):
+        item_obj = cls.select().order_by(-cls.item_id). \
+            where(
+                (cls.categories_id == categorie_id) & (cls.status == 'normal')
+            ).paginate(int(current_page), 15).dicts()
+        item_obj = list(item_obj)
+        for i in item_obj:
+            image_obj = ItemImages.get_images_by_itemid(i['item_id']).dicts()
+            image_obj = list(image_obj)
+            i['image_list'] = image_obj
+            icon_obj = ItemImages.get_thumbicon_by_item_id(i['item_id'])
+            if icon_obj:
+                i['item_thumbicon'] = model_to_dict(icon_obj)
         return item_obj
 
 
@@ -225,7 +236,6 @@ class ItemImages(base_model.BaseModel):
             return image_obj
         except cls.DoesNotExist:
             return None
-    
     
 
 class ItemTags(base_model.BaseModel):
@@ -296,7 +306,7 @@ class Categories(base_model.BaseModel):
         for i in cls.type_choices:
             temp = cls.select().where(cls.categorie_type == i[0]).dicts()
             temp = list(temp)
-            data_list.append({i[i]: temp})
+            data_list.append({i[1]: temp})
         return data_list
 
 
@@ -307,6 +317,7 @@ class ItemComments(base_model.BaseModel):
     comment_content = peewee.CharField(max_length=255, db_column="comment_content", verbose_name="评论内容")
     # reply_id        = peewee.BigIntegerField(db_column="reply_id", null=True, verbose_name="回复的评论ID")
     create_time     = peewee.IntegerField(db_column="create_time", verbose_name="创建时间")
+    status          = peewee.CharField(db_column="status", verbose_name="状态", default="normal")
 
 
     class Meta:
@@ -315,27 +326,32 @@ class ItemComments(base_model.BaseModel):
 
     @classmethod
     def create_item_comment(cls, data):
-        cls.create(**data)
+        return cls.create(**data)
 
     @classmethod
     def get_item_comments_list(cls, current_page, search_value=None):
         if search_value:
             item_comments_list = cls.select(cls, Items, member_model.Member). \
                 join(
-                    Items, on=(cls.item_id == Items.item_id).alias('itmes')
-                ).join(
+                    Items, on = (cls.item_id == Items.item_id).alias('items')
+                ).switch(cls).join(
                     member_model.Member,
-                    on=(cls.member_id == member_model.Member.member_id).alias('members')
-                ).where(search_value).order_by(cls.comment_id). \
-                paginate(int(current_page), 15)
+                    on = (
+                        cls.member_id == member_model.Member.member_id
+                    ).alias('members')
+                ).where(
+                    (search_value) & (cls.status == 'normal')
+                ).order_by(cls.comment_id).paginate(int(current_page), 15)
         else:
             item_comments_list = cls.select(cls, Items, member_model.Member). \
                 join(
-                    Items, on=(cls.item_id == Items.item_id).alias('itmes')
-                ).join(
+                    Items, on = (cls.item_id == Items.item_id).alias('items')
+                ).switch(cls).join(
                     member_model.Member,
-                    on=(cls.member_id == member_model.Member.member_id).alias('members')
-                ).paginate(int(current_page), 15)
+                    on = (
+                        cls.member_id == member_model.Member.member_id
+                    ).alias('members')
+                ).where(cls.status == 'normal').paginate(int(current_page), 15)
         return item_comments_list
     
     @classmethod
@@ -344,11 +360,26 @@ class ItemComments(base_model.BaseModel):
         if search_value:
             count = cls.select(cls, Items).join(
                 Items, on=(cls.item_id == Items.item_id)
-            ).where(search_value).count()
+            ).where((search_value) & (cls.status == 'normal')).count()
         else:
-            count = cls.select().count()
+            count = cls.select().where(cls.status == 'normal').count()
         return count
 
+    @classmethod
+    def get_item_comment_dict_by_id(cls, comment_id):
+        try:
+            comment_obj = cls.select(ItemComments, Items.item_name). \
+                join(Items, on = (cls.item_id == Items.item_id).alias('items')). \
+                where(
+                    (cls.comment_id == comment_id) & (cls.status == 'normal')
+                ).dicts()
+            return list(comment_obj)[0]
+        except cls.DoesNotExist:
+            return None
+    
+    @classmethod
+    def update_item_comment_by_id(cls, data, comment_id):
+        cls.update(**data).where(cls.comment_id == comment_id).execute()
 
 class CommentImages(base_model.BaseModel):
     image_id        = peewee.AutoField(db_column="image_id", verbose_name="图片ID")
@@ -357,6 +388,7 @@ class CommentImages(base_model.BaseModel):
     file_size       = peewee.CharField(db_column="file_size", verbose_name="文件大小")
     resolution      = peewee.CharField(db_column="resolution", verbose_name="分辨率")
     file_type       = peewee.CharField(db_column="file_type", verbose_name="文件类型", default='.jpg')
+    status          = peewee.CharField(db_column="status", verbose_name="状态", default="normal")
 
 
     class Meta:
@@ -367,5 +399,14 @@ class CommentImages(base_model.BaseModel):
     def create_many_comment_image(cls, data_list):
         for i in data_list:
             cls.create(**i)
+    
+    @classmethod
+    def get_comment_image_obj_by_id(cls, comment_id):
+        return cls.select().where(
+            (cls.comment_id == comment_id) & (cls.status == 'normal')
+        ).dicts()
 
+    @classmethod
+    def update_comment_image_by_id(cls, image_id, data):
+        cls.update(**data).where(cls.image_id == image_id).execute()
 

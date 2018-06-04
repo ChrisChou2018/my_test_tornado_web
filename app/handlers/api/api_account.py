@@ -17,6 +17,7 @@ import tornado.web
 import app.models.member_model as member_model
 from app.libs.handlers import ApiBaseHandler
 from app.libs.decorators import api_authenticated
+import config_web
 
 
 
@@ -120,12 +121,10 @@ class ApiMemberBase(ApiBaseHandler):
             self.data["message"] = "用户不存在"
             return
 
-        salt_key = str(member.salt_key)
-        member_hashpw = str(member.hash_pwd)
+        member_hashpw = member.hash_pwd
         signin_flag = False
         if member_hashpw:
-            if bcrypt.hashpw((password+salt_key).encode(),
-                    member_hashpw.encode()) == member_hashpw.encode():
+            if bcrypt.hashpw(password.encode(),member_hashpw.encode()):
                 signin_flag = True
 
         if not signin_flag:
@@ -153,22 +152,18 @@ class ApiMemberBase(ApiBaseHandler):
         member_dict = dict()
         member_dict["telephone"] = telephone
 
-        member_dict["member_name"] = "MHS_" + str(random.random())[3:3+8]
+        member_dict["member_name"] = "UBS_" + str(random.random())[3:3+8]
 
         while True:
             member_name_exit =  member_model.Member.\
                 get_member_by_member_name(member_dict["member_name"])
             if member_name_exit:
-                member_dict["member_name"] = "MHS_" + str(random.random())[3:3+8]
+                member_dict["member_name"] = "UBS_" + str(random.random())[3:3+8]
             else:
                 break
 
-        random_salt_key = ''.join(
-            random.choice(string.ascii_lowercase + string.digits) \
-            for i in range(8)
-        )
         haspwd = bcrypt.hashpw(
-            (password+random_salt_key).encode(),
+            password.encode(),
             bcrypt.gensalt()
         )
         member_dict["hash_pwd"] = haspwd
@@ -177,7 +172,6 @@ class ApiMemberBase(ApiBaseHandler):
         member_dict["is_builtin"] = "0"
         member_dict["sessions"] = json.dumps(list())
         member_dict["status"] = "normal"
-        member_dict["salt_key"] = random_salt_key
         # member_dict["email"] = Email
         member_model.Member.create_member(member_dict)
         self.login_help(telephone, password)
@@ -221,21 +215,14 @@ class ApiMemberBase(ApiBaseHandler):
         # self.identify_message(da)
         # if da != "success":
         #     return
-        new_salt_key = ''.join(
-            random.choice(string.ascii_lowercase + string.digits) \
-            for i in range(8)
-        )
         hashd = bcrypt.hashpw(
-            (password + new_salt_key).encode('utf8'),
+            password.encode(),
             bcrypt.gensalt()
         )
         member_model.Member.update_pwd(
             self.current_user.member_id,
             hashd
         )
-        query = member_model.Member.update({'salt_key':new_salt_key}).\
-            where(member_model.Member.member_id == self.current_user.member_id)
-        query.execute()
 
         self.data["status"] = "success"
         self.data["message"] = ""

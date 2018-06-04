@@ -22,7 +22,9 @@ urls = [
 	(r"/add_categorie/?",					a_items.AdminAddCategorieHandler),
 	(r"/editor_categorie/?",				a_items.AdminEditorCategorieHandler),
 	(r"/item_comments_manage/?",			a_items.AdminItemCommentsManageHandler),
-	(r"/add_comment/?",						a_items.AdminAddCommentHandler),
+	# (r"/add_comment/?",						a_items.AdminAddCommentHandler),
+	(r"/editor_comment/?",					a_items.AdminEditorCommentHandler),
+	(r"/comment_image_manage/?",			a_items.AdminItemCommentImageHandler),
     (r"/signin/?",                          a_account.AdminSigninHandler),
     (r"/signout/?",                         a_account.AdminSignoutHandler),
     (r"/register/?",                        a_account.AdminRegisterHandler),
@@ -31,14 +33,16 @@ urls = [
 
 # ajax请求
 urls += [
-    (r"/j/register_member/?",      a_member.AdminJsRegisterMemberHandler),
-    (r"/j/delete_member/?",        a_member.AdminJsDeleteMemberHandler),
-    (r"/j/edit_member/?",          a_member.AdminJsEditMemberHandler),
-	(r"/j/delete_item/?",		   a_items.AdminJsDeleteItemHandler),
-	(r"/j/add_image/?",			   a_items.AdminJsAddImageHandler),
-	(r"/j/delete_image/?",		   a_items.AdminJsDeleteImageHandler),
-	(r"/j/delete_brands/?",		   a_items.AdminJsDeleteBrandHandler),
-	(r"/j/delete_categorie/?",	   a_items.AdminJsDeleteCategorieHandler),
+    (r"/j/register_member/?",      			a_member.AdminJsRegisterMemberHandler),
+    (r"/j/delete_member/?",        			a_member.AdminJsDeleteMemberHandler),
+    (r"/j/edit_member/?",          			a_member.AdminJsEditMemberHandler),
+	(r"/j/delete_item/?",		  			a_items.AdminJsDeleteItemHandler),
+	(r"/j/add_image/?",			   			a_items.AdminJsAddImageHandler),
+	(r"/j/delete_image/?",		   			a_items.AdminJsDeleteImageHandler),
+	(r"/j/delete_brands/?",		   			a_items.AdminJsDeleteBrandHandler),
+	(r"/j/delete_categorie/?",	   			a_items.AdminJsDeleteCategorieHandler),
+	(r"/j/delete_comments/?",	   			a_items.AdminJsDeleteCommentHandler),
+	(r"/j/delete_item_comment_image/?",		a_items.AdminJsDeleteCommentImageHandler),
 ]
 
 

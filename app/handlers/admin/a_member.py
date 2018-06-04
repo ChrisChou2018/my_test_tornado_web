@@ -23,8 +23,10 @@ class AdminMemberManageHandler(handlers.SiteBaseHandler):
         filter_args = None
         if value:
             filter_args = '&search_value={0}'.format(value)
-            search_value = ((member_model.Member.member_name == value) \
-                            | (member_model.Member.telephone == value))
+            search_value = (
+                (member_model.Member.member_name == value) | \
+                (member_model.Member.telephone == value)
+            )
             member_list = member_model.Member.get_member_list(current_page, search_value)
             member_count = member_model.Member.get_member_count(search_value)
         else:
@@ -58,7 +60,7 @@ class AdminJsRegisterMemberHandler(handlers.JsSiteBaseHandler):
             return
 
         member_obj_by_telephone = member.get_member_by_telephone(form_data.get('telephone'))
-        member_obj_by_name = member.get_member_by_name(form_data.get('member_name'))
+        member_obj_by_name = member.get_member_by_member_name(form_data.get('member_name'))
         if member_obj_by_telephone:
             self.data['message'] = '手机号码已经被注册'
         elif member_obj_by_name:
@@ -68,21 +70,18 @@ class AdminJsRegisterMemberHandler(handlers.JsSiteBaseHandler):
             return
 
         pass_word = form_data['password']
-        random_salt_key = ''.join(
-            random.choice(string.ascii_lowercase + string.digits) \
-            for i in range(8)
-        )
         haspwd = bcrypt.hashpw(
-            (pass_word + random_salt_key).encode(),
+            pass_word.encode(),
             bcrypt.gensalt()
         )
         form_data['hash_pwd'] = haspwd
         form_data.update({
             'sessions': json.dumps(list()),
-            'status': '1',
+            'status': 'normal',
             'role': 'admin',
-            'salt_key': random_salt_key,
-            'create_time': dt.datetime.now()
+            # 'salt_key': random_salt_key,
+            'create_time': int(time.time()),
+            'update_time': int(time.time())
         })
         member_model.Member.create_member(form_data)
         self.data['result'] = 'success'
@@ -101,8 +100,8 @@ class AdminJsRegisterMemberHandler(handlers.JsSiteBaseHandler):
             message = "两次密码不一致"
         if not re.match(telephone, form_data['telephone']):
             message = '手机号码不存在'
-        if len(form_data['password']) > 30:
-            message = '密码长度不超过30'
+        if len(form_data['password']) > 30 or len(form_data['password']) < 6:
+            message = '密码长度不超过30或不小于6位'
         if len(form_data['member_name']) > 15:
             message = '用户名长度不超过15'
         return message
@@ -118,8 +117,7 @@ class AdminJsDeleteMemberHandler(handlers.JsSiteBaseHandler):
         member_id_list = self.get_arguments('member_id_list[]')
         member = member_model.Member
         for i in member_id_list:
-            obj = member.delete().where(member.member_id==i)
-            obj.execute()
+            member.update_member_by_member_id(i, {'status': 'deleted'})
         self.data['result'] = 'success'
         self.write(self.data)
 
@@ -166,16 +164,11 @@ class AdminJsEditMemberHandler(handlers.JsSiteBaseHandler):
         if clear_data.get('password'):
             pass_word = clear_data.pop('password')
             clear_data.pop('password2')
-            random_salt_key = ''.join(
-                random.choice(string.ascii_lowercase + string.digits) \
-                for i in range(8)
-            )
             haspwd = bcrypt.hashpw(
-                (pass_word+random_salt_key).encode(),
+                pass_word.encode(),
                 bcrypt.gensalt()
             )
             clear_data['hash_pwd'] = haspwd
-            clear_data.update({'salt_key':random_salt_key})
         member.update_member_by_member_id(member_id, clear_data)
         self.data['result'] = 'success'
         self.write(self.data)
@@ -190,8 +183,8 @@ class AdminJsEditMemberHandler(handlers.JsSiteBaseHandler):
             message = "两次密码不一致"
         if form_data['telephone'] and not re.match(telephone, form_data['telephone']):
             message = '手机号码不存在'
-        if form_data['password'] and len(form_data['password']) > 30:
-            message = '密码长度不超过30'
+        if form_data['password'] and len(form_data['password']) > 30 or len(form_data['password']) < 6:
+            message = '密码长度不超过30或不少于6位'
         if form_data['member_name'] and len(form_data['member_name']) > 15:
             message = '用户名长度不超过15'
         return message

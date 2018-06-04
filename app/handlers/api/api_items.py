@@ -38,7 +38,7 @@ class ApiFilterItemHandler(handlers.ApiBaseHandler):
 
 
 class ApiCreateCommentHandler(handlers.ApiBaseHandler):
-    def get(self):
+    def post(self):
         form_data = self._build_form_data()
         new_time = int(time.time())
         form_data['create_time'] = new_time
@@ -64,7 +64,8 @@ class ApiCreateCommentHandler(handlers.ApiBaseHandler):
                 if data:
                     data['comment_id'] = comment_obj.comment_id
                     comment_image_list.append(data)
-        items_model.CommentImages.create_many_comment_image(comment_image_list)
+        items_model.CommentImages. \
+            create_many_comment_image(comment_image_list)
         self.data['status'] = 'success'
         self.write(self.data)
 

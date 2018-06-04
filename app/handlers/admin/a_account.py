@@ -10,6 +10,7 @@ import bcrypt
 
 from app.libs import handlers
 from app.models import member_model
+import config_web
 
 
 # /signin/
@@ -32,12 +33,10 @@ class AdminSigninHandler(handlers.SiteBaseHandler):
             return
     
         pass_word = form_data["password"]
-        salt_key = str(member_obj.salt_key)
-        member_hashpw = str(member_obj.hash_pwd)
+        member_hashpw = member_obj.hash_pwd
         signin_flag = False
         if member_hashpw:
-            if bcrypt.hashpw((pass_word+salt_key).encode(),
-                    member_hashpw.encode()) == member_hashpw.encode():
+            if bcrypt.checkpw(pass_word.encode(), member_hashpw.encode()):
                 signin_flag = True
         if not signin_flag:
             form_errors["form"] = "用户名/密码不匹配"
@@ -105,8 +104,10 @@ class AdminRegisterHandler(handlers.SiteBaseHandler):
             self._render(form_data, form_errors)
             return
 
-        member_obj_by_telephone = member.get_member_by_telephone(form_data.get('telephone'))
-        member_obj_by_name = member.get_member_by_member_name(form_data.get('member_name'))
+        member_obj_by_telephone = member. \
+            get_member_by_telephone(form_data.get('telephone'))
+        member_obj_by_name = member. \
+            get_member_by_member_name(form_data.get('member_name'))
         if member_obj_by_telephone:
             return_data['error_msg']['has_member_error'] = '手机号已经被注册'
         elif member_obj_by_name:
@@ -116,12 +117,8 @@ class AdminRegisterHandler(handlers.SiteBaseHandler):
             return
 
         pass_word = form_data['password']
-        random_salt_key = ''.join(
-            random.choice(string.ascii_lowercase + string.digits) \
-            for i in range(8)
-        )
         haspwd = bcrypt.hashpw(
-            (pass_word+random_salt_key).encode(),
+            pass_word.encode(),
             bcrypt.gensalt()
         )
         form_data['hash_pwd'] = haspwd
@@ -129,10 +126,8 @@ class AdminRegisterHandler(handlers.SiteBaseHandler):
             'sessions': json.dumps(list()),
             'status': 'normal',
             'role': 'admin',
-            'salt_key': random_salt_key,
             'create_time': int(time.time()),
             'update_time': int(time.time()),
-            'is_builtin': '1'
         })
         member.create(**form_data)
         return self.render("admin/a_register_success.html")
@@ -158,8 +153,8 @@ class AdminRegisterHandler(handlers.SiteBaseHandler):
             form_errors['password'] = "两次密码不一致"
         if not re.match(telephone, form_data['telephone']):
             form_errors['telephone'] = '手机号不存在'
-        if len(form_data['password']) > 30:
-            form_errors['password'] = '密码长度不超过30'
+        if len(form_data['password']) > 30 or len(form_data['password']) < 6:
+            form_errors['password'] = '密码长度不超过30或小于6'
         if len(form_data['member_name']) > 15:
             form_errors['member_name'] = '用户名长度不超过15'
         return form_errors
@@ -182,26 +177,17 @@ class AdminChangePasswordHandler(handlers.SiteBaseHandler):
             
         clear_data = form_data
         old_pwd = clear_data['password']
-        salt_key = self.current_user.salt_key
         new_haspwd = clear_data['password2']
-        new_salt_key = ''.join(
-            random.choice(string.ascii_lowercase + string.digits) \
-            for i in range(8)
-        )
-        old_pwd_salt = (old_pwd + salt_key).encode('utf8')
-        current_hashpwd = self.current_user.hash_pwd.encode('utf8')
-        if bcrypt.hashpw(old_pwd_salt, current_hashpwd) == current_hashpwd:
+        current_hashpwd = self.current_user.hash_pwd.encode()
+        if bcrypt.checkpw(old_pwd.encode(), current_hashpwd):
             hashd = bcrypt.hashpw(
-                (new_haspwd + new_salt_key).encode('utf8'),
+                new_haspwd.encode(),
                 bcrypt.gensalt()
             )
             member_model.Member.update_pwd(
                 self.current_user.member_id,
                 hashd
             )
-            query = member_model.Member.update({'salt_key':new_salt_key}).\
-            where(member_model.Member.member_id == self.current_user.member_id)
-            query.execute()
             self.redirect('/signout/')
         else:
             form_errors.update({'password': '密码错误'})
@@ -223,6 +209,8 @@ class AdminChangePasswordHandler(handlers.SiteBaseHandler):
         for key in self._list_form_keys():
             if not form_data[key]:
                 form_errors['password'] = "不能为空"
-        if len(form_data['password']) > 30:
-            form_errors['password'] = '密码长度不超过30'
+                return form_errors
+
+        if len(form_data['password2']) > 30 or len(form_data['password2']) < 6:
+            form_errors['password'] = '密码长度不超过30或小于6'
         return form_errors

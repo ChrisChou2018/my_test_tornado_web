@@ -16,12 +16,10 @@ class Member(base_model.BaseModel):
     member_name         = peewee.CharField(db_column="member_name")
     hash_pwd            = peewee.CharField(db_column="hash_pwd")
     telephone           = peewee.CharField(db_column="telephone")
-    status              = peewee.CharField(db_column="status")
-    salt_key            = peewee.CharField(db_column="salt_key")
+    status              = peewee.CharField(db_column="status", default='normal')
     role                = peewee.CharField(db_column="role", null=True)
     sessions            = peewee.CharField(db_column="sessions")
     created_ip          = peewee.CharField(db_column="created_ip", null=True)
-    is_builtin          = peewee.CharField(db_column="is_builtin")
     create_time         = peewee.IntegerField(db_column="create_time")
     update_time         = peewee.IntegerField(db_column="update_time")
     
@@ -36,8 +34,11 @@ class Member(base_model.BaseModel):
     @classmethod
     def get_member_by_login(cls, member_name):
         try:
-            return Member.get((Member.member_name == member_name) | \
-                (Member.telephone == member_name))
+            return Member.get(
+                (Member.status == 'normal') & \
+                (Member.member_name == member_name) | \
+                (Member.telephone == member_name)
+            )
         except Member.DoesNotExist:
             return None
 
@@ -46,7 +47,9 @@ class Member(base_model.BaseModel):
         member = None
         sessions = None
         try:
-            member = cls.get(cls.member_id == member_id)
+            member = cls.get(
+                (cls.member_id == member_id) & (cls.status == 'normal')
+            )
             sessions = json.loads(member.sessions)
         except:
             return None
@@ -62,8 +65,9 @@ class Member(base_model.BaseModel):
 
     @classmethod
     def get_member_by_telephone(cls, telephone):
-        # status 为10表示邀请的用户，但是并未注册
-        member_select = (Member.telephone == telephone)
+        member_select = (
+            (Member.telephone == telephone) & (Member.status == 'normal')
+        )
         try:
             return Member.get(member_select)
         except Member.DoesNotExist:
@@ -85,14 +89,19 @@ class Member(base_model.BaseModel):
     @classmethod
     def get_member_by_member_name(cls, member_name):
         try:
-            return Member.get(Member.member_name == member_name)
+            return Member.get(
+                (Member.member_name == member_name) & \
+                (Member.status == 'normal')
+            )
         except Member.DoesNotExist:
             return None
     
     @classmethod
     def get_member_by_id(cls, member_id):
         try:
-            return Member.get(Member.member_id == member_id)
+            return Member.get(
+                (Member.member_id == member_id) & (Member.status == 'normal')
+            )
         except Member.DoesNotExist:
             return None
 
@@ -100,32 +109,31 @@ class Member(base_model.BaseModel):
     def update_member_by_member_ids(cls, member_ids, member_dict):
         Member.update(**member_dict).where(Member.member_id.in_(member_ids)).execute()
 
-    @classmethod
-    def list_members_by_status(cls, status="1"):
-        return [member for member in Member.select().where(
-            Member.status==status
-        )]
-
 
     @classmethod
     def get_member_list(cls, current_page, search_value=None):
         if search_value:
-            member_obj = Member.select().where(search_value).order_by(-Member.member_id).paginate(int(current_page), 15)
+            member_obj = Member.select().where(
+                (search_value) & (cls.status == 'normal')
+            ).order_by(-Member.member_id).paginate(int(current_page), 15)
         else:
-            member_obj = Member.select().order_by(-Member.member_id).paginate(int(current_page), 15)
+            member_obj = Member.select().where(cls.status == 'normal'). \
+                order_by(-Member.member_id).paginate(int(current_page), 15)
         return member_obj
     
     @classmethod
     def get_member_count(cls, search_value=None):
         if search_value:
-            member_obj_count = Member.select().where(search_value).count()
+            member_obj_count = Member.select().where(
+                (search_value) & (cls.status == 'normal')
+            ).count()
         else:
-            member_obj_count = Member.select().count()
+            member_obj_count = Member.select().where(cls.status == 'normal').count()
         return member_obj_count
 
     @classmethod
     def update_member_by_member_id(cls, member_id, update_dict):
-        Member.update(**update_dict).where(Member.member_id == member_id).execute()
+         return Member.update(**update_dict).where(Member.member_id == member_id).execute()
 
 
 # class IdentifyingCode(base_model.BaseModel):

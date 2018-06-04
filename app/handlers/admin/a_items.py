@@ -52,7 +52,7 @@ class AdminJsDeleteItemHandler(handlers.JsSiteBaseHandler):
     def post(self):
         item_id_list = self.get_arguments('item_id_list[]')
         for i in item_id_list:
-            items_model.Items.delete_by_id(i)
+            items_model.Items.update_item_by_itemid(i, {'status': 'deleted'})
         self.data['result'] = 'success'
         self.write(self.data)
 
@@ -204,12 +204,13 @@ class AdminEditorItemHandler(handlers.SiteBaseHandler):
     def post(self):
         item_id = self.get_argument('item_id', None)
         form_data = self._build_form_data()
+        back_url = self.get_argument('back_url', '/items_manage/')
         new_form_data = { i:form_data[i] for i in form_data if form_data[i] }
         if new_form_data:
             new_form_data['update_person'] = self.current_user.member_name
             new_form_data['update_time'] = int(time.time())
             items_model.Items.update_item_by_itemid(item_id, new_form_data)
-            self.redirect('/items_manage/')
+            self.redirect(back_url)
     
     def _list_form_keys(self):
         return [
@@ -335,6 +336,7 @@ class AdminEditorBrandHandler(handlers.SiteBaseHandler):
     
     def post(self):
         brand_id = self.get_argument('brand_id', None)
+        back_url = self.get_argument('back_url', '/brands_manage/')
         form_data = self._build_form_data()
         new_form_data = { i:form_data[i] for i in form_data if form_data[i] }
         files = self.request.files
@@ -358,7 +360,7 @@ class AdminEditorBrandHandler(handlers.SiteBaseHandler):
                 new_form_data.update({'brand_image': brand_image})
         if new_form_data:
             items_model.Brands.update_brand_by_brandid(brand_id, new_form_data)
-            self.redirect('/brands_manage/')
+            self.redirect(back_url)
     
     def _render(self, form_error=None, form_data=None, brand_obj=None):
         self.render(
@@ -471,6 +473,7 @@ class AdminEditorCategorieHandler(handlers.SiteBaseHandler):
     
     def post(self):
         categorie_id = self.get_argument('categorie_id')
+        back_url = self.get_argument('back_url', '/categories_manage/')
         form_data = self._build_form_data()
         form_error = self._validate_form_data(form_data)
         if form_error:
@@ -498,7 +501,7 @@ class AdminEditorCategorieHandler(handlers.SiteBaseHandler):
                 form_data.update({'image_path': image_path})
         new_form_data = { key: form_data[key] for key in form_data if form_data[key] }
         items_model.Categories.update_categorie_bt_id(categorie_id, new_form_data)
-        self.redirect("/categories_manage/")
+        self.redirect(back_url)
 
     def _list_form_keys(self):
         return [
@@ -535,7 +538,7 @@ class AdminJsDeleteCategorieHandler(handlers.JsSiteBaseHandler):
 # /item_comments_manage/
 class AdminItemCommentsManageHandler(handlers.SiteBaseHandler):
     def get(self):
-        current_page = self.get_argument('current_page', 1)
+        current_page = self.get_argument('page', 1)
         value = self.get_argument('search_value', None)
         filter_args = None
         if value:
@@ -560,15 +563,57 @@ class AdminItemCommentsManageHandler(handlers.SiteBaseHandler):
         )
 
 
-class AdminAddCommentHandler(handlers.SiteBaseHandler):
+class AdminJsDeleteCommentHandler(handlers.JsSiteBaseHandler):
+    def post(self):
+        comment_ids_list = self.get_arguments('comment_ids_list[]')
+        for i in comment_ids_list:
+            items_model.ItemComments.update_item_comment_by_id({'status': 'deleted'}, i)
+        self.data['result'] = 'success'
+        self.write(self.data)
+
+
+class AdminEditorCommentHandler(handlers.SiteBaseHandler):
     def get(self):
-        self._render()
+        comment_id = self.get_argument('comment_id')
+        comment_obj = items_model.ItemComments.get_item_comment_dict_by_id(comment_id)
+        self._render(form_data=comment_obj)
     
+    def post(self):
+        comment_id = self.get_argument('comment_id')
+        back_url = self.get_argument('back_url')
+        data = self._build_form_data()
+        print(data)
+        items_model.ItemComments.update_item_comment_by_id(data, comment_id)
+        self.redirect(back_url)
+        
     def _render(self, form_data=None, form_error=None):
-        items_list = items_model.Items.get_items_all_select()
         self.render(
-            'admin/a_add_comment.html',
+            'admin/a_editor_comment.html',
             form_data = form_data,
             form_error = form_error,
-            items_list = items_list
         )
+    
+    def _list_form_keys(self):
+        return [
+            'comment_content',
+        ]
+
+
+class AdminItemCommentImageHandler(handlers.SiteBaseHandler):
+    def get(self):
+        comment_id = self.get_argument('comment_id')
+        comment_image_obj = items_model.CommentImages.get_comment_image_obj_by_id(comment_id)
+        self.render(
+            'admin/a_editor_comment_image.html',
+            comment_image_list = comment_image_obj
+        )
+    
+
+class AdminJsDeleteCommentImageHandler(handlers.JsSiteBaseHandler):
+    def post(self):
+        image_id_list = self.get_arguments('image_id_list[]')
+        for i in image_id_list:
+            items_model.CommentImages.update_comment_image_by_id(i, {'status': 'deleted'})
+        self.data['result'] = "success"
+        self.write(self.data)
+    
