@@ -8,7 +8,7 @@ from app.libs import photo
 import config_web
 
 
-# 新增商品信息、商品分类、按分类查询商品 API，以及对商品发表评价 API
+# /v1/get_items/
 class ApiGetItemInfoHandler(handlers.ApiBaseHandler):
     def get(self):
         current_page = self.get_argument('page', 1)
@@ -18,6 +18,7 @@ class ApiGetItemInfoHandler(handlers.ApiBaseHandler):
         self.write(self.data)
 
 
+# /v1/get_categories/
 class ApiGetCategoriesHandler(handlers.ApiBaseHandler):
     def get(self):
         data_list = items_model.Categories.get_categoreis_for_api()
@@ -26,6 +27,7 @@ class ApiGetCategoriesHandler(handlers.ApiBaseHandler):
         self.write(self.data)
 
 
+# /v1/filter_item/
 class ApiFilterItemHandler(handlers.ApiBaseHandler):
     def get(self):
         categorie_id = self.get_argument('categorie_id')
@@ -37,6 +39,7 @@ class ApiFilterItemHandler(handlers.ApiBaseHandler):
         self.write(self.data)
 
 
+# /v1/create_comment/
 class ApiCreateCommentHandler(handlers.ApiBaseHandler):
     def post(self):
         form_data = self._build_form_data()

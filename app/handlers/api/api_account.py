@@ -140,6 +140,7 @@ class ApiMemberBase(ApiBaseHandler):
         return sessions, sess_key
 
 
+# /v1/signin/
 class ApiMemberSigninHandler(ApiMemberBase):
     def post(self):
         login_name = self.get_argument("telephone", "")
@@ -159,6 +160,7 @@ class ApiMemberSigninHandler(ApiMemberBase):
         self.write(self.data)
 
 
+# /v1/register/
 class ApiMemberRegistrationHandler(ApiMemberBase):
     def post(self):
         form_data = self._build_form_data()
@@ -186,6 +188,7 @@ class ApiMemberRegistrationHandler(ApiMemberBase):
         return ("password", "telephone")
 
 
+# /v1/change_password/
 class ApiChangePassHandler(ApiMemberBase):
     @api_authenticated
     def post(self):

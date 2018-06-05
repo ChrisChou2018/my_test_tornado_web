@@ -144,6 +144,7 @@ class AdminJsDeleteImageHandler(handlers.JsSiteBaseHandler):
         self.data['result'] = 'success'
         self.write(self.data)
 
+
 # /add_item/
 class AdminAdditemHandler(handlers.SiteBaseHandler):
     @decorators.admin_authenticated
@@ -197,6 +198,7 @@ class AdminAdditemHandler(handlers.SiteBaseHandler):
             brands_list = brands_list,
             categories_list = categories_list
         )
+
 
 # /editor_item/
 class AdminEditorItemHandler(handlers.SiteBaseHandler):
@@ -269,7 +271,6 @@ class AdminBrandsManageHandler(handlers.SiteBaseHandler):
             uri = uri,
             current_page = current_page
         )
-
 
 
 class AdminAddbrandHandler(handlers.SiteBaseHandler):
