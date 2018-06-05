@@ -23,7 +23,7 @@ def js_authenticated(method):
     @functools.wraps(method)
     def wrapper(self, *args, **kwargs):
         if not self.current_user or not self.current_user.role:
-            self.data['status'] = False
+            self.data['result'] = False
             self.data['message'] = '没有登录或者没有权限'
             self.write(json.dumps(self.data))
             return 

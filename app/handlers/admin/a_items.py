@@ -49,6 +49,7 @@ class AdminItemsManageHandler(handlers.SiteBaseHandler):
 
 # /j/delete_item/
 class AdminJsDeleteItemHandler(handlers.JsSiteBaseHandler):
+    @decorators.js_authenticated
     def post(self):
         item_id_list = self.get_arguments('item_id_list[]')
         for i in item_id_list:
@@ -59,6 +60,7 @@ class AdminJsDeleteItemHandler(handlers.JsSiteBaseHandler):
 
 # /image_manage/
 class AdminImageManageHandler(handlers.SiteBaseHandler):
+    @decorators.admin_authenticated
     def get(self):
         item_id = self.get_argument('item_id')
         item =  items_model.Items.get_item_by_itemid(item_id)
@@ -80,6 +82,7 @@ class AdminImageManageHandler(handlers.SiteBaseHandler):
 
 # /j/add_image
 class AdminJsAddImageHandler(handlers.JsSiteBaseHandler):
+    @decorators.js_authenticated
     def post(self):
         file_dict = self.request.files
         image_type = self.get_argument('image_type')
@@ -119,6 +122,7 @@ class AdminJsAddImageHandler(handlers.JsSiteBaseHandler):
 
 # /j/delete_image/
 class AdminJsDeleteImageHandler(handlers.JsSiteBaseHandler):
+    @decorators.js_authenticated
     def post(self):
         image_id_list = self.get_arguments('image_id_list[]')
         image_type = items_model.ItemImages.type_choces
@@ -142,9 +146,11 @@ class AdminJsDeleteImageHandler(handlers.JsSiteBaseHandler):
 
 # /add_item/
 class AdminAdditemHandler(handlers.SiteBaseHandler):
+    @decorators.admin_authenticated
     def get(self):
         self._render()
     
+    @decorators.admin_authenticated
     def post(self):
         form_data = self._build_form_data()
         form_error = self._validate_form_data(form_data)
@@ -194,6 +200,7 @@ class AdminAdditemHandler(handlers.SiteBaseHandler):
 
 # /editor_item/
 class AdminEditorItemHandler(handlers.SiteBaseHandler):
+    @decorators.admin_authenticated
     def get(self):
         item_id = self.get_argument('item_id')
         item_obj = items_model.Items.get_item_by_itemid(item_id)
@@ -201,6 +208,7 @@ class AdminEditorItemHandler(handlers.SiteBaseHandler):
         data = { key: getattr(item_obj, key) for key in form_data }
         self._render(data)
 
+    @decorators.admin_authenticated
     def post(self):
         item_id = self.get_argument('item_id', None)
         form_data = self._build_form_data()
@@ -238,6 +246,7 @@ class AdminEditorItemHandler(handlers.SiteBaseHandler):
 
 
 class AdminBrandsManageHandler(handlers.SiteBaseHandler):
+    @decorators.admin_authenticated
     def get(self):
         current_page = self.get_argument('page',1)
         value = self.get_argument('search_value', None)
@@ -264,9 +273,11 @@ class AdminBrandsManageHandler(handlers.SiteBaseHandler):
 
 
 class AdminAddbrandHandler(handlers.SiteBaseHandler):
+    @decorators.admin_authenticated
     def get(self):
         self._render()
     
+    @decorators.admin_authenticated
     def post(self):
         form_data = self._build_form_data()
         form_error = self._validate_form_data(form_data)
@@ -318,6 +329,7 @@ class AdminAddbrandHandler(handlers.SiteBaseHandler):
 
 # /j/delete_brands/
 class AdminJsDeleteBrandHandler(handlers.JsSiteBaseHandler):
+    @decorators.js_authenticated
     def post(self):
         brand_ids_list = self.get_arguments('brand_ids_list[]')
         for i in brand_ids_list:
@@ -328,12 +340,14 @@ class AdminJsDeleteBrandHandler(handlers.JsSiteBaseHandler):
 
 # /editor_brand/
 class AdminEditorBrandHandler(handlers.SiteBaseHandler):
+    @decorators.admin_authenticated
     def get(self):
         brand_id = self.get_argument('brand_id')
         brand_obj = items_model.Brands.get_brand_by_brandid(brand_id)
         form_data = items_model.Brands.obj_to_dict(brand_obj)
         self._render(form_data=form_data)
     
+    @decorators.admin_authenticated
     def post(self):
         brand_id = self.get_argument('brand_id', None)
         back_url = self.get_argument('back_url', '/brands_manage/')
@@ -377,7 +391,9 @@ class AdminEditorBrandHandler(handlers.SiteBaseHandler):
         ]
 
 
+# /categories_manage/
 class AdminCategoriesManageHandler(handlers.SiteBaseHandler):
+    @decorators.admin_authenticated
     def get(self):
         current_page = self.get_argument('page', 1)
         value = self.get_argument('search_value', None)
@@ -407,10 +423,13 @@ class AdminCategoriesManageHandler(handlers.SiteBaseHandler):
         )
     
 
+# /add_categorie/
 class AdminAddCategorieHandler(handlers.SiteBaseHandler):
+    @decorators.admin_authenticated
     def get(self):
         self._render()
 
+    @decorators.admin_authenticated
     def post(self):
         form_data = self._build_form_data()
         form_error = self._validate_form_data(form_data)
@@ -461,9 +480,11 @@ class AdminAddCategorieHandler(handlers.SiteBaseHandler):
             form_error = form_error,
             categorie_choices = categorie_choices,
         )
-    
 
+
+#/editor_categorie/
 class AdminEditorCategorieHandler(handlers.SiteBaseHandler):
+    @decorators.admin_authenticated
     def get(self):
         categorie_id = self.get_argument('categorie_id')
         data = items_model.Categories.get_categorie_by_id(categorie_id)
@@ -471,6 +492,7 @@ class AdminEditorCategorieHandler(handlers.SiteBaseHandler):
         new_form_data = { key: getattr(data, key) for key in form_data }
         self._render(new_form_data)
     
+    @decorators.admin_authenticated
     def post(self):
         categorie_id = self.get_argument('categorie_id')
         back_url = self.get_argument('back_url', '/categories_manage/')
@@ -526,7 +548,9 @@ class AdminEditorCategorieHandler(handlers.SiteBaseHandler):
         )
 
 
+# /j/delete_categorie/
 class AdminJsDeleteCategorieHandler(handlers.JsSiteBaseHandler):
+    @decorators.js_authenticated
     def post(self):
         categorie_ids_list = self.get_arguments('categorie_ids_list[]')
         for i in categorie_ids_list:
@@ -537,6 +561,7 @@ class AdminJsDeleteCategorieHandler(handlers.JsSiteBaseHandler):
 
 # /item_comments_manage/
 class AdminItemCommentsManageHandler(handlers.SiteBaseHandler):
+    @decorators.admin_authenticated
     def get(self):
         current_page = self.get_argument('page', 1)
         value = self.get_argument('search_value', None)
@@ -563,7 +588,9 @@ class AdminItemCommentsManageHandler(handlers.SiteBaseHandler):
         )
 
 
+# /j/delete_comments/
 class AdminJsDeleteCommentHandler(handlers.JsSiteBaseHandler):
+    @decorators.js_authenticated
     def post(self):
         comment_ids_list = self.get_arguments('comment_ids_list[]')
         for i in comment_ids_list:
@@ -572,17 +599,19 @@ class AdminJsDeleteCommentHandler(handlers.JsSiteBaseHandler):
         self.write(self.data)
 
 
+# /editor_comment/
 class AdminEditorCommentHandler(handlers.SiteBaseHandler):
+    @decorators.admin_authenticated
     def get(self):
         comment_id = self.get_argument('comment_id')
         comment_obj = items_model.ItemComments.get_item_comment_dict_by_id(comment_id)
         self._render(form_data=comment_obj)
     
+    @decorators.admin_authenticated
     def post(self):
         comment_id = self.get_argument('comment_id')
         back_url = self.get_argument('back_url')
         data = self._build_form_data()
-        print(data)
         items_model.ItemComments.update_item_comment_by_id(data, comment_id)
         self.redirect(back_url)
         
@@ -599,7 +628,9 @@ class AdminEditorCommentHandler(handlers.SiteBaseHandler):
         ]
 
 
+# /comment_image_manage/
 class AdminItemCommentImageHandler(handlers.SiteBaseHandler):
+    @decorators.admin_authenticated
     def get(self):
         comment_id = self.get_argument('comment_id')
         comment_image_obj = items_model.CommentImages.get_comment_image_obj_by_id(comment_id)
@@ -609,7 +640,9 @@ class AdminItemCommentImageHandler(handlers.SiteBaseHandler):
         )
     
 
+# /j/delete_item_comment_image/
 class AdminJsDeleteCommentImageHandler(handlers.JsSiteBaseHandler):
+    @decorators.js_authenticated
     def post(self):
         image_id_list = self.get_arguments('image_id_list[]')
         for i in image_id_list:

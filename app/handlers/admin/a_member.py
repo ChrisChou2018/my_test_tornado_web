@@ -27,10 +27,13 @@ class AdminMemberManageHandler(handlers.SiteBaseHandler):
                 (member_model.Member.member_name == value) | \
                 (member_model.Member.telephone == value)
             )
-            member_list = member_model.Member.get_member_list(current_page, search_value)
-            member_count = member_model.Member.get_member_count(search_value)
+            member_list = member_model.Member. \
+                get_member_list(current_page, search_value)
+            member_count = member_model.Member. \
+                get_member_count(search_value)
         else:
-            member_list = member_model.Member.get_member_list(current_page)
+            member_list = member_model.Member. \
+            get_member_list(current_page)
             member_count = member_model.Member.get_member_count()
         uri = self.get_uri()
         self.render(
@@ -59,8 +62,10 @@ class AdminJsRegisterMemberHandler(handlers.JsSiteBaseHandler):
             self.write(self.data)
             return
 
-        member_obj_by_telephone = member.get_member_by_telephone(form_data.get('telephone'))
-        member_obj_by_name = member.get_member_by_member_name(form_data.get('member_name'))
+        member_obj_by_telephone = member. \
+            get_member_by_telephone(form_data.get('telephone'))
+        member_obj_by_name = member. \
+            get_member_by_member_name(form_data.get('member_name'))
         if member_obj_by_telephone:
             self.data['message'] = '手机号码已经被注册'
         elif member_obj_by_name:
@@ -140,6 +145,7 @@ class AdminJsEditMemberHandler(handlers.JsSiteBaseHandler):
         self.data['result'] = 'success'
         self.write(self.data)
 
+    @decorators.js_authenticated
     def post(self):
         member = member_model.Member
         member_id = self.get_argument('member_id', None)
@@ -149,13 +155,15 @@ class AdminJsEditMemberHandler(handlers.JsSiteBaseHandler):
             self.data['result'] = message
             self.write(self.data)
             return
-        clear_data = { key:form_data[key] for key in form_data if form_data[key] }
+        clear_data = {key: form_data[key] for key in form_data if form_data[key]}
         if clear_data.get('telephone'):
-            member_obj_by_telephone = member.get_member_by_telephone(clear_data.get('telephone'))
+            member_obj_by_telephone = member. \
+                get_member_by_telephone(clear_data.get('telephone'))
             if member_obj_by_telephone:
                 self.data['message'] = '手机号已经被注册'
         if clear_data.get('member_name'):
-            member_obj_by_name = member.get_member_by_name(clear_data.get('member_name'))
+            member_obj_by_name = member. \
+                get_member_by_name(clear_data.get('member_name'))
             if member_obj_by_name:
                 self.data['message'] = '用户名已经存在'
         if self.data.get('message'):
@@ -179,11 +187,15 @@ class AdminJsEditMemberHandler(handlers.JsSiteBaseHandler):
     def _validate_form_data(self, form_data):
         message = None
         telephone = r"^1[3|4|5|8][0-9]\d{4,8}$"
-        if  form_data['password'] and form_data['password'] != form_data['password2']:
+        if  form_data['password'] and \
+                form_data['password'] != form_data['password2']:
             message = "两次密码不一致"
-        if form_data['telephone'] and not re.match(telephone, form_data['telephone']):
+        if form_data['telephone'] and \
+                not re.match(telephone, form_data['telephone']):
             message = '手机号码不存在'
-        if form_data['password'] and len(form_data['password']) > 30 or len(form_data['password']) < 6:
+        if form_data['password'] and \
+                len(form_data['password']) > 30 or \
+                len(form_data['password']) < 6:
             message = '密码长度不超过30或不少于6位'
         if form_data['member_name'] and len(form_data['member_name']) > 15:
             message = '用户名长度不超过15'
