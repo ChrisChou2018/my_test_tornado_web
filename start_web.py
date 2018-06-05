@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import os
 
-import peewee
 import tornado.web
 import tornado.log
 import tornado.ioloop
@@ -22,6 +21,7 @@ define("port", default=9900)
 define("debug", default=True)
 define("smode", default="debug")
 tornado.options.parse_command_line()
+
 ui_modules = dict()
 ui_modules.update(admin.ui_modules)
 config_web.settings["ui_modules"] = ui_modules

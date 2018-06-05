@@ -20,8 +20,8 @@
     <div class="row" image-type='1' style="overflow: auto; max-width: 900px;" >
         
             {% for i in comment_image_list %}
-                <div class="col-xs-6 col-md-2 image_item" image-id='{{i.get("image_id")}}'>
-                    <a class="thumbnail" style="width: 300px;height: 400px;">
+                <div class="col-xs-6 col-md-3 image_item" image-id='{{i.get("image_id")}}'>
+                    <a class="thumbnail" style="width: 400px;height: 400px;">
                     <img src="{{i.get('image_path')}}" alt="..." >
                     </a>
                 </div>
