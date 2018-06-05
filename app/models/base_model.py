@@ -42,5 +42,3 @@ class BaseModel(peewee.Model):
         database = database_proxy
 
 
-Order = None
-Member = None

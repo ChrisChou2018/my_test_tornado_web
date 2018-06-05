@@ -6,7 +6,6 @@ import logging
 
 import uuid
 
-import config_web
 import app.models as models
 
 def main():

@@ -266,7 +266,7 @@ class JsWwwBaseHandler(WwwBaseHandler):
 class JsSiteBaseHandler(SiteBaseHandler):
     def initialize(self):
         super(SiteBaseHandler, self).initialize()
-        self.data = {"result":"error"}
+        self.data = {"result": "error", "message": ""}
 
     def _build_form_data(self):
         form_data = dict()
@@ -318,7 +318,7 @@ class ApiBaseHandler(DbBaseHandler):
             member_id, session_id = session_data.split(":")
         except:
             return None
-
+        
         member = Member.get_user_by_sess(member_id, session_id)
         return member
 
