@@ -28,7 +28,8 @@ class Brands(base_model.BaseModel):
     @classmethod
     def get_list_brands(cls, current_page, search_value=None):
         if search_value:
-            brand_obj = cls.select().where(search_value).order_by(-cls.brand_id).paginate(int(current_page), 15)
+            brand_obj = cls.select().where(search_value). \
+                order_by(-cls.brand_id).paginate(int(current_page), 15)
         else:
             brand_obj = cls.select().order_by(-cls.brand_id).paginate(int(current_page), 15)
         
@@ -49,18 +50,6 @@ class Brands(base_model.BaseModel):
             return cls.get(cls.brand_id == brand_id)
         except cls.DoesNotExist:
             return None
-    
-    @classmethod
-    def obj_to_dict(cls, obj):
-        data = dict()
-        data['cn_name'] = obj.cn_name
-        data['cn_name_abridge'] = obj.cn_name_abridge
-        data['en_name'] = obj.en_name
-        data['form_country'] = obj.form_country
-        data['key_word'] = obj.key_word
-        data['brand_about'] = obj.brand_about
-        data['brand_image'] = obj.brand_image
-        return data
     
     @classmethod
     def update_brand_by_brandid(cls, brand_id, data):
@@ -142,7 +131,8 @@ class Items(base_model.BaseModel):
                 (search_value) & (cls.status == 'normal')
             ).order_by(-cls.item_id).paginate(int(current_page), 15)
         else:
-            item_obj = cls.select().where(cls.status == 'normal').order_by(-cls.item_id).paginate(int(current_page), 15)
+            item_obj = cls.select().where(cls.status == 'normal'). \
+                order_by(-cls.item_id).paginate(int(current_page), 15)
         return item_obj
     
     @classmethod
@@ -157,7 +147,8 @@ class Items(base_model.BaseModel):
 
     @classmethod
     def get_items_all_select(cls):
-        items = cls.select(cls.item_id, cls.item_name).where(cls.status == 'normal').dicts()
+        items = cls.select(cls.item_id, cls.item_name). \
+            where(cls.status == 'normal').dicts()
         return items
     
     @classmethod
@@ -232,7 +223,9 @@ class ItemImages(base_model.BaseModel):
     @classmethod
     def get_thumbicon_by_item_id(cls, item_id):
         try:
-            image_obj = cls.get((cls.item_id == item_id) & (cls.status == "normal") & (cls.image_type == 1))
+            image_obj = cls.get(
+                (cls.item_id == item_id) & (cls.status == "normal") & (cls.image_type == 1)
+            )
             return image_obj
         except cls.DoesNotExist:
             return None
@@ -267,7 +260,8 @@ class Categories(base_model.BaseModel):
     @classmethod
     def get_list_categories(cls, current_page, search_value=None):
         if search_value:
-            obj = cls.select().where(search_value).order_by(-cls.categorie_id).paginate(int(current_page), 15)
+            obj = cls.select().where(search_value). \
+                order_by(-cls.categorie_id).paginate(int(current_page), 15)
         else:
             obj = cls.select().order_by(-cls.categorie_id).paginate(int(current_page), 15)
         return obj
@@ -410,3 +404,9 @@ class CommentImages(base_model.BaseModel):
     def update_comment_image_by_id(cls, image_id, data):
         cls.update(**data).where(cls.image_id == image_id).execute()
 
+
+
+
+def obj_to_dict(obj):
+    data = model_to_dict(obj)
+    return data
