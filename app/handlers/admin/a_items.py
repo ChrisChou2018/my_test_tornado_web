@@ -206,8 +206,7 @@ class AdminEditorItemHandler(handlers.SiteBaseHandler):
     def get(self):
         item_id = self.get_argument('item_id')
         item_obj = items_model.Items.get_item_by_itemid(item_id)
-        form_data = self._build_form_data()
-        data = { key: getattr(item_obj, key) for key in form_data }
+        data = items_model.obj_to_dict(item_obj)
         self._render(data)
 
     @decorators.admin_authenticated
@@ -345,7 +344,7 @@ class AdminEditorBrandHandler(handlers.SiteBaseHandler):
     def get(self):
         brand_id = self.get_argument('brand_id')
         brand_obj = items_model.Brands.get_brand_by_brandid(brand_id)
-        form_data = items_model.Brands.obj_to_dict(brand_obj)
+        form_data = items_model.obj_to_dict(brand_obj)
         self._render(form_data=form_data)
     
     @decorators.admin_authenticated
@@ -489,9 +488,8 @@ class AdminEditorCategorieHandler(handlers.SiteBaseHandler):
     def get(self):
         categorie_id = self.get_argument('categorie_id')
         data = items_model.Categories.get_categorie_by_id(categorie_id)
-        form_data = self._build_form_data()
-        new_form_data = { key: getattr(data, key) for key in form_data }
-        self._render(new_form_data)
+        form_data = items_model.obj_to_dict(data)
+        self._render(form_data)
     
     @decorators.admin_authenticated
     def post(self):

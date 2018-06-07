@@ -4,8 +4,6 @@ import os
 import sys
 import logging
 
-import uuid
-
 import app.models as models
 
 def main():
