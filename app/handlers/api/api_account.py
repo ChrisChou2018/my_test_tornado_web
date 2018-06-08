@@ -150,7 +150,7 @@ class ApiMemberSigninHandler(ApiMemberBase):
             return
 
         if not login_name or not password:
-            self.data["result"] = "error"
+            self.data["status"] = "error"
             self.data["message"] = "请补全账号密码"
             self.write(self.data)
             return
@@ -205,11 +205,11 @@ class ApiChangePassStep1Handler(ApiMemberBase):
                 validate_flag = True
 
         if not validate_flag:
-            self.data["result"] = "error"
+            self.data["status"] = "error"
             self.data["message"] = "密码错误"
             self.write(self.data)
             return
-        self.data['result'] = 'success'
+        self.data['status'] = 'success'
         self.write(self.data)
 
 
