@@ -60,8 +60,10 @@ python3 do_work.py init_table
 * 用户名：member_name
 * 用户ID：member_id
 * session_id：session_id
+
 <font color="red"> 登录成功后，在其它接口，member_id和session_id和被封装在HTTP请求Header的Authorization中。格式为：Authorization : member_id:session_id </font>
-```python
+
+```
 {
     "status": "success",
     "message": "",
@@ -87,7 +89,8 @@ python3 do_work.py init_table
 * 用户ID：member_id
 * session_id：session_id
 <font color="red"> 登录成功后，在其它接口，member_id和session_id和被封装在HTTP请求Header的Authorization中。格式为：Authorization : member_id:session_id </font>
-```python
+
+```
 {
     "status": "success",
     "message": "",
@@ -195,6 +198,7 @@ python3 do_work.py init_table
 * 成功标示：status
 * 返回信息：message
 * 分类数据：data（list）
+
 ```
 {
     "status": "success",
@@ -301,6 +305,7 @@ python3 do_work.py init_table
 **返回参数：Dict**
 * 成功标示：status
 * 返回信息：message
+
 ```
 {
     "status": "success",
