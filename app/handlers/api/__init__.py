@@ -13,4 +13,5 @@ urls = [
     (r"/v1/get_categories/?",         api_items.ApiGetCategoriesHandler),
     (r"/v1/filter_item/?",            api_items.ApiFilterItemHandler),
     (r"/v1/create_comment/?",         api_items.ApiCreateCommentHandler),
+    (r"/v1/get_item_comment/?",       api_items.ApiGetItemCommentHandler),
 ]

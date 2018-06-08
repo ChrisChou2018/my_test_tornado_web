@@ -118,6 +118,10 @@ def str_to_html(strings, term_type):
 
     return replace_img_to_cdn(strings)
 
+def format_timestap_to_data_str(timestap):
+    t = time.localtime(timestap)
+    time_str = time.strftime(('%Y-%m-%d %H:%M:%S', t))
+    return time_str
 
 # def deal_article_goods(content, article_id, title, status="new"):
 #     ags = list()
