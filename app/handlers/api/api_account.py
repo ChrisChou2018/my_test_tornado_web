@@ -21,7 +21,6 @@ import config_web
 
 
 class ApiMemberBase(ApiBaseHandler):
-
     def login_help(self, telephone, password):
         if not telephone:
             self.data["message"] = "用户名为空"
@@ -151,7 +150,7 @@ class ApiMemberSigninHandler(ApiMemberBase):
             return
 
         if not login_name or not password:
-            self.data["result"] = "error"
+            self.data["status"] = "error"
             self.data["message"] = "请补全账号密码"
             self.write(self.data)
             return
@@ -188,11 +187,36 @@ class ApiMemberRegistrationHandler(ApiMemberBase):
         return ("password", "telephone")
 
 
-# /v1/change_password/
-class ApiChangePassHandler(ApiMemberBase):
+# /v1/change_password1/
+class ApiChangePassStep1Handler(ApiMemberBase):
+    @api_authenticated
+    def post(self):
+        password = self.get_argument("password", "")
+        if not password:
+            self.data["message"] = "密码为空"
+            self.write(self.data)
+            return
+
+        member = self.current_user
+        member_hashpw = member.hash_pwd
+        validate_flag = False
+        if member_hashpw:
+            if bcrypt.checkpw(password.encode(),member_hashpw.encode()):
+                validate_flag = True
+
+        if not validate_flag:
+            self.data["status"] = "error"
+            self.data["message"] = "密码错误"
+            self.write(self.data)
+            return
+        self.data['status'] = 'success'
+        self.write(self.data)
+
+
+# /v1/change_password2/
+class ApiChangePassStep2Handler(ApiMemberBase):
     @api_authenticated
     def post(self):
         self.pass_help(api="change_pass")
         self.write(self.data)
-
 

@@ -76,3 +76,20 @@ class ApiCreateCommentHandler(handlers.ApiBaseHandler):
         return [
             'member_id', 'item_id', 'comment_content'
         ]
+
+# /v1/get_item_comment/
+class ApiGetItemCommentHandler(handlers.ApiBaseHandler):
+    def get(self):
+        item_id = self.get_argument('item_id')
+        current_page = self.get_argument('page', 1)
+        item_comment_data = items_model.ItemComments. \
+            get_item_comment_data_by_item_id(item_id, current_page)
+        if item_comment_data is None:
+            self.data['status'] = 'error'
+            self.data['message'] = '无相关评论'
+            self.write(self.data)
+            return
+        
+        self.data['data'] = item_comment_data
+        self.data['status'] = 'success'
+        self.write(self.data)

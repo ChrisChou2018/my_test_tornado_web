@@ -372,6 +372,26 @@ class ItemComments(base_model.BaseModel):
             return None
     
     @classmethod
+    def get_item_comment_data_by_item_id(cls, item_id, current_page):
+        try:
+            item_comments_list = cls.select(cls, member_model.Member.member_name). \
+                join(
+                    member_model.Member,
+                    on = (
+                        cls.member_id == member_model.Member.member_id
+                    ).alias('members')
+                ).where(
+                    (cls.item_id == item_id) & (cls.status == 'normal')
+                ).order_by(cls.comment_id).paginate(int(current_page), 15).dicts()
+            item_comments_list = list(item_comments_list)
+            for i in item_comments_list:
+                image_list = list(CommentImages.get_comment_image_obj_by_id(i['comment_id']))
+                i['image_list'] = image_list
+            return item_comments_list
+        except cls.DoesNotExist:
+            return None
+    
+    @classmethod
     def update_item_comment_by_id(cls, data, comment_id):
         cls.update(**data).where(cls.comment_id == comment_id).execute()
 
